@@ -5,6 +5,15 @@
   Ton: "du", Sarkasmus STARTER ~3, BUILDING/ESTABLISHED ~4, LEGEND ~5 von 10, nie beschämend.
 -->
 <resources>
+    <!-- Dialog -->
+    <string name="motivation_header_motivating">Starkes Ding!</string>
+    <string name="motivation_header_sarcastic">Na sieh mal einer an…</string>
+    <string name="motivation_button">Weiter geht’s</string>
+    <plurals name="motivation_title">
+        <item quantity="one">%1$s • %2$d Tag aktiv</item>
+        <item quantity="other">%1$s • %2$d Tage aktiv</item>
+    </plurals>
+
     <string name="quote_fallback">Abgehakt! Weiter so.</string>
 
     <!-- STARTER (1 Tag) -->
