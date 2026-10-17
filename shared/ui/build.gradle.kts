@@ -75,6 +75,7 @@ kotlin {
             implementation(libs.koin.compose.viewmodel.navigation)
             implementation(libs.koin.annotations)
         }
+        commonTest.dependencies { implementation(kotlin("test")) }
     }
 }
 
