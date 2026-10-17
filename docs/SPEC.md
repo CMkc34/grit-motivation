@@ -116,11 +116,19 @@ Package `com.shub39.grit.core.motivation`, reines Kotlin ohne Compose/Room.
 - Jede Stufe enthält im Katalog mindestens einen Spruch **pro Ton** (per Test abgesichert).
 
 ### 3.1a Texte (`shared:ui`, Compose-Resources)
-- Deutsche Sprüche in `composeResources/values-de/strings.xml`, zunächst derselbe deutsche Text als
-  Fallback in `values/strings.xml`. Die Tage kommen als Formatargument `%1$d` hinein.
-- Zuordnung Spruch-ID → `StringResource` in `shared:ui` (eine Stelle). Test stellt sicher, dass jede
-  Katalog-ID eine Resource hat.
-- Eine englische Fassung ist später reine Übersetzung, keine Codeänderung.
+- Eigene Dateien `composeResources/values/motivation_strings.xml` (Englisch) und
+  `values-de/motivation_strings.xml` (Deutsch). Die `strings.xml` des Originals bleibt unberührt
+  (dort ändern Übersetzungs-Tools laufend, eigene Einträge würden Merge-Konflikte erzeugen).
+- Spruch-ID = Resource-Name (`quote_<stufe>_<ton>_<nr>`, `quote_fallback`). Die UI schlägt den Text
+  über `Res.allStringResources[id]` nach, keine handgepflegte Zuordnung.
+- 4 Sprüche pro Stufe und Ton (32) plus Fallback. Anrede „du“ / „you“.
+- Sarkasmus leicht steigend: STARTER ~3, BUILDING/ESTABLISHED ~4, LEGEND ~5 von 10. Nie beschämend,
+  keine Kraftausdrücke. Englisch frei übertragen, nicht wörtlich.
+- Die Tage kommen immer als Formatargument `%1$d`; ein Spruch darf sie nutzen, muss aber nicht. Keine
+  Plurals nötig: STARTER ist immer 1 Tag, alle anderen Stufen ≥ 2.
+- Fallback ohne Zahl: „Abgehakt! Weiter so.“ / „Done! Keep it up.“
+- Tests in `shared:ui` (`commonTest`): jede Katalog-ID hat einen String, jeder `quote_*`-String hat
+  eine Katalog-ID, Deutsch und Englisch haben dieselben Schlüssel.
 
 ### 3.2 UI (`shared:ui`)
 - `@Composable fun HabitMotivationPopup(habitTitle, activeDays, quote, onDismiss, modifier = Modifier)`
