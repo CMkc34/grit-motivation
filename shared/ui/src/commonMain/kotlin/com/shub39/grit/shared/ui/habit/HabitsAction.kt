@@ -60,4 +60,7 @@ sealed interface HabitsAction {
     data object OnHabitsOpened : HabitsAction
 
     data object OnOverallAnalyticsViewed : HabitsAction
+
+    /** close the popup shown after a habit check-in */
+    data object DismissMotivationPopup : HabitsAction
 }

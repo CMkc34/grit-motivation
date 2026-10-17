@@ -146,11 +146,23 @@ Package `com.shub39.grit.core.motivation`, reines Kotlin ohne Compose/Room.
 - Zwei Previews (je Ton) mit `GritPreviewWrapper`; keine UI-Tests.
 
 ### 3.3 State & Integration
-- `HabitState.motivationPopup: MotivationPopupState?` mit `habitTitle`, `activeDays`, `quote`.
+Umgesetzt in einem PR für #5, #6 und #7.
+
+- `MotivationPopupState(habitTitle, activeDays, quote)` (`@Immutable`) in
+  `UI/habit/motivation/MotivationPopupState.kt`; `HabitState.motivationPopup: MotivationPopupState?`.
 - `HabitsAction.DismissMotivationPopup` setzt den State auf `null`.
-- `HabitViewModel.insertHabitStatus(...)`: nur im **Insert-Zweig** (Check-In) nach dem Schreiben
-  den neuen Streak lesen und `motivationPopup` setzen. Im Delete-Zweig (Un-Check) nichts.
-- `HabitsList` rendert `HabitMotivationPopup`, wenn `state.motivationPopup != null`.
+- `HabitViewModel.insertHabitStatus(...)`:
+  - Pop-up nur beim **Abhaken** (für das Datum existierte vorher kein Status). Abwählen zeigt keins.
+  - Messbare Habits: nur der **erste** Wert eines Tages (`value > 0`) zählt als Check-In;
+    Korrigieren oder auf 0 setzen zeigt keins.
+  - Streak = `currentStreak` aus `repo.getHabitsWithAnalytics().first()` (dieselbe Zahl wie auf der
+    Karte, nicht `+ 1`). Bei Streak 0 (Nachtragen eines alten Tages ohne laufende Serie) kein Pop-up.
+  - Das ViewModel merkt sich die ID des letzten Spruchs (nur im Speicher) und übergibt sie als
+    `previous`.
+- Ein offenes Pop-up überlebt das Beenden der App im Hintergrund nicht (bewusst hingenommen).
+- Tests: `shared/ui/src/commonTest/.../viewmodel/HabitViewModelMotivationTest.kt` über `onAction` → `state`,
+  mit Fakes in `shared/ui/src/commonTest/.../fakes/`. Der Streak wird im Fake vorgegeben.
+- `HabitsList` rendert `HabitMotivationPopup`, wenn `state.motivationPopup != null` (#8).
 
 ### 3.4 Definition of Done (Phase 1)
 - [ ] `./gradlew :androidApp:assembleFossDebug` grün, ohne Billing-/Analytics-Keys (lokal + CI).
@@ -190,6 +202,6 @@ Reihenfolge und Abhängigkeiten:
 
 ## 5. Offene Fragen
 
-- Soll das Pop-up per Einstellung abschaltbar sein? (Vorschlag: ja, als optionales Issue.)
-- Beim Abhaken eines **vergangenen** Tages, der nicht an heute anschließt, bleibt der aktuelle
-  Streak unverändert – Pop-up trotzdem zeigen? (Vorschlag: ja, mit dem aktuellen Streak.)
+- Soll das Pop-up per Einstellung abschaltbar sein? → optionales Issue #9.
+- ~~Pop-up beim Abhaken eines vergangenen Tages ohne laufende Serie?~~ Entschieden: kein Pop-up bei
+  Streak 0 (siehe 3.3).

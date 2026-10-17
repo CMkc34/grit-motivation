@@ -20,6 +20,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import com.shub39.grit.core.habits.HabitWithAnalytics
 import com.shub39.grit.core.habits.OverallAnalytics
+import com.shub39.grit.shared.ui.habit.motivation.MotivationPopupState
 import kotlinx.datetime.DayOfWeek
 
 /**
@@ -40,6 +41,7 @@ import kotlinx.datetime.DayOfWeek
  * @property is24Hr A user preference flag to display time in 24-hour format.
  * @property startingDay A user preference for the day of the week the calendar/week view should
  *   start on.
+ * @property motivationPopup Popup shown after a habit check-in, `null` when hidden.
  */
 @Stable
 @Immutable
@@ -50,6 +52,7 @@ data class HabitState(
     val analyticsHabitId: Long? = null,
     val showHabitAddSheet: Boolean = false,
     val editState: Boolean = false,
+    val motivationPopup: MotivationPopupState? = null,
 
     // datastore
     val compactHabitView: Boolean = false,
