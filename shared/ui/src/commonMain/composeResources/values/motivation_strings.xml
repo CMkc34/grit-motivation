@@ -6,6 +6,15 @@
   Loosely adapted from the German texts in values-de, not translated word for word.
 -->
 <resources>
+    <!-- Dialog -->
+    <string name="motivation_header_motivating">Nice one!</string>
+    <string name="motivation_header_sarcastic">Well, look at that…</string>
+    <string name="motivation_button">Let’s go</string>
+    <plurals name="motivation_title">
+        <item quantity="one">%1$s • %2$d day active</item>
+        <item quantity="other">%1$s • %2$d days active</item>
+    </plurals>
+
     <string name="quote_fallback">Done! Keep it up.</string>
 
     <!-- STARTER (1 day) -->

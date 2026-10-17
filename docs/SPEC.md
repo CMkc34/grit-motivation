@@ -132,13 +132,18 @@ Package `com.shub39.grit.core.motivation`, reines Kotlin ohne Compose/Room.
 
 ### 3.2 UI (`shared:ui`)
 - `@Composable fun HabitMotivationPopup(habitTitle, activeDays, quote, onDismiss, modifier = Modifier)`
-  als Material-3-`AlertDialog`:
-  - Sub-Header je Ton: `SARCASTIC` → „Na sieh mal einer an…“, `MOTIVATING` → „Starkes Ding!“
-  - Titel (fett): `"$habitTitle • $activeDays Tag(e) aktiv"` (mit korrektem Singular/Plural)
-  - Body: Text der zur `quote.id` gehörenden String-Resource, Tage als Formatargument
-  - Confirm-Button → `onDismiss()`
-- Texte über Compose-Resources (`composeResources/values-de/strings.xml` bzw. bestehende Struktur),
-  nicht hart im Composable.
+  in `UI/habit/ui/component/HabitMotivationPopup.kt`, zustandslos.
+- Basis ist der projekteigene `GritDialog` (wie die übrigen Dialoge der App), nicht `AlertDialog`.
+  `GritDialog` hat dafür einen optionalen Parameter `properties` bekommen (rückwärtskompatibel).
+- Schließt per Button und Zurück-Taste, **nicht** durch Tippen daneben und nicht automatisch.
+- Aufbau von oben nach unten, ohne Symbol:
+  - Unterzeile je Ton: `SARCASTIC` → „Na sieh mal einer an…“ / „Well, look at that…“,
+    `MOTIVATING` → „Starkes Ding!“ / „Nice one!“
+  - Titel (fett, beliebig viele Zeilen): Plural-Resource „%1$s • %2$d Tag(e) aktiv“
+  - Spruch: `stringResource(quote.textResource(), activeDays)`
+  - Button: „Weiter geht’s“ / „Let’s go“
+- Alle Texte in `motivation_strings.xml` (DE + EN). Der Übersetzungstest prüft Strings und Plurals.
+- Zwei Previews (je Ton) mit `GritPreviewWrapper`; keine UI-Tests.
 
 ### 3.3 State & Integration
 - `HabitState.motivationPopup: MotivationPopupState?` mit `habitTitle`, `activeDays`, `quote`.

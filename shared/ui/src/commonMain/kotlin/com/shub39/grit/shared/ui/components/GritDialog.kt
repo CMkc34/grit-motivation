@@ -28,15 +28,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 
 @Composable
 fun GritDialog(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     padding: Dp = 16.dp,
+    properties: DialogProperties = DialogProperties(),
     content: @Composable (ColumnScope.() -> Unit),
 ) {
-    BasicAlertDialog(onDismissRequest = onDismissRequest, modifier = modifier) {
+    BasicAlertDialog(
+        onDismissRequest = onDismissRequest,
+        modifier = modifier,
+        properties = properties,
+    ) {
         Card(shape = MaterialTheme.shapes.extraLarge) {
             Column(
                 modifier = Modifier.padding(padding),
