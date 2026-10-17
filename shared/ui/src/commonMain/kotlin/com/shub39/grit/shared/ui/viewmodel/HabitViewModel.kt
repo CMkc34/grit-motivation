@@ -25,13 +25,16 @@ import com.shub39.grit.core.habits.HabitStatus
 import com.shub39.grit.core.interfaces.AlarmScheduler
 import com.shub39.grit.core.interfaces.AnalyticsWrapper
 import com.shub39.grit.core.interfaces.SettingsDatastore
+import com.shub39.grit.core.motivation.GritQuoteEngine
 import com.shub39.grit.shared.ui.habit.HabitState
 import com.shub39.grit.shared.ui.habit.HabitsAction
+import com.shub39.grit.shared.ui.habit.motivation.MotivationPopupState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -53,6 +56,9 @@ class HabitViewModel(
     private var overallAnalyticsJob: Job? = null
     private var observeDatastoreJob: Job? = null
     private var completedHabitsFetchJob: Job? = null
+
+    // id of the last motivation quote, so the next popup shows a different one
+    private var lastQuoteId: String? = null
 
     private val _state = MutableStateFlow(HabitState())
 
@@ -174,6 +180,10 @@ class HabitViewModel(
                     analytics.trackEvent(AnalyticsEvent.OVERALL_ANALYTICS_VIEWED, emptyMap())
                 }
 
+                HabitsAction.DismissMotivationPopup -> {
+                    _state.update { it.copy(motivationPopup = null) }
+                }
+
                 is HabitsAction.InsertMeasuredStatus -> {
                     insertHabitStatus(action.habit, action.date, action.value)
                 }
@@ -257,6 +267,7 @@ class HabitViewModel(
         } else {
             analytics.trackEvent(AnalyticsEvent.HABIT_COMPLETED, emptyMap())
             repo.insertHabitStatus(HabitStatus(habitId = habit.id, date = date))
+            showMotivationPopup(habit)
         }
     }
 
@@ -274,5 +285,22 @@ class HabitViewModel(
         }
         analytics.trackEvent(AnalyticsEvent.HABIT_COMPLETED, emptyMap())
         repo.insertHabitStatus(HabitStatus(habitId = habit.id, date = date, value = value))
+        // only the first value of a day is a check-in, corrections stay silent
+        if (!isStatusAdded) showMotivationPopup(habit)
+    }
+
+    /**
+     * Reads the streak after a check-in from the repository, the same number the habit card shows.
+     * A check-in that does not extend an active streak (streak 0) shows no popup.
+     */
+    private suspend fun showMotivationPopup(habit: Habit) {
+        val streak =
+            repo.getHabitsWithAnalytics().first().find { it.habit.id == habit.id }?.currentStreak
+        if (streak == null || streak < 1) return
+        val quote = GritQuoteEngine.getQuote(streak, previous = lastQuoteId)
+        lastQuoteId = quote.id
+        _state.update {
+            it.copy(motivationPopup = MotivationPopupState(habit.title, streak, quote))
+        }
     }
 }
