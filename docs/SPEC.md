@@ -76,33 +76,58 @@ Die ursprüngliche Spec (andere KI) wurde gegen den echten Code geprüft. Abweic
      → Package `com.shub39.grit.core.motivation` – testbar per JVM-Unit-Test, strikt getrennt von DAOs.
    - Composable in `shared:ui` → `UI/habit/ui/component/HabitMotivationPopup.kt`.
 
-5. **Zufall injizierbar:** `GritQuoteEngine.getQuote(activeDays, random: Random = Random.Default)`
+5. **Zufall injizierbar:** `GritQuoteEngine.getQuote(activeDays, random: Random = Random.Default, ...)`
    für deterministische Tests.
 
 6. **Grammatik:** „1 Tag aktiv“ / „n Tage aktiv“ statt „Tag(e)“.
+
+7. **Übersetzbare Sprüche (Entscheidung aus dem Design-Interview):** `shared:core` kennt keine
+   Compose-Resources. Die Engine liefert deshalb nur eine **ID** (plus Ton und Kategorie), den Text
+   holt die UI aus String-Resources und setzt die Tage per Formatargument ein (`%1$d`).
+   `MotivationQuote` hat daher kein Feld `text`, und die Engine ersetzt `{days}` nicht selbst.
+
+8. **Kategorien statt loser Intervalle:** Jeder Spruch gehört zu einer `StreakTier`
+   (Streak-Bereich je Stufe an einer einzigen Stelle definiert).
+
+9. **Kein doppelter Spruch hintereinander:** Optionaler Parameter `previous`; das ViewModel merkt
+   sich den zuletzt gezeigten Spruch.
 
 ---
 
 ## 3. Phase 1 – Anforderungen
 
 ### 3.1 Domain (`shared:core`)
+Package `com.shub39.grit.core.motivation`, reines Kotlin ohne Compose/Room.
+
 - `enum class QuoteTone { MOTIVATING, SARCASTIC }`
-- `data class MotivationQuote(text: String, tone: QuoteTone, minStreak: Int, maxStreak: Int)`
-  – `text` enthält Platzhalter `{days}`.
+- `enum class StreakTier(val range: IntRange)` mit `STARTER (1..1)`, `BUILDING (2..4)`,
+  `ESTABLISHED (5..13)`, `LEGEND (14..Int.MAX_VALUE)` und `fun forStreak(days: Int)`
+  (`days < 1` → `STARTER`).
+- `data class MotivationQuote(id: String, tone: QuoteTone, tier: StreakTier)` – **kein Text**.
+- `object QuoteCatalog` (eigene Datei): Liste aller Sprüche (nur ID, Ton, Stufe) und ein fester
+  Fallback-Spruch.
 - `object GritQuoteEngine`
-  - Deutscher Spruchkatalog, gemischt motivierend/sarkastisch, Intervalle
-    `1..1`, `2..4`, `5..13`, `14..Int.MAX_VALUE`.
-  - `getQuote(activeDays: Int, random: Random = Random.Default): MotivationQuote`
-    filtert nach Intervall, wählt zufällig, ersetzt `{days}`.
-  - `activeDays < 1` wird wie `1` behandelt (kein Crash).
-  - Jedes Intervall enthält mindestens einen Spruch **pro Ton**.
+  - `getQuote(activeDays: Int, random: Random = Random.Default, previous: String? = null,
+    quotes: List<MotivationQuote> = QuoteCatalog.all): MotivationQuote`
+  - Wählt rein zufällig unter den Sprüchen der passenden `StreakTier` (keine Gewichtung der Töne).
+  - `previous` (ID) wird ausgeschlossen, solange es Alternativen gibt.
+  - Kein passender Spruch (z. B. leere Liste) → fester Fallback-Spruch aus dem Katalog.
+  - Zustandslos; kennt weder Room noch Compose.
+- Jede Stufe enthält im Katalog mindestens einen Spruch **pro Ton** (per Test abgesichert).
+
+### 3.1a Texte (`shared:ui`, Compose-Resources)
+- Deutsche Sprüche in `composeResources/values-de/strings.xml`, zunächst derselbe deutsche Text als
+  Fallback in `values/strings.xml`. Die Tage kommen als Formatargument `%1$d` hinein.
+- Zuordnung Spruch-ID → `StringResource` in `shared:ui` (eine Stelle). Test stellt sicher, dass jede
+  Katalog-ID eine Resource hat.
+- Eine englische Fassung ist später reine Übersetzung, keine Codeänderung.
 
 ### 3.2 UI (`shared:ui`)
 - `@Composable fun HabitMotivationPopup(habitTitle, activeDays, quote, onDismiss, modifier = Modifier)`
   als Material-3-`AlertDialog`:
   - Sub-Header je Ton: `SARCASTIC` → „Na sieh mal einer an…“, `MOTIVATING` → „Starkes Ding!“
   - Titel (fett): `"$habitTitle • $activeDays Tag(e) aktiv"` (mit korrektem Singular/Plural)
-  - Body: aufbereiteter `quote.text`
+  - Body: Text der zur `quote.id` gehörenden String-Resource, Tage als Formatargument
   - Confirm-Button → `onDismiss()`
 - Texte über Compose-Resources (`composeResources/values-de/strings.xml` bzw. bestehende Struktur),
   nicht hart im Composable.
