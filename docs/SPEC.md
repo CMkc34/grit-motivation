@@ -2,7 +2,7 @@
 
 Privater Fork von [shub39/Grit](https://github.com/shub39/Grit) (GPL-3.0, Kotlin Multiplatform,
 Compose Material 3, Room). Ziel: kontextsensitives Motivations-/Sarkasmus-Pop-up beim Abhaken von
-Habits (Phase 1), später erweiterte Statistiken (Phase 2).
+Habits (Phase 1); später Energie & Streak-Freeze, Statistiken und ein Avatar (siehe Abschnitt 4).
 
 Basis-Stand: Upstream `master` @ `3e203449` (Release 6.2.2).
 
@@ -148,12 +148,32 @@ Package `com.shub39.grit.core.motivation`, reines Kotlin ohne Compose/Room.
 
 ---
 
-## 4. Phase 2 – Vorbereitung (noch nicht implementieren)
+## 4. Roadmap (noch nicht implementieren)
 
-- Ausbau von Statistiken/Auswertungen im Analytics-Bereich
-  (`UI/habit/ui/sections/AnalyticsPage.kt`, `OverallAnalytics.kt`, `shared/logic/.../database/*Dao.kt`).
-- Architektur-Regel: `core.motivation` kennt weder Room noch DAOs. Neue SQL-Abfragen und
-  State-Felder in Phase 2 dürfen die Motivations-Engine nicht berühren.
+| Phase | Inhalt | Tracking |
+|---|---|---|
+| 1 | Motivations-Pop-up | Meilenstein „Phase 1“, Issues #1–#9 |
+| 2 | Energie & Streak-Freeze | Meilenstein „Phase 2“, Epic #14 |
+| 3 | Statistiken | Meilenstein „Phase 3“, #10 |
+| 4 | Avatar / Maskottchen | Meilenstein „Phase 4“, Epic #15 |
+
+Reihenfolge und Abhängigkeiten:
+
+- **Phase 2 vor Phase 3:** Ein Streak-Freeze ändert die Bedeutung von „Streak“.
+  `countCurrentStreak` / `countBestStreak` (`shared/logic/.../repository/Util.kt`) müssen überbrückte
+  Tage berücksichtigen. Alle Zahlen (Habit-Karte, Pop-up, Statistik) nutzen dieselbe Berechnung.
+- **Phase 4 nach Phase 2:** Der Avatar baut auf der Energie-Währung und den aktiven Tagen auf.
+  Klein anfangen (Stufen/Aussehen), Training und Anpassung später.
+- Epics werden erst kurz vor Beginn der jeweiligen Phase per Design-Interview in Teilaufgaben
+  zerlegt. Offene Regelfragen stehen in den Epic-Issues.
+
+### Architektur-Regeln für alle Phasen
+
+- `core.motivation` kennt weder Room noch DAOs. Neue SQL-Abfragen, Tabellen und State-Felder
+  späterer Phasen dürfen die Motivations-Engine nicht berühren.
+- Änderungen an Upstream-Dateien (z. B. Streak-Funktionen, Datenbank-Definition) möglichst klein
+  halten, neue Logik in neue Dateien legen (siehe `docs/WORKFLOW.md`).
+- Neue Room-Tabellen brauchen eine Migration, bestehende Nutzerdaten dürfen nicht verloren gehen.
 
 ## 5. Offene Fragen
 
