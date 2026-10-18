@@ -222,6 +222,15 @@ Belohnt wird die **Nutzung der App**, nicht die Serie einzelner Routinen.
   vermerkt das Repository beim Speichern eines Häkchens den **heutigen** Tag als aktiv
   (`HabitRepository.insertHabitStatus`, kleine Änderung im Original) (#24).
 - Die drei gespeicherten Werte kommen ins Backup (#28).
+- Umsetzung (#24): Schnittstellen `ActivityStore` und `ActivityRepo` in `core.activity`;
+  `ActivityStoreImpl` nutzt die **bestehende** Preferences-Datei der App mit den Schlüsseln
+  `activity_start_date`, `activity_days`, `activity_seen_freezes`. `ActivityRepository` liefert den
+  Bericht als Flow.
+- Startdatum: wird beim ersten Abruf des Berichts gesetzt oder – falls zuerst über Widget/Erinnerung
+  eingetragen wird – beim ersten aktiven Tag.
+- Der Bericht wird neu berechnet, wenn sich die gespeicherten Tage ändern oder die App ihn neu
+  abruft. Über Mitternacht offen gelassen zeigt die App bis dahin den Stand von gestern (bewusst
+  hingenommen).
 
 ### 4.4 UI
 - **Kopfzeile der Routinen-Seite:** „🔥 12 Tage aktiv · ⚡ 14“; Antippen öffnet die Energie-Seite (#25).
