@@ -65,6 +65,10 @@ kotlin {
             implementation(libs.koin.compose.viewmodel.navigation)
             implementation(libs.koin.annotations)
         }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(libs.kotlinx.coroutines.test)
+        }
         jvmMain.dependencies {
             implementation(libs.androidx.sqlite.bundled)
             implementation(libs.kotlinx.coroutines.swing)

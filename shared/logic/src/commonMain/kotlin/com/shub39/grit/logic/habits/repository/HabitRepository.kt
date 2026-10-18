@@ -16,6 +16,7 @@
  */
 package com.shub39.grit.logic.habits.repository
 
+import com.shub39.grit.core.activity.ActivityStore
 import com.shub39.grit.core.habits.Habit
 import com.shub39.grit.core.habits.HabitRanking
 import com.shub39.grit.core.habits.HabitRepo
@@ -54,6 +55,7 @@ class HabitRepository(
     private val habitStatusDao: HabitStatusDao,
     private val datastore: SettingsDatastore,
     private val notificationManager: AppNotificationManager,
+    private val activityStore: ActivityStore,
 ) : HabitRepo {
 
     private val habits =
@@ -221,6 +223,8 @@ class HabitRepository(
 
     override suspend fun insertHabitStatus(habitStatus: HabitStatus) {
         habitStatusDao.insertHabitStatus(habitStatus.toHabitStatusEntity())
+        // any check-in, also from widgets and notifications, makes today an active day
+        activityStore.markActive(LocalDate.now())
 
         if (habitStatus.date == LocalDate.now()) {
             notificationManager.cancelNotification(habitId = habitStatus.habitId.toInt())
