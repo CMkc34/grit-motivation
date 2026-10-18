@@ -204,6 +204,12 @@ Belohnt wird die **Nutzung der App**, nicht die Serie einzelner Routinen.
 - **Freeze = 7 ⚡**, überbrückt einen verpassten Tag der Aktiv-Serie, **max. 2 Tage am Stück**.
 - Freezes werden **automatisch** eingesetzt, sobald genug Energie da ist (Abschalten: Backlog #30).
 - Heute noch kein Eintrag → die Serie gilt bis Tagesende als nicht gerissen.
+- Ein gefrorener Tag **hält** die Serie, **zählt aber nicht mit** (7 aktiv + 1 gefroren + 1 aktiv = 8).
+- Eine Lücke wird nur **als Ganzes** gefroren: höchstens 2 Tage und genug Energie für alle Tage der
+  Lücke. Sonst reißt die Serie, und es wird **keine** Energie verbraucht. Weil alles berechnet wird,
+  gilt das auch rückwirkend: Wird aus einer 2-Tage-Lücke eine 3-Tage-Lücke, sind die beiden
+  Freezes wieder frei.
+- Reißt die Serie, **bleibt die Energie** erhalten.
 
 ### 4.3 Datenhaltung
 - **Alles berechnet:** `ActivityPlanner` (reine Funktion in `shared:core`) spielt die aktiven Tage ab
