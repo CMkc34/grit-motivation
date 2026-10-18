@@ -159,17 +159,28 @@ Umgesetzt in einem PR für #5, #6 und #7.
     Karte, nicht `+ 1`). Bei Streak 0 (Nachtragen eines alten Tages ohne laufende Serie) kein Pop-up.
   - Das ViewModel merkt sich die ID des letzten Spruchs (nur im Speicher) und übergibt sie als
     `previous`.
+  - Nur Check-Ins für **heute oder gestern** zeigen ein Pop-up; Nachträge älterer Tage bleiben still
+    (#8).
 - Ein offenes Pop-up überlebt das Beenden der App im Hintergrund nicht (bewusst hingenommen).
 - Tests: `shared/ui/src/commonTest/.../viewmodel/HabitViewModelMotivationTest.kt` über `onAction` → `state`,
   mit Fakes in `shared/ui/src/commonTest/.../fakes/`. Der Streak wird im Fake vorgegeben.
-- `HabitsList` rendert `HabitMotivationPopup`, wenn `state.motivationPopup != null` (#8).
+- Anzeige (#8): `MotivationPopupHost` (`UI/habit/motivation/`) ist **einmal zentral** in
+  `GritNavDisplay` eingebunden, damit das Pop-up beim Abhaken in der Liste, auf der Detailseite und
+  im Kalender sofort erscheint (alle Habit-Screens teilen sich dieselbe `HabitViewModel`-Instanz).
+  Der Host beobachtet den eigenen Flow `HabitViewModel.motivationPopup`, nicht `state`, damit die
+  Habit-Beobachter nicht auch auf dem Aufgaben-Tab laufen.
+- Abhaken über Widget oder Benachrichtigung zeigt kein Pop-up (läuft am ViewModel vorbei).
 
 ### 3.4 Definition of Done (Phase 1)
-- [ ] `./gradlew :androidApp:assembleFossDebug` grün, ohne Billing-/Analytics-Keys (lokal + CI).
-- [ ] Abhaken eines Habits öffnet sofort das M3-Pop-up.
-- [ ] Pop-up zeigt korrekten Habit-Namen und denselben Streak wie die Habit-Karte.
-- [ ] Abwählen eines gesetzten Häkchens zeigt **kein** Pop-up.
-- [ ] Unit-Tests für `GritQuoteEngine` grün; `spotlessCheck` grün.
+Abgenommen am 2026-10-18 auf einem Pixel 8a (Android 17), Build aus #8.
+
+- [x] `./gradlew :androidApp:assembleFossDebug` grün, ohne Billing-/Analytics-Keys (lokal + CI).
+- [x] Abhaken eines Habits öffnet sofort das Pop-up.
+- [x] Pop-up zeigt korrekten Habit-Namen und denselben Streak wie die Habit-Karte.
+- [x] Abwählen eines gesetzten Häkchens zeigt **kein** Pop-up.
+- [x] Nachtrag eines älteren Tages zeigt kein Pop-up; gestern abhaken zeigt eins.
+- [x] Zurück und Button schließen das Pop-up, Tippen daneben nicht.
+- [x] Unit-Tests (`shared:core`, `shared:ui`) grün; `spotlessCheck` grün.
 
 ---
 

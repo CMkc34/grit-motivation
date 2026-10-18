@@ -19,6 +19,7 @@ package com.shub39.grit.shared.ui.viewmodel
 import com.shub39.grit.core.habits.Habit
 import com.shub39.grit.core.habits.HabitStatus
 import com.shub39.grit.core.motivation.StreakTier
+import com.shub39.grit.core.now
 import com.shub39.grit.shared.ui.fakes.FakeAlarmScheduler
 import com.shub39.grit.shared.ui.fakes.FakeAnalytics
 import com.shub39.grit.shared.ui.fakes.FakeHabitRepo
@@ -39,15 +40,19 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.minus
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HabitViewModelMotivationTest {
 
     private val dispatcher = UnconfinedTestDispatcher()
-    private val today = LocalDate(2026, 10, 17)
+    // relative to the real date: the ViewModel only celebrates check-ins for today or yesterday
+    private val today = LocalDate.now()
+    private val yesterday = today.minus(1, DateTimeUnit.DAY)
     private val meditate =
         Habit(
             id = 1,
@@ -112,7 +117,7 @@ class HabitViewModelMotivationTest {
             val viewModel = viewModel()
             repo.currentStreaks[meditate.id] = 0
 
-            viewModel.onAction(HabitsAction.InsertStatus(meditate, LocalDate(2026, 9, 1)))
+            viewModel.onAction(HabitsAction.InsertStatus(meditate, yesterday))
 
             assertNull(viewModel.state.value.motivationPopup)
         }
@@ -182,5 +187,47 @@ class HabitViewModelMotivationTest {
             viewModel.onAction(HabitsAction.InsertMeasuredStatus(water, today, 0.0))
 
             assertNull(viewModel.state.value.motivationPopup)
+        }
+
+    @Test
+    fun `check-in for yesterday shows the popup`() =
+        runTest(dispatcher) {
+            val viewModel = viewModel()
+            repo.currentStreaks[meditate.id] = 2
+
+            viewModel.onAction(HabitsAction.InsertStatus(meditate, yesterday))
+
+            assertEquals(2, assertNotNull(viewModel.state.value.motivationPopup).activeDays)
+        }
+
+    @Test
+    fun `catching up on older days shows no popup`() =
+        runTest(dispatcher) {
+            val viewModel = viewModel()
+            repo.currentStreaks[meditate.id] = 4
+            repo.currentStreaks[water.id] = 4
+
+            viewModel.onAction(
+                HabitsAction.InsertStatus(meditate, today.minus(2, DateTimeUnit.DAY))
+            )
+            viewModel.onAction(
+                HabitsAction.InsertMeasuredStatus(water, today.minus(5, DateTimeUnit.DAY), 3.0)
+            )
+
+            assertNull(viewModel.state.value.motivationPopup)
+        }
+
+    @Test
+    fun `popup flow follows check-in and dismiss`() =
+        runTest(dispatcher) {
+            val viewModel = viewModel()
+            repo.currentStreaks[meditate.id] = 1
+
+            viewModel.onAction(HabitsAction.InsertStatus(meditate, today))
+            assertEquals(viewModel.state.value.motivationPopup, viewModel.motivationPopup.value)
+            assertNotNull(viewModel.motivationPopup.value)
+
+            viewModel.onAction(HabitsAction.DismissMotivationPopup)
+            assertNull(viewModel.motivationPopup.value)
         }
 }
