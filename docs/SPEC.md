@@ -2,7 +2,7 @@
 
 Privater Fork von [shub39/Grit](https://github.com/shub39/Grit) (GPL-3.0, Kotlin Multiplatform,
 Compose Material 3, Room). Ziel: kontextsensitives Motivations-/Sarkasmus-Pop-up beim Abhaken von
-Habits (Phase 1); später Energie & Streak-Freeze, Statistiken und ein Avatar (siehe Abschnitt 4).
+Habits (Phase 1); danach Energie & Aktiv-Serie (Phase 2, Abschnitt 4), Statistiken und ein Avatar (Abschnitt 5).
 
 Basis-Stand: Upstream `master` @ `3e203449` (Release 6.2.2).
 
@@ -184,24 +184,79 @@ Abgenommen am 2026-10-18 auf einem Pixel 8a (Android 17), Build aus #8.
 
 ---
 
-## 4. Roadmap (noch nicht implementieren)
+## 4. Phase 2 – Energie & Aktiv-Serie
+
+Design-Interview abgeschlossen am 2026-10-18. Epic #14, Meilenstein „Phase 2 – Energie & Aktiv-Serie“.
+
+### 4.1 Grundidee
+Belohnt wird die **Nutzung der App**, nicht die Serie einzelner Routinen.
+
+- Ein Tag ist **aktiv**, wenn an diesem Tag mindestens ein Eintrag gemacht wurde – egal für welche
+  Routine und für welches Datum (ein Nachtrag für gestern zählt für heute), auch über Widget oder
+  Erinnerung. Wird das Häkchen wieder entfernt, bleibt der Tag aktiv.
+- Die globale **Aktiv-Serie** zählt aktive Tage in Folge.
+- Die Serien der einzelnen Routinen bleiben **unverändert** und ohne Freeze. Streak-Berechnung im
+  Repository, Widgets und Kalender des Originals werden nicht angefasst.
+- Das System gilt **ab Installation** der neuen Version (Startdatum); bisherige Zahlen bleiben.
+
+### 4.2 Energie und Freezes
+- **+1 ⚡** pro aktivem Tag, **keine Obergrenze** (Energie wird in Phase 4 für den Avatar ausgegeben).
+- **Freeze = 7 ⚡**, überbrückt einen verpassten Tag der Aktiv-Serie, **max. 2 Tage am Stück**.
+- Freezes werden **automatisch** eingesetzt, sobald genug Energie da ist (Abschalten: Backlog #30).
+- Heute noch kein Eintrag → die Serie gilt bis Tagesende als nicht gerissen.
+
+### 4.3 Datenhaltung
+- **Alles berechnet:** `ActivityPlanner` (reine Funktion in `shared:core`) spielt die aktiven Tage ab
+  dem Startdatum chronologisch ab und liefert Aktiv-Serie, längste Aktiv-Serie, Kontostand,
+  gefrorene Tage und den Tagesstatus der letzten Tage (#23).
+- **Gespeichert** wird nur: Startdatum, Liste der aktiven Tage, bereits gesehene Freezes – in einem
+  **eigenen DataStore** des Forks, nicht in der Datenbank des Originals (keine Kollision mit dessen
+  Schema-Versionen) (#24).
+- Ein Häkchen speichert nur, *für* welchen Tag es gilt, nicht *wann* es gesetzt wurde. Deshalb
+  vermerkt das Repository beim Speichern eines Häkchens den **heutigen** Tag als aktiv
+  (`HabitRepository.insertHabitStatus`, kleine Änderung im Original) (#24).
+- Die drei gespeicherten Werte kommen ins Backup (#28).
+
+### 4.4 UI
+- **Kopfzeile der Routinen-Seite:** „🔥 12 Tage aktiv · ⚡ 14“; Antippen öffnet die Energie-Seite (#25).
+- **Energie-Seite:** Kontostand, aktuelle und längste Aktiv-Serie, Leiste der letzten 30 Tage
+  (✓ aktiv / ❄️ gefroren / – verpasst), kurze Erklärung der Regeln. Kein Shop-Platzhalter, aber so
+  aufgebaut, dass in Phase 4 ein Shop darunter passt. Navigation des Originals bleibt unverändert (#25).
+- **Freeze-Hinweis beim Öffnen**, nur wenn ein Freeze die Serie gerettet hat; kein Hinweis, wenn die
+  Serie gerissen ist (#26).
+- **Motivations-Pop-up:** beim ersten Eintrag eines Tages zusätzlich „+1 ⚡ · 13 Tage aktiv“ (#27).
+
+### 4.5 Issues
+| # | Inhalt |
+|---|---|
+| #23 | `ActivityPlanner` (Domain, test-first) |
+| #24 | DataStore + Erfassung aktiver Tage |
+| #25 | Kopfzeile + Energie-Seite |
+| #26 | Freeze-Hinweis beim Öffnen |
+| #27 | „+1 ⚡“ im Motivations-Pop-up |
+| #28 | Backup |
+| #29 | Abnahme auf dem Gerät |
+| #30 | Backlog: Freezes abschaltbar (Phase 4) |
+
+---
+
+## 5. Roadmap
 
 | Phase | Inhalt | Tracking |
 |---|---|---|
-| 1 | Motivations-Pop-up | Meilenstein „Phase 1“, Issues #1–#9 |
-| 2 | Energie & Streak-Freeze | Meilenstein „Phase 2“, Epic #14 |
+| 1 | Motivations-Pop-up | abgeschlossen (Meilenstein „Phase 1“, #1–#8; #9 im Backlog) |
+| 2 | Energie & Aktiv-Serie | Meilenstein „Phase 2“, Epic #14, Abschnitt 4 |
 | 3 | Statistiken | Meilenstein „Phase 3“, #10 |
 | 4 | Avatar / Maskottchen | Meilenstein „Phase 4“, Epic #15 |
 
 Reihenfolge und Abhängigkeiten:
 
-- **Phase 2 vor Phase 3:** Ein Streak-Freeze ändert die Bedeutung von „Streak“.
-  `countCurrentStreak` / `countBestStreak` (`shared/logic/.../repository/Util.kt`) müssen überbrückte
-  Tage berücksichtigen. Alle Zahlen (Habit-Karte, Pop-up, Statistik) nutzen dieselbe Berechnung.
-- **Phase 4 nach Phase 2:** Der Avatar baut auf der Energie-Währung und den aktiven Tagen auf.
+- **Phase 4 nach Phase 2:** Der Avatar baut auf der Energie und den aktiven Tagen auf; Energie wird
+  dort für Gegenstände ausgegeben (gespeicherte Ausgaben, Kontostand bleibt berechnet).
   Klein anfangen (Stufen/Aussehen), Training und Anpassung später.
+- Phase 3 ist von Phase 2 unabhängig, da die Serien der einzelnen Routinen unverändert bleiben.
 - Epics werden erst kurz vor Beginn der jeweiligen Phase per Design-Interview in Teilaufgaben
-  zerlegt. Offene Regelfragen stehen in den Epic-Issues.
+  zerlegt.
 
 ### Architektur-Regeln für alle Phasen
 
@@ -211,8 +266,8 @@ Reihenfolge und Abhängigkeiten:
   halten, neue Logik in neue Dateien legen (siehe `docs/WORKFLOW.md`).
 - Neue Room-Tabellen brauchen eine Migration, bestehende Nutzerdaten dürfen nicht verloren gehen.
 
-## 5. Offene Fragen
+## 6. Offene Fragen
 
-- Soll das Pop-up per Einstellung abschaltbar sein? → optionales Issue #9.
+- Soll das Pop-up per Einstellung abschaltbar sein? → Backlog #9.
 - ~~Pop-up beim Abhaken eines vergangenen Tages ohne laufende Serie?~~ Entschieden: kein Pop-up bei
   Streak 0 (siehe 3.3).
