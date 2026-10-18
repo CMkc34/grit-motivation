@@ -26,22 +26,28 @@ import com.shub39.grit.core.interfaces.AlarmScheduler
 import com.shub39.grit.core.interfaces.AnalyticsWrapper
 import com.shub39.grit.core.interfaces.SettingsDatastore
 import com.shub39.grit.core.motivation.GritQuoteEngine
+import com.shub39.grit.core.now
 import com.shub39.grit.shared.ui.habit.HabitState
 import com.shub39.grit.shared.ui.habit.HabitsAction
 import com.shub39.grit.shared.ui.habit.motivation.MotivationPopupState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.minus
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
 
@@ -73,6 +79,16 @@ class HabitViewModel(
                 rescheduleAllHabits()
             }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), HabitState())
+
+    /**
+     * Popup shown after a check-in. Separate from [state] so the app-wide popup host can observe it
+     * without starting the habit observers above.
+     */
+    val motivationPopup: StateFlow<MotivationPopupState?> =
+        _state
+            .map { it.motivationPopup }
+            .distinctUntilChanged()
+            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     // handles actions from habit page
     fun onAction(action: HabitsAction) {
@@ -267,7 +283,7 @@ class HabitViewModel(
         } else {
             analytics.trackEvent(AnalyticsEvent.HABIT_COMPLETED, emptyMap())
             repo.insertHabitStatus(HabitStatus(habitId = habit.id, date = date))
-            showMotivationPopup(habit)
+            showMotivationPopup(habit, date)
         }
     }
 
@@ -286,14 +302,16 @@ class HabitViewModel(
         analytics.trackEvent(AnalyticsEvent.HABIT_COMPLETED, emptyMap())
         repo.insertHabitStatus(HabitStatus(habitId = habit.id, date = date, value = value))
         // only the first value of a day is a check-in, corrections stay silent
-        if (!isStatusAdded) showMotivationPopup(habit)
+        if (!isStatusAdded) showMotivationPopup(habit, date)
     }
 
     /**
      * Reads the streak after a check-in from the repository, the same number the habit card shows.
-     * A check-in that does not extend an active streak (streak 0) shows no popup.
+     * Only check-ins for today or yesterday are celebrated; catching up on older days stays silent,
+     * as does a check-in that does not extend an active streak (streak 0).
      */
-    private suspend fun showMotivationPopup(habit: Habit) {
+    private suspend fun showMotivationPopup(habit: Habit, date: LocalDate) {
+        if (date < LocalDate.now().minus(1, DateTimeUnit.DAY)) return
         val streak =
             repo.getHabitsWithAnalytics().first().find { it.habit.id == habit.id }?.currentStreak
         if (streak == null || streak < 1) return
