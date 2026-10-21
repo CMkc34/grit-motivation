@@ -17,8 +17,15 @@
 package com.shub39.grit.core.activity
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.LocalDate
 
 interface ActivityRepo {
     /** Activity streak, energy and freezes, recalculated whenever the stored activity changes. */
     fun getActivityReport(): Flow<ActivityReport>
+
+    /** Freezes that saved the current streak and were not shown yet, `null` when there are none. */
+    fun getFreezeNotice(): Flow<FreezeNotice?>
+
+    /** Remembers [days] as shown, so their freezes are not announced again. */
+    suspend fun markFreezesSeen(days: Set<LocalDate>)
 }

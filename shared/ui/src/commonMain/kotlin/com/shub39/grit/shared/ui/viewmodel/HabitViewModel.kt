@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.grit.core.AnalyticsEvent
 import com.shub39.grit.core.activity.ActivityRepo
+import com.shub39.grit.core.activity.FreezeNotice
 import com.shub39.grit.core.habits.Habit
 import com.shub39.grit.core.habits.HabitRepo
 import com.shub39.grit.core.habits.HabitStatus
@@ -95,6 +96,16 @@ class HabitViewModel(
             .map { it.motivationPopup }
             .distinctUntilChanged()
             .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    /**
+     * Freezes that saved the activity streak, shown app-wide when the app opens. Recalculated when
+     * the app returns after a while in the background, so a freeze from the last days shows up
+     * then.
+     */
+    val freezeNotice: StateFlow<FreezeNotice?> =
+        activityRepo
+            .getFreezeNotice()
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     // handles actions from habit page
     fun onAction(action: HabitsAction) {
@@ -204,6 +215,10 @@ class HabitViewModel(
 
                 HabitsAction.DismissMotivationPopup -> {
                     _state.update { it.copy(motivationPopup = null) }
+                }
+
+                HabitsAction.DismissFreezeNotice -> {
+                    freezeNotice.value?.let { activityRepo.markFreezesSeen(it.frozenDays) }
                 }
 
                 is HabitsAction.InsertMeasuredStatus -> {

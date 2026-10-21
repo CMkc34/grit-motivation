@@ -21,6 +21,8 @@ import com.shub39.grit.core.activity.ActivityStore
 import com.shub39.grit.core.now
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -78,5 +80,24 @@ class ActivityRepositoryTest {
         ActivityRepository(store).getActivityReport().first()
 
         assertEquals(today, store.data.value.startDate)
+    }
+
+    @Test
+    fun `freeze notice disappears once its freezes are seen`() = runTest {
+        val store =
+            FakeActivityStore(
+                ActivityData(
+                    startDate = daysAgo(8),
+                    activeDays = (2..8).map(::daysAgo).toSet() + today,
+                )
+            )
+        val repository = ActivityRepository(store)
+
+        val notice = assertNotNull(repository.getFreezeNotice().first())
+        assertEquals(setOf(daysAgo(1)), notice.frozenDays)
+
+        repository.markFreezesSeen(notice.frozenDays)
+
+        assertNull(repository.getFreezeNotice().first())
     }
 }

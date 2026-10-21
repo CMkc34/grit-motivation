@@ -17,16 +17,19 @@
 package com.shub39.grit.shared.ui.viewmodel
 
 import com.shub39.grit.core.activity.ActivityReport
+import com.shub39.grit.core.activity.FreezeNotice
 import com.shub39.grit.shared.ui.fakes.FakeActivityRepo
 import com.shub39.grit.shared.ui.fakes.FakeAlarmScheduler
 import com.shub39.grit.shared.ui.fakes.FakeAnalytics
 import com.shub39.grit.shared.ui.fakes.FakeHabitRepo
 import com.shub39.grit.shared.ui.fakes.FakeMotivationSettings
 import com.shub39.grit.shared.ui.fakes.FakeSettingsDatastore
+import com.shub39.grit.shared.ui.habit.HabitsAction
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -34,6 +37,7 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import kotlinx.datetime.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HabitViewModelActivityTest {
@@ -51,18 +55,20 @@ class HabitViewModelActivityTest {
         Dispatchers.resetMain()
     }
 
+    private fun viewModel() =
+        HabitViewModel(
+            FakeAlarmScheduler(),
+            FakeHabitRepo(emptyList()),
+            FakeSettingsDatastore(),
+            FakeAnalytics(),
+            FakeMotivationSettings(),
+            activityRepo,
+        )
+
     @Test
     fun `state follows the activity report`() =
         runTest(dispatcher) {
-            val viewModel =
-                HabitViewModel(
-                    FakeAlarmScheduler(),
-                    FakeHabitRepo(emptyList()),
-                    FakeSettingsDatastore(),
-                    FakeAnalytics(),
-                    FakeMotivationSettings(),
-                    activityRepo,
-                )
+            val viewModel = viewModel()
             backgroundScope.launch { viewModel.state.collect {} }
 
             val report =
@@ -75,5 +81,26 @@ class HabitViewModelActivityTest {
             activityRepo.report.value = report
 
             assertEquals(report, viewModel.state.value.activity)
+        }
+
+    @Test
+    fun `freeze notice is shown until it is dismissed`() =
+        runTest(dispatcher) {
+            val viewModel = viewModel()
+            backgroundScope.launch { viewModel.freezeNotice.collect {} }
+
+            val notice =
+                FreezeNotice(
+                    streak = 12,
+                    frozenDays = setOf(LocalDate(2026, 10, 20)),
+                    energyLeft = 7,
+                )
+            activityRepo.freezeNotice.value = notice
+            assertEquals(notice, viewModel.freezeNotice.value)
+
+            viewModel.onAction(HabitsAction.DismissFreezeNotice)
+
+            assertEquals(notice.frozenDays, activityRepo.seenFreezes)
+            assertNull(viewModel.freezeNotice.value)
         }
 }

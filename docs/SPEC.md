@@ -251,6 +251,13 @@ Belohnt wird die **Nutzung der App**, nicht die Serie einzelner Routinen.
   Texte in `energy_strings.xml` (DE + EN), `ForkTranslationTest` prüft alle eigenen String-Dateien.
 - **Freeze-Hinweis beim Öffnen**, nur wenn ein Freeze die Serie gerettet hat; kein Hinweis, wenn die
   Serie gerissen ist (#26).
+- Umsetzung (#26): `FreezeNotice.of()` (`core.activity`) sammelt die gefrorenen Tage der **aktuellen**
+  Serie, die noch nicht in `activity_seen_freezes` stehen, zu einem gemeinsamen Hinweis (Serie,
+  −Energie, Rest). Serie 0 oder Freezes vor dem letzten verpassten Tag → kein Hinweis.
+  `ActivityRepo.getFreezeNotice()` liefert ihn als Flow, `HabitViewModel.freezeNotice` reicht ihn an
+  den app-weiten `FreezeNoticeHost` (neben `MotivationPopupHost` in `GritNavDisplay`). Der Knopf
+  sendet `DismissFreezeNotice`, das die Tage als gesehen speichert. Weil der Planer eine offene Lücke
+  bis gestern schon beim Öffnen einfriert, erscheint der Hinweis am Tag nach dem verpassten Tag.
 - **Motivations-Pop-up:** beim ersten Eintrag eines Tages zusätzlich „+1 ⚡ · 13 Tage aktiv“ (#27).
 
 ### 4.5 Issues

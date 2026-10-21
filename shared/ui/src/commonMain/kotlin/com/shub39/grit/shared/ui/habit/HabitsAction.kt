@@ -63,4 +63,7 @@ sealed interface HabitsAction {
 
     /** close the popup shown after a habit check-in */
     data object DismissMotivationPopup : HabitsAction
+
+    /** close the freeze notice and remember its freezes as seen */
+    data object DismissFreezeNotice : HabitsAction
 }
