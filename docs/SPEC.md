@@ -242,6 +242,13 @@ Belohnt wird die **Nutzung der App**, nicht die Serie einzelner Routinen.
 - **Energie-Seite:** Kontostand, aktuelle und längste Aktiv-Serie, Leiste der letzten 30 Tage
   (✓ aktiv / ❄️ gefroren / – verpasst), kurze Erklärung der Regeln. Kein Shop-Platzhalter, aber so
   aufgebaut, dass in Phase 4 ein Shop darunter passt. Navigation des Originals bleibt unverändert (#25).
+- Umsetzung (#25): `HabitViewModel` beobachtet `ActivityRepo` und legt den Bericht in
+  `HabitState.activity`. Die Zeile steht als `ActivityHeaderLine` unter „x/y erledigt“ in der
+  Kopfzeile von `HabitsList`. Die `EnergyPage` (`UI/habit/ui/sections/`) ist eine Detailseite der
+  Routinen (Route `Energy` in `navigation/ForkRoutes.kt`), wie die Gesamt-Statistik. Die Leiste zeigt
+  10 × 3 Felder, älteste oben links, heute unten rechts (Rahmen, solange heute noch offen); Tage vor
+  dem Startdatum bleiben leer (`recentDays()`). Die Regeln nehmen die Zahlen aus `ActivityPlanner`.
+  Texte in `energy_strings.xml` (DE + EN), `ForkTranslationTest` prüft alle eigenen String-Dateien.
 - **Freeze-Hinweis beim Öffnen**, nur wenn ein Freeze die Serie gerettet hat; kein Hinweis, wenn die
   Serie gerissen ist (#26).
 - **Motivations-Pop-up:** beim ersten Eintrag eines Tages zusätzlich „+1 ⚡ · 13 Tage aktiv“ (#27).

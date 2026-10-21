@@ -19,6 +19,7 @@ package com.shub39.grit.shared.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.grit.core.AnalyticsEvent
+import com.shub39.grit.core.activity.ActivityRepo
 import com.shub39.grit.core.habits.Habit
 import com.shub39.grit.core.habits.HabitRepo
 import com.shub39.grit.core.habits.HabitStatus
@@ -59,11 +60,13 @@ class HabitViewModel(
     @Provided private val datastore: SettingsDatastore,
     @Provided private val analytics: AnalyticsWrapper,
     @Provided private val motivationSettings: MotivationSettings,
+    @Provided private val activityRepo: ActivityRepo,
 ) : ViewModel() {
     private var habitStatusJob: Job? = null
     private var overallAnalyticsJob: Job? = null
     private var observeDatastoreJob: Job? = null
     private var completedHabitsFetchJob: Job? = null
+    private var activityJob: Job? = null
 
     // id of the last motivation quote, so the next popup shows a different one
     private var lastQuoteId: String? = null
@@ -77,6 +80,7 @@ class HabitViewModel(
                 observeDataStore()
                 observeHabitStatuses()
                 observeOverallAnalytics()
+                observeActivity()
 
                 rescheduleAllHabits()
             }
@@ -235,6 +239,15 @@ class HabitViewModel(
                 .onEach { overallAnalytics ->
                     _state.update { it.copy(overallAnalytics = overallAnalytics) }
                 }
+                .launchIn(viewModelScope)
+    }
+
+    private fun observeActivity() {
+        activityJob?.cancel()
+        activityJob =
+            activityRepo
+                .getActivityReport()
+                .onEach { report -> _state.update { it.copy(activity = report) } }
                 .launchIn(viewModelScope)
     }
 

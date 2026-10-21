@@ -20,6 +20,7 @@ import com.shub39.grit.core.habits.Habit
 import com.shub39.grit.core.habits.HabitStatus
 import com.shub39.grit.core.motivation.StreakTier
 import com.shub39.grit.core.now
+import com.shub39.grit.shared.ui.fakes.FakeActivityRepo
 import com.shub39.grit.shared.ui.fakes.FakeAlarmScheduler
 import com.shub39.grit.shared.ui.fakes.FakeAnalytics
 import com.shub39.grit.shared.ui.fakes.FakeHabitRepo
@@ -88,6 +89,7 @@ class HabitViewModelMotivationTest {
                 FakeSettingsDatastore(),
                 FakeAnalytics(),
                 motivationSettings,
+                FakeActivityRepo(),
             )
         backgroundScope.launch { viewModel.state.collect {} }
         return viewModel

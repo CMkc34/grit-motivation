@@ -18,6 +18,7 @@ package com.shub39.grit.shared.ui.habit
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
+import com.shub39.grit.core.activity.ActivityReport
 import com.shub39.grit.core.habits.HabitWithAnalytics
 import com.shub39.grit.core.habits.OverallAnalytics
 import com.shub39.grit.shared.ui.habit.motivation.MotivationPopupState
@@ -42,6 +43,7 @@ import kotlinx.datetime.DayOfWeek
  * @property startingDay A user preference for the day of the week the calendar/week view should
  *   start on.
  * @property motivationPopup Popup shown after a habit check-in, `null` when hidden.
+ * @property activity Activity streak and energy across all habits, `null` until loaded.
  */
 @Stable
 @Immutable
@@ -53,6 +55,7 @@ data class HabitState(
     val showHabitAddSheet: Boolean = false,
     val editState: Boolean = false,
     val motivationPopup: MotivationPopupState? = null,
+    val activity: ActivityReport? = null,
 
     // datastore
     val compactHabitView: Boolean = false,

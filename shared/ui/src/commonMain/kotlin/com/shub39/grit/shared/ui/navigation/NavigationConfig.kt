@@ -53,7 +53,7 @@ data object LookAndFeel : Routes
 
 private val SETTINGS_ROUTES = listOf(About, Backup, Changelog, LookAndFeel, SettingsHome)
 private val HABIT_ROUTES =
-    listOf(HabitAnalytics, HabitsList, OverallAnalytics, Calendar, CalendarHeatMap)
+    listOf(HabitAnalytics, HabitsList, OverallAnalytics, Calendar, CalendarHeatMap, Energy)
 
 fun Routes.getTopLevelRoute(): Routes? =
     when (val subType = this.getSubType()) {
