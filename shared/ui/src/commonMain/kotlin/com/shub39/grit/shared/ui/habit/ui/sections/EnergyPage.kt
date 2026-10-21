@@ -69,6 +69,7 @@ import grit.shared.ui.generated.resources.energy_legend_active
 import grit.shared.ui.generated.resources.energy_legend_frozen
 import grit.shared.ui.generated.resources.energy_legend_missed
 import grit.shared.ui.generated.resources.energy_legend_open
+import grit.shared.ui.generated.resources.energy_longest_streak
 import grit.shared.ui.generated.resources.energy_rule_active
 import grit.shared.ui.generated.resources.energy_rule_break
 import grit.shared.ui.generated.resources.energy_rule_energy
