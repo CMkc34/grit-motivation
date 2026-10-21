@@ -25,6 +25,7 @@ import com.shub39.grit.core.interfaces.BiometricUtils
 import com.shub39.grit.core.interfaces.ChangelogManager
 import com.shub39.grit.core.interfaces.SettingsDatastore
 import com.shub39.grit.core.interfaces.ThemeDatastore
+import com.shub39.grit.core.motivation.MotivationSettings
 import com.shub39.grit.core.settings.backup.ExportRepo
 import com.shub39.grit.core.settings.backup.RestoreRepo
 import com.shub39.grit.shared.ui.setting.BackupState
@@ -53,6 +54,7 @@ class SettingsViewModel(
     @Provided private val changelogManager: ChangelogManager,
     @Provided private val biometricUtils: BiometricUtils,
     @Provided private val analytics: AnalyticsWrapper,
+    @Provided private val motivationSettings: MotivationSettings,
 ) : ViewModel() {
     private var observeJob: Job? = null
 
@@ -212,6 +214,14 @@ class SettingsViewModel(
                     settingsDatastore.setTaskReorderPref(action.pref)
                 }
 
+                is ChangeMotivationPopup -> {
+                    analytics.trackEvent(
+                        AnalyticsEvent.SETTINGS_UPDATED,
+                        mapOf("setting" to "ChangeMotivationPopup", "value" to action.pref),
+                    )
+                    motivationSettings.setPopupEnabled(action.pref)
+                }
+
                 OnSettingsOpened -> {
                     analytics.trackEvent(AnalyticsEvent.SETTINGS_OPENED, emptyMap())
                 }
@@ -316,6 +326,11 @@ class SettingsViewModel(
                 settingsDatastore
                     .getBiometricLockPref()
                     .onEach { flow -> _state.update { it.copy(isBiometricLockOn = flow) } }
+                    .launchIn(this)
+
+                motivationSettings
+                    .getPopupEnabled()
+                    .onEach { flow -> _state.update { it.copy(motivationPopup = flow) } }
                     .launchIn(this)
             }
         }
