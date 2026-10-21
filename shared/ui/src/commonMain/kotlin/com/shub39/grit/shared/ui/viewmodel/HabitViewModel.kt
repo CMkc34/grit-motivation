@@ -26,6 +26,7 @@ import com.shub39.grit.core.interfaces.AlarmScheduler
 import com.shub39.grit.core.interfaces.AnalyticsWrapper
 import com.shub39.grit.core.interfaces.SettingsDatastore
 import com.shub39.grit.core.motivation.GritQuoteEngine
+import com.shub39.grit.core.motivation.MotivationSettings
 import com.shub39.grit.core.now
 import com.shub39.grit.shared.ui.habit.HabitState
 import com.shub39.grit.shared.ui.habit.HabitsAction
@@ -57,6 +58,7 @@ class HabitViewModel(
     @Provided private val repo: HabitRepo,
     @Provided private val datastore: SettingsDatastore,
     @Provided private val analytics: AnalyticsWrapper,
+    @Provided private val motivationSettings: MotivationSettings,
 ) : ViewModel() {
     private var habitStatusJob: Job? = null
     private var overallAnalyticsJob: Job? = null
@@ -308,9 +310,11 @@ class HabitViewModel(
     /**
      * Reads the streak after a check-in from the repository, the same number the habit card shows.
      * Only check-ins for today or yesterday are celebrated; catching up on older days stays silent,
-     * as does a check-in that does not extend an active streak (streak 0).
+     * as does a check-in that does not extend an active streak (streak 0), and every check-in while
+     * the popup is turned off in the settings.
      */
     private suspend fun showMotivationPopup(habit: Habit, date: LocalDate) {
+        if (!motivationSettings.getPopupEnabled().first()) return
         if (date < LocalDate.now().minus(1, DateTimeUnit.DAY)) return
         val streak =
             repo.getHabitsWithAnalytics().first().find { it.habit.id == habit.id }?.currentStreak

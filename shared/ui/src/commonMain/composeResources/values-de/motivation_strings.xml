@@ -14,6 +14,10 @@
         <item quantity="other">%1$s • %2$d Tage aktiv</item>
     </plurals>
 
+    <!-- Einstellungen -->
+    <string name="motivation_setting">Motivations-Pop-up</string>
+    <string name="motivation_setting_desc">Nach jedem Abhaken einen kurzen Spruch mit deiner Serie zeigen</string>
+
     <string name="quote_fallback">Abgehakt! Weiter so.</string>
 
     <!-- STARTER (1 Tag) -->

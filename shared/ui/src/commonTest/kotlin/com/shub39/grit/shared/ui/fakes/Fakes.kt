@@ -27,6 +27,7 @@ import com.shub39.grit.core.habits.Target
 import com.shub39.grit.core.interfaces.AlarmScheduler
 import com.shub39.grit.core.interfaces.AnalyticsWrapper
 import com.shub39.grit.core.interfaces.SettingsDatastore
+import com.shub39.grit.core.motivation.MotivationSettings
 import com.shub39.grit.core.settings.Sections
 import com.shub39.grit.core.tasks.SubTask
 import com.shub39.grit.core.tasks.Task
@@ -134,6 +135,16 @@ class FakeSettingsDatastore : SettingsDatastore {
     override fun getCompactViewPref(): Flow<Boolean> = flowOf(false)
 
     override suspend fun setCompactView(pref: Boolean) {}
+}
+
+class FakeMotivationSettings : MotivationSettings {
+    val popupEnabled = MutableStateFlow(true)
+
+    override fun getPopupEnabled(): Flow<Boolean> = popupEnabled
+
+    override suspend fun setPopupEnabled(enabled: Boolean) {
+        popupEnabled.value = enabled
+    }
 }
 
 class FakeAlarmScheduler : AlarmScheduler {

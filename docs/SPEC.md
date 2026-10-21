@@ -170,6 +170,11 @@ Umgesetzt in einem PR für #5, #6 und #7.
   Der Host beobachtet den eigenen Flow `HabitViewModel.motivationPopup`, nicht `state`, damit die
   Habit-Beobachter nicht auch auf dem Aufgaben-Tab laufen.
 - Abhaken über Widget oder Benachrichtigung zeigt kein Pop-up (läuft am ViewModel vorbei).
+- Abschaltbar (#9): Schalter „Motivations-Pop-up“ auf der Einstellungsseite, Standard **an**.
+  Schnittstelle `MotivationSettings` in `core.motivation`, `MotivationSettingsImpl`
+  (`logic/motivation/`) nutzt die bestehende Preferences-Datei mit dem Schlüssel
+  `motivation_popup_enabled`. `HabitViewModel` liest den Wert beim Abhaken; ist er aus, wird
+  `motivationPopup` nicht gesetzt.
 
 ### 3.4 Definition of Done (Phase 1)
 Abgenommen am 2026-10-18 auf einem Pixel 8a (Android 17), Build aus #8.
@@ -259,7 +264,7 @@ Belohnt wird die **Nutzung der App**, nicht die Serie einzelner Routinen.
 
 | Phase | Inhalt | Tracking |
 |---|---|---|
-| 1 | Motivations-Pop-up | abgeschlossen (Meilenstein „Phase 1“, #1–#8; #9 im Backlog) |
+| 1 | Motivations-Pop-up | abgeschlossen (Meilenstein „Phase 1“, #1–#9) |
 | 2 | Energie & Aktiv-Serie | Meilenstein „Phase 2“, Epic #14, Abschnitt 4 |
 | 3 | Statistiken | Meilenstein „Phase 3“, #10 |
 | 4 | Avatar / Maskottchen | Meilenstein „Phase 4“, Epic #15 |
@@ -283,6 +288,6 @@ Reihenfolge und Abhängigkeiten:
 
 ## 6. Offene Fragen
 
-- Soll das Pop-up per Einstellung abschaltbar sein? → Backlog #9.
+- ~~Soll das Pop-up per Einstellung abschaltbar sein?~~ Umgesetzt in #9 (siehe 3.3).
 - ~~Pop-up beim Abhaken eines vergangenen Tages ohne laufende Serie?~~ Entschieden: kein Pop-up bei
   Streak 0 (siehe 3.3).

@@ -23,6 +23,7 @@ import com.shub39.grit.core.now
 import com.shub39.grit.shared.ui.fakes.FakeAlarmScheduler
 import com.shub39.grit.shared.ui.fakes.FakeAnalytics
 import com.shub39.grit.shared.ui.fakes.FakeHabitRepo
+import com.shub39.grit.shared.ui.fakes.FakeMotivationSettings
 import com.shub39.grit.shared.ui.fakes.FakeSettingsDatastore
 import com.shub39.grit.shared.ui.habit.HabitsAction
 import kotlin.test.AfterTest
@@ -66,6 +67,7 @@ class HabitViewModelMotivationTest {
     private val water =
         meditate.copy(id = 2, title = "Water", targetValue = 8.0, targetUnit = "glasses")
     private val repo = FakeHabitRepo(listOf(meditate, water))
+    private val motivationSettings = FakeMotivationSettings()
 
     @BeforeTest
     fun setUp() {
@@ -80,7 +82,13 @@ class HabitViewModelMotivationTest {
     /** ViewModel whose state is collected, like the habits screen does. */
     private fun TestScope.viewModel(): HabitViewModel {
         val viewModel =
-            HabitViewModel(FakeAlarmScheduler(), repo, FakeSettingsDatastore(), FakeAnalytics())
+            HabitViewModel(
+                FakeAlarmScheduler(),
+                repo,
+                FakeSettingsDatastore(),
+                FakeAnalytics(),
+                motivationSettings,
+            )
         backgroundScope.launch { viewModel.state.collect {} }
         return viewModel
     }
@@ -215,6 +223,35 @@ class HabitViewModelMotivationTest {
             )
 
             assertNull(viewModel.state.value.motivationPopup)
+        }
+
+    @Test
+    fun `check-in shows no popup while it is turned off`() =
+        runTest(dispatcher) {
+            val viewModel = viewModel()
+            repo.currentStreaks[meditate.id] = 5
+            repo.currentStreaks[water.id] = 5
+            motivationSettings.setPopupEnabled(false)
+
+            viewModel.onAction(HabitsAction.InsertStatus(meditate, today))
+            viewModel.onAction(HabitsAction.InsertMeasuredStatus(water, today, 3.0))
+
+            assertNull(viewModel.state.value.motivationPopup)
+        }
+
+    @Test
+    fun `turning the popup back on shows it again`() =
+        runTest(dispatcher) {
+            val viewModel = viewModel()
+            repo.currentStreaks[meditate.id] = 5
+            motivationSettings.setPopupEnabled(false)
+            viewModel.onAction(HabitsAction.InsertStatus(meditate, today))
+            viewModel.onAction(HabitsAction.InsertStatus(meditate, today)) // un-check
+
+            motivationSettings.setPopupEnabled(true)
+            viewModel.onAction(HabitsAction.InsertStatus(meditate, today))
+
+            assertNotNull(viewModel.state.value.motivationPopup)
         }
 
     @Test

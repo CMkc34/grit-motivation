@@ -190,6 +190,25 @@ fun RootPage(
 
                         ListItem(
                             headlineContent = {
+                                Text(text = stringResource(Res.string.motivation_setting))
+                            },
+                            supportingContent = {
+                                Text(text = stringResource(Res.string.motivation_setting_desc))
+                            },
+                            trailingContent = {
+                                ExpressiveSwitch(
+                                    checked = state.motivationPopup,
+                                    onCheckedChange = {
+                                        onAction(SettingsAction.ChangeMotivationPopup(it))
+                                    },
+                                )
+                            },
+                            colors = listItemColors(),
+                            modifier = Modifier.clip(middleItemShape()),
+                        )
+
+                        ListItem(
+                            headlineContent = {
                                 Text(text = stringResource(Res.string.staring_day))
                             },
                             trailingContent = {
