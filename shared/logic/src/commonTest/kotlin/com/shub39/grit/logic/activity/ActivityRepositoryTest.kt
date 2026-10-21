@@ -48,6 +48,10 @@ private class FakeActivityStore(initial: ActivityData = ActivityData()) : Activi
     override suspend fun markFreezesSeen(days: Set<LocalDate>) {
         data.update { it.copy(seenFreezes = it.seenFreezes + days) }
     }
+
+    override suspend fun replaceAll(data: ActivityData) {
+        this.data.value = data
+    }
 }
 
 class ActivityRepositoryTest {

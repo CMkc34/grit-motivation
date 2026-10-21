@@ -227,6 +227,13 @@ Belohnt wird die **Nutzung der App**, nicht die Serie einzelner Routinen.
   vermerkt das Repository beim Speichern eines Häkchens den **heutigen** Tag als aktiv
   (`HabitRepository.insertHabitStatus`, kleine Änderung im Original) (#24).
 - Die drei gespeicherten Werte kommen ins Backup (#28).
+- Umsetzung (#28): `ExportSchema` hat das optionale Feld `activity` (`ActivitySchema` in
+  `logic/core/backup/`, Daten als ISO-Text). Ältere Backups und Backups des Originals haben es
+  nicht und bleiben importierbar; umgekehrt ignoriert das Original das Feld. Beim Import wird der
+  Stand vor dem Import mit dem Backup **zusammengeführt** (`ActivityData.mergedWith`: früheres
+  Startdatum, Tage vereinigt), wie beim Import der Routinen. Weil das Wiederherstellen der Häkchen
+  über `insertHabitStatus` läuft und dabei heute als aktiv vermerkt, ersetzt `RestoreImpl` danach
+  den gespeicherten Stand (`ActivityStore.replaceAll`): Ein Import allein macht heute nicht aktiv.
 - Umsetzung (#24): Schnittstellen `ActivityStore` und `ActivityRepo` in `core.activity`;
   `ActivityStoreImpl` nutzt die **bestehende** Preferences-Datei der App mit den Schlüsseln
   `activity_start_date`, `activity_days`, `activity_seen_freezes`. `ActivityRepository` liefert den

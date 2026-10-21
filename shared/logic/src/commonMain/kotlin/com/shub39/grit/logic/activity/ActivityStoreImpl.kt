@@ -64,6 +64,16 @@ class ActivityStoreImpl(private val datastore: DataStore<Preferences>) : Activit
         }
     }
 
+    override suspend fun replaceAll(data: ActivityData) {
+        datastore.edit {
+            val startDate = data.startDate
+            if (startDate == null) it.remove(startDateKey)
+            else it[startDateKey] = startDate.toString()
+            it[activeDaysKey] = data.activeDays.mapTo(mutableSetOf(), LocalDate::toString)
+            it[seenFreezesKey] = data.seenFreezes.mapTo(mutableSetOf(), LocalDate::toString)
+        }
+    }
+
     private fun Set<String>.toDates(): Set<LocalDate> =
         mapTo(mutableSetOf()) { LocalDate.parse(it) }
 }
