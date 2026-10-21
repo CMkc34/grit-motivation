@@ -259,6 +259,11 @@ Belohnt wird die **Nutzung der App**, nicht die Serie einzelner Routinen.
   sendet `DismissFreezeNotice`, das die Tage als gesehen speichert. Weil der Planer eine offene Lücke
   bis gestern schon beim Öffnen einfriert, erscheint der Hinweis am Tag nach dem verpassten Tag.
 - **Motivations-Pop-up:** beim ersten Eintrag eines Tages zusätzlich „+1 ⚡ · 13 Tage aktiv“ (#27).
+- Umsetzung (#27): `HabitViewModel` prüft vor dem Speichern eines Häkchens, ob heute im Bericht von
+  `ActivityRepo` schon aktiv ist. Wenn nicht, liest es nach dem Speichern die Aktiv-Serie und legt
+  sie in `MotivationPopupState.activityStreak`; `HabitMotivationPopup` zeigt dann die Zeile
+  `energy_popup_line` unter dem Titel. Gilt auch für Nachträge für gestern (sie machen heute aktiv).
+  Bleibt das Pop-up stumm (abgeschaltet, alter Nachtrag, Serie 0), entfällt auch die Zeile.
 
 ### 4.5 Issues
 | # | Inhalt |

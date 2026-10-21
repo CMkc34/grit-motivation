@@ -19,6 +19,7 @@ package com.shub39.grit.shared.ui.fakes
 import com.shub39.grit.core.AnalyticsEvent
 import com.shub39.grit.core.activity.ActivityRepo
 import com.shub39.grit.core.activity.ActivityReport
+import com.shub39.grit.core.activity.DayStatus
 import com.shub39.grit.core.activity.FreezeNotice
 import com.shub39.grit.core.habits.Habit
 import com.shub39.grit.core.habits.HabitRepo
@@ -31,6 +32,7 @@ import com.shub39.grit.core.interfaces.AlarmScheduler
 import com.shub39.grit.core.interfaces.AnalyticsWrapper
 import com.shub39.grit.core.interfaces.SettingsDatastore
 import com.shub39.grit.core.motivation.MotivationSettings
+import com.shub39.grit.core.now
 import com.shub39.grit.core.settings.Sections
 import com.shub39.grit.core.tasks.SubTask
 import com.shub39.grit.core.tasks.Task
@@ -44,9 +46,11 @@ import kotlinx.datetime.LocalDate
 
 /**
  * In-memory [HabitRepo]. The current streak is not calculated: tests set it per habit in
- * [currentStreaks], so they check how the caller uses the repository's value.
+ * [currentStreaks], so they check how the caller uses the repository's value. Like the real
+ * repository, a check-in marks today as active in [activityRepo].
  */
-class FakeHabitRepo(habits: List<Habit>) : HabitRepo {
+class FakeHabitRepo(habits: List<Habit>, private val activityRepo: FakeActivityRepo? = null) :
+    HabitRepo {
     private val habits = MutableStateFlow(habits)
     private val statuses = MutableStateFlow(emptyList<HabitStatus>())
 
@@ -85,6 +89,7 @@ class FakeHabitRepo(habits: List<Habit>) : HabitRepo {
 
     override suspend fun insertHabitStatus(habitStatus: HabitStatus) {
         statuses.update { it + habitStatus }
+        activityRepo?.markActive(LocalDate.now())
     }
 
     override suspend fun deleteHabitStatus(habitId: Long, date: LocalDate) {
@@ -150,7 +155,7 @@ class FakeMotivationSettings : MotivationSettings {
     }
 }
 
-/** [ActivityRepo] whose report and freeze notice tests set directly. */
+/** [ActivityRepo] whose report and freeze notice tests set directly or via [markActive]. */
 class FakeActivityRepo(
     val report: MutableStateFlow<ActivityReport> =
         MutableStateFlow(
@@ -163,6 +168,18 @@ class FakeActivityRepo(
     override fun getActivityReport(): Flow<ActivityReport> = report
 
     override fun getFreezeNotice(): Flow<FreezeNotice?> = freezeNotice
+
+    /** Marks [day] as active; the first time adds one day to the streak and +1 energy. */
+    fun markActive(day: LocalDate) {
+        report.update { report ->
+            if (report.days[day] == DayStatus.ACTIVE) return@update report
+            report.copy(
+                currentStreak = report.currentStreak + 1,
+                energy = report.energy + 1,
+                days = report.days + (day to DayStatus.ACTIVE),
+            )
+        }
+    }
 
     override suspend fun markFreezesSeen(days: Set<LocalDate>) {
         seenFreezes += days

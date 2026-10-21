@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Aktiv-Serie und Energie (Phase 2): Zeile in der Kopfzeile der Routinen-Seite, Energie-Seite und
-  Freeze-Hinweis.
+  Aktiv-Serie und Energie (Phase 2): Zeile in der Kopfzeile der Routinen-Seite, Energie-Seite,
+  Freeze-Hinweis und Energie-Zeile im Motivations-Pop-up.
   Eigene Datei des Forks, die strings.xml des Originals bleibt unberührt.
 -->
 <resources>
@@ -46,4 +46,10 @@
         <item quantity="other">Freezes haben %1$d verpasste Tage überbrückt.</item>
     </plurals>
     <string name="freeze_notice_button">Weiter so</string>
+
+    <!-- Motivations-Pop-up, erster Eintrag des Tages: %1$d = Aktiv-Serie -->
+    <plurals name="energy_popup_line">
+        <item quantity="one">+1 ⚡ · %1$d Tag aktiv</item>
+        <item quantity="other">+1 ⚡ · %1$d Tage aktiv</item>
+    </plurals>
 </resources>

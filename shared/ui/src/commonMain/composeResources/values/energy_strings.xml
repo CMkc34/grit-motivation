@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Activity streak and energy (phase 2): header line on the habits page, the energy page and the
-  freeze notice.
+  Activity streak and energy (phase 2): header line on the habits page, the energy page, the
+  freeze notice and the energy line in the motivation popup.
   Fork-specific, kept out of the upstream strings.xml. German texts in values-de.
 -->
 <resources>
@@ -46,4 +46,10 @@
         <item quantity="other">Freezes bridged %1$d missed days.</item>
     </plurals>
     <string name="freeze_notice_button">Keep going</string>
+
+    <!-- Motivation popup, first check-in of the day: %1$d = activity streak -->
+    <plurals name="energy_popup_line">
+        <item quantity="one">+1 ⚡ · %1$d day active</item>
+        <item quantity="other">+1 ⚡ · %1$d days active</item>
+    </plurals>
 </resources>

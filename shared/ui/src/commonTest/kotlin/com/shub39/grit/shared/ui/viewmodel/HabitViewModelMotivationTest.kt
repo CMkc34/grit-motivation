@@ -16,6 +16,7 @@
  */
 package com.shub39.grit.shared.ui.viewmodel
 
+import com.shub39.grit.core.activity.ActivityReport
 import com.shub39.grit.core.habits.Habit
 import com.shub39.grit.core.habits.HabitStatus
 import com.shub39.grit.core.motivation.StreakTier
@@ -67,7 +68,8 @@ class HabitViewModelMotivationTest {
         )
     private val water =
         meditate.copy(id = 2, title = "Water", targetValue = 8.0, targetUnit = "glasses")
-    private val repo = FakeHabitRepo(listOf(meditate, water))
+    private val activityRepo = FakeActivityRepo()
+    private val repo = FakeHabitRepo(listOf(meditate, water), activityRepo)
     private val motivationSettings = FakeMotivationSettings()
 
     @BeforeTest
@@ -89,7 +91,7 @@ class HabitViewModelMotivationTest {
                 FakeSettingsDatastore(),
                 FakeAnalytics(),
                 motivationSettings,
-                FakeActivityRepo(),
+                activityRepo,
             )
         backgroundScope.launch { viewModel.state.collect {} }
         return viewModel
@@ -268,5 +270,75 @@ class HabitViewModelMotivationTest {
 
             viewModel.onAction(HabitsAction.DismissMotivationPopup)
             assertNull(viewModel.motivationPopup.value)
+        }
+
+    @Test
+    fun `first check-in of the day shows the energy line with the activity streak`() =
+        runTest(dispatcher) {
+            activityRepo.report.value =
+                ActivityReport(
+                    currentStreak = 12,
+                    longestStreak = 12,
+                    energy = 12,
+                    days = emptyMap(),
+                )
+            val viewModel = viewModel()
+            repo.currentStreaks[meditate.id] = 5
+
+            viewModel.onAction(HabitsAction.InsertStatus(meditate, today))
+
+            assertEquals(13, assertNotNull(viewModel.state.value.motivationPopup).activityStreak)
+        }
+
+    @Test
+    fun `second check-in of the day shows no energy line`() =
+        runTest(dispatcher) {
+            val viewModel = viewModel()
+            repo.currentStreaks[meditate.id] = 5
+            repo.currentStreaks[water.id] = 5
+            viewModel.onAction(HabitsAction.InsertStatus(meditate, today))
+            viewModel.onAction(HabitsAction.DismissMotivationPopup)
+
+            viewModel.onAction(HabitsAction.InsertMeasuredStatus(water, today, 3.0))
+
+            val popup = assertNotNull(viewModel.state.value.motivationPopup)
+            assertEquals("Water", popup.habitTitle)
+            assertNull(popup.activityStreak)
+        }
+
+    @Test
+    fun `checking the same habit again after un-checking shows no energy line`() =
+        runTest(dispatcher) {
+            val viewModel = viewModel()
+            repo.currentStreaks[meditate.id] = 5
+            viewModel.onAction(HabitsAction.InsertStatus(meditate, today))
+            viewModel.onAction(HabitsAction.DismissMotivationPopup)
+            viewModel.onAction(HabitsAction.InsertStatus(meditate, today)) // un-check
+
+            viewModel.onAction(HabitsAction.InsertStatus(meditate, today))
+
+            assertNull(assertNotNull(viewModel.state.value.motivationPopup).activityStreak)
+        }
+
+    @Test
+    fun `first measured value of the day shows the energy line`() =
+        runTest(dispatcher) {
+            val viewModel = viewModel()
+            repo.currentStreaks[water.id] = 2
+
+            viewModel.onAction(HabitsAction.InsertMeasuredStatus(water, today, 3.0))
+
+            assertEquals(1, assertNotNull(viewModel.state.value.motivationPopup).activityStreak)
+        }
+
+    @Test
+    fun `catching up on yesterday as first check-in of the day shows the energy line`() =
+        runTest(dispatcher) {
+            val viewModel = viewModel()
+            repo.currentStreaks[meditate.id] = 2
+
+            viewModel.onAction(HabitsAction.InsertStatus(meditate, yesterday))
+
+            assertEquals(1, assertNotNull(viewModel.state.value.motivationPopup).activityStreak)
         }
 }
