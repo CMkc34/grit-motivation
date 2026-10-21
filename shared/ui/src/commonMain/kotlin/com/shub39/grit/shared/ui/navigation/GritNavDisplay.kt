@@ -35,6 +35,7 @@ import com.shub39.grit.core.settings.Sections
 import com.shub39.grit.shared.ui.LocalWindowSizeClass
 import com.shub39.grit.shared.ui.app.MainAppState
 import com.shub39.grit.shared.ui.habit.HabitsAction
+import com.shub39.grit.shared.ui.habit.activity.FreezeNoticeHost
 import com.shub39.grit.shared.ui.habit.motivation.MotivationPopupHost
 import com.shub39.grit.shared.ui.habit.ui.sections.AnalyticsPage
 import com.shub39.grit.shared.ui.habit.ui.sections.Calendar
@@ -143,6 +144,7 @@ fun GritNavDisplay(
             }
 
             MotivationPopupHost()
+            FreezeNoticeHost()
         }
     }
 }

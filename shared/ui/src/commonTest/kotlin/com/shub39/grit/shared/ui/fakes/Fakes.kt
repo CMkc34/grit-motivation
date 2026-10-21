@@ -19,6 +19,7 @@ package com.shub39.grit.shared.ui.fakes
 import com.shub39.grit.core.AnalyticsEvent
 import com.shub39.grit.core.activity.ActivityRepo
 import com.shub39.grit.core.activity.ActivityReport
+import com.shub39.grit.core.activity.FreezeNotice
 import com.shub39.grit.core.habits.Habit
 import com.shub39.grit.core.habits.HabitRepo
 import com.shub39.grit.core.habits.HabitStatus
@@ -149,14 +150,26 @@ class FakeMotivationSettings : MotivationSettings {
     }
 }
 
-/** [ActivityRepo] whose report tests set directly. */
+/** [ActivityRepo] whose report and freeze notice tests set directly. */
 class FakeActivityRepo(
     val report: MutableStateFlow<ActivityReport> =
         MutableStateFlow(
             ActivityReport(currentStreak = 0, longestStreak = 0, energy = 0, days = emptyMap())
-        )
+        ),
+    val freezeNotice: MutableStateFlow<FreezeNotice?> = MutableStateFlow(null),
 ) : ActivityRepo {
+    val seenFreezes = mutableSetOf<LocalDate>()
+
     override fun getActivityReport(): Flow<ActivityReport> = report
+
+    override fun getFreezeNotice(): Flow<FreezeNotice?> = freezeNotice
+
+    override suspend fun markFreezesSeen(days: Set<LocalDate>) {
+        seenFreezes += days
+        freezeNotice.update { notice ->
+            notice?.takeUnless { it.frozenDays.all(seenFreezes::contains) }
+        }
+    }
 }
 
 class FakeAlarmScheduler : AlarmScheduler {

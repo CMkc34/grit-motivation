@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Activity streak and energy (phase 2): header line on the habits page and the energy page.
+  Activity streak and energy (phase 2): header line on the habits page, the energy page and the
+  freeze notice.
   Fork-specific, kept out of the upstream strings.xml. German texts in values-de.
 -->
 <resources>
@@ -33,4 +34,16 @@
     <string name="energy_rule_freeze">Missed a day? A freeze costs %1$d ⚡ per day and saves your streak automatically, for up to %2$d days in a row.</string>
     <string name="energy_rule_frozen_day">A frozen day keeps your streak alive but does not count towards it.</string>
     <string name="energy_rule_break">If your streak breaks anyway, you keep your energy.</string>
+    <!-- Freeze notice when the app opens: %1$d = activity streak, %2$d = energy spent, %3$d = energy left -->
+    <string name="freeze_notice_title">❄️ Streak saved</string>
+    <plurals name="freeze_notice_text">
+        <item quantity="one">Your activity streak of %1$d day was saved (−%2$d ⚡, %3$d ⚡ left).</item>
+        <item quantity="other">Your activity streak of %1$d days was saved (−%2$d ⚡, %3$d ⚡ left).</item>
+    </plurals>
+    <!-- %1$d = number of missed days that were frozen -->
+    <plurals name="freeze_notice_days">
+        <item quantity="one">A freeze bridged %1$d missed day.</item>
+        <item quantity="other">Freezes bridged %1$d missed days.</item>
+    </plurals>
+    <string name="freeze_notice_button">Keep going</string>
 </resources>

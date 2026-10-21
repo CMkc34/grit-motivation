@@ -16,10 +16,12 @@
  */
 package com.shub39.grit.logic.activity
 
+import com.shub39.grit.core.activity.ActivityData
 import com.shub39.grit.core.activity.ActivityPlanner
 import com.shub39.grit.core.activity.ActivityRepo
 import com.shub39.grit.core.activity.ActivityReport
 import com.shub39.grit.core.activity.ActivityStore
+import com.shub39.grit.core.activity.FreezeNotice
 import com.shub39.grit.core.now
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -30,17 +32,25 @@ import org.koin.core.annotation.Single
 @Single(binds = [ActivityRepo::class])
 class ActivityRepository(private val store: ActivityStore) : ActivityRepo {
 
-    override fun getActivityReport(): Flow<ActivityReport> =
+    override fun getActivityReport(): Flow<ActivityReport> = activity().map { plan(it) }
+
+    override fun getFreezeNotice(): Flow<FreezeNotice?> =
+        activity().map { data -> FreezeNotice.of(plan(data), data.seenFreezes) }
+
+    override suspend fun markFreezesSeen(days: Set<LocalDate>) = store.markFreezesSeen(days)
+
+    private fun activity(): Flow<ActivityData> =
         store
             .getActivity()
             // the first look at the activity marks the start of the system ("from installation")
             .onStart { store.ensureStartDate(LocalDate.now()) }
-            .map { data ->
-                val today = LocalDate.now()
-                ActivityPlanner.plan(
-                    activeDays = data.activeDays,
-                    startDate = data.startDate ?: today,
-                    today = today,
-                )
-            }
+
+    private fun plan(data: ActivityData): ActivityReport {
+        val today = LocalDate.now()
+        return ActivityPlanner.plan(
+            activeDays = data.activeDays,
+            startDate = data.startDate ?: today,
+            today = today,
+        )
+    }
 }
