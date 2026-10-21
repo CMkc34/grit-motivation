@@ -39,6 +39,7 @@ import com.shub39.grit.shared.ui.habit.motivation.MotivationPopupHost
 import com.shub39.grit.shared.ui.habit.ui.sections.AnalyticsPage
 import com.shub39.grit.shared.ui.habit.ui.sections.Calendar
 import com.shub39.grit.shared.ui.habit.ui.sections.CalendarHeatMap
+import com.shub39.grit.shared.ui.habit.ui.sections.EnergyPage
 import com.shub39.grit.shared.ui.habit.ui.sections.HabitsList
 import com.shub39.grit.shared.ui.habit.ui.sections.OverallAnalytics
 import com.shub39.grit.shared.ui.setting.ui.section.About
@@ -162,6 +163,7 @@ private fun EntryProviderScope<Routes>.habitsScreens(
             onNavigateToAnalytics = { topLevelBackStack.add(HabitAnalytics) },
             onNavigateToPaywall = { topLevelBackStack.add(Paywall) },
             onNavigateToOverallAnalytics = { topLevelBackStack.add(OverallAnalytics) },
+            onNavigateToEnergy = { topLevelBackStack.add(Energy) },
             isUserSubscribed = globalState.isUserSubscribed,
             modifier = Modifier.background(colorScheme.background),
         )
@@ -218,6 +220,20 @@ private fun EntryProviderScope<Routes>.habitsScreens(
             onNavigateToPaywall = { topLevelBackStack.add(Paywall) },
             isUserSubscribed = globalState.isUserSubscribed,
             onNavigateToCalendarHeatMap = { topLevelBackStack.add(CalendarHeatMap) },
+            modifier = Modifier.background(colorScheme.background),
+        )
+    }
+
+    entry<Energy>(
+        metadata =
+            TwoPaneScene.twoPane() + ListDetailScene.detailPane() + horizontalTransitionMetadata()
+    ) {
+        val viewModel = koinViewModel<HabitViewModel>()
+        val state by viewModel.state.collectAsStateWithLifecycle()
+
+        EnergyPage(
+            activity = state.activity,
+            onNavigateBack = { topLevelBackStack.removeLast() },
             modifier = Modifier.background(colorScheme.background),
         )
     }

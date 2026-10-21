@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Aktiv-Serie und Energie (Phase 2): Zeile in der Kopfzeile der Routinen-Seite und Energie-Seite.
+  Eigene Datei des Forks, die strings.xml des Originals bleibt unberührt.
+-->
+<resources>
+    <!-- Kopfzeile: %1$d = Aktiv-Serie, %2$d = Energie -->
+    <plurals name="energy_header_line">
+        <item quantity="one">🔥 %1$d Tag aktiv · ⚡ %2$d</item>
+        <item quantity="other">🔥 %1$d Tage aktiv · ⚡ %2$d</item>
+    </plurals>
+    <string name="energy_header_desc">Energie-Seite öffnen</string>
+
+    <!-- Energie-Seite -->
+    <string name="energy_title">Energie</string>
+    <string name="energy_balance">Deine Energie</string>
+    <string name="energy_current_streak">Aktiv-Serie</string>
+    <string name="energy_longest_streak">Längste Serie</string>
+    <plurals name="energy_days">
+        <item quantity="one">%1$d Tag</item>
+        <item quantity="other">%1$d Tage</item>
+    </plurals>
+    <string name="energy_last_days">Letzte 30 Tage</string>
+    <string name="energy_legend_active">Aktiv</string>
+    <string name="energy_legend_frozen">Gefroren</string>
+    <string name="energy_legend_missed">Verpasst</string>
+    <string name="energy_legend_open">Heute noch offen</string>
+
+    <!-- Regeln: %1$d = Energie pro aktivem Tag, Kosten eines Freezes, max. gefrorene Tage am Stück -->
+    <string name="energy_rules_title">So funktioniert’s</string>
+    <string name="energy_rule_active">Ein Tag ist aktiv, sobald du irgendetwas einträgst – egal welche Routine, egal für welches Datum, auch über Widget oder Erinnerung.</string>
+    <string name="energy_rule_energy">Jeder aktive Tag bringt dir +%1$d ⚡, ohne Obergrenze.</string>
+    <string name="energy_rule_freeze">Einen Tag verpasst? Ein Freeze kostet %1$d ⚡ pro Tag und rettet deine Serie automatisch, bis zu %2$d Tage am Stück.</string>
+    <string name="energy_rule_frozen_day">Ein gefrorener Tag hält deine Serie, zählt aber nicht mit.</string>
+    <string name="energy_rule_break">Reißt die Serie trotzdem, bleibt deine Energie erhalten.</string>
+</resources>

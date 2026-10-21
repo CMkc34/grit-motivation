@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.grit.shared.ui.habit.motivation
+package com.shub39.grit.shared.ui
 
 import java.io.File
 import javax.xml.parsers.DocumentBuilderFactory
@@ -24,15 +24,19 @@ import kotlin.test.assertTrue
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 
-class MotivationTranslationTest {
+class ForkTranslationTest {
 
     private val resources = File("src/commonMain/composeResources")
 
-    private fun motivationStrings(valuesDir: String): Document {
-        val file = resources.resolve("$valuesDir/motivation_strings.xml")
-        assertTrue(file.exists(), "missing ${file.path}")
-        return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file)
-    }
+    // the fork's own string files, kept apart from the upstream strings.xml
+    private val files = listOf("motivation_strings.xml", "energy_strings.xml")
+
+    private fun forkStrings(valuesDir: String): List<Document> =
+        files.map { name ->
+            val file = resources.resolve("$valuesDir/$name")
+            assertTrue(file.exists(), "missing ${file.path}")
+            DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file)
+        }
 
     private fun Document.elements(tag: String): List<Element> {
         val nodes = getElementsByTagName(tag)
@@ -40,17 +44,22 @@ class MotivationTranslationTest {
     }
 
     private fun stringNames(valuesDir: String): Set<String> =
-        motivationStrings(valuesDir).elements("string").map { it.getAttribute("name") }.toSet()
+        forkStrings(valuesDir)
+            .flatMap { it.elements("string") }
+            .map { it.getAttribute("name") }
+            .toSet()
 
     /** Plural name to the quantities it defines. */
     private fun plurals(valuesDir: String): Map<String, Set<String>> =
-        motivationStrings(valuesDir).elements("plurals").associate { plural ->
-            val items = plural.getElementsByTagName("item")
-            plural.getAttribute("name") to
-                (0 until items.length)
-                    .map { (items.item(it) as Element).getAttribute("quantity") }
-                    .toSet()
-        }
+        forkStrings(valuesDir)
+            .flatMap { it.elements("plurals") }
+            .associate { plural ->
+                val items = plural.getElementsByTagName("item")
+                plural.getAttribute("name") to
+                    (0 until items.length)
+                        .map { (items.item(it) as Element).getAttribute("quantity") }
+                        .toSet()
+            }
 
     @Test
     fun `german and english offer the same strings`() {

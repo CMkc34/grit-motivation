@@ -17,6 +17,8 @@
 package com.shub39.grit.shared.ui.fakes
 
 import com.shub39.grit.core.AnalyticsEvent
+import com.shub39.grit.core.activity.ActivityRepo
+import com.shub39.grit.core.activity.ActivityReport
 import com.shub39.grit.core.habits.Habit
 import com.shub39.grit.core.habits.HabitRepo
 import com.shub39.grit.core.habits.HabitStatus
@@ -145,6 +147,16 @@ class FakeMotivationSettings : MotivationSettings {
     override suspend fun setPopupEnabled(enabled: Boolean) {
         popupEnabled.value = enabled
     }
+}
+
+/** [ActivityRepo] whose report tests set directly. */
+class FakeActivityRepo(
+    val report: MutableStateFlow<ActivityReport> =
+        MutableStateFlow(
+            ActivityReport(currentStreak = 0, longestStreak = 0, energy = 0, days = emptyMap())
+        )
+) : ActivityRepo {
+    override fun getActivityReport(): Flow<ActivityReport> = report
 }
 
 class FakeAlarmScheduler : AlarmScheduler {

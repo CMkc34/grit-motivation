@@ -61,6 +61,7 @@ import com.shub39.grit.shared.ui.components.leadingItemShape
 import com.shub39.grit.shared.ui.components.middleItemShape
 import com.shub39.grit.shared.ui.habit.HabitState
 import com.shub39.grit.shared.ui.habit.HabitsAction
+import com.shub39.grit.shared.ui.habit.ui.component.ActivityHeaderLine
 import com.shub39.grit.shared.ui.habit.ui.component.HabitCard
 import com.shub39.grit.shared.ui.habit.ui.component.HabitListFABs
 import com.shub39.grit.shared.ui.habit.ui.component.HabitStatusDialog
@@ -93,6 +94,7 @@ fun HabitsList(
     onAction: (HabitsAction) -> Unit,
     onNavigateToAnalytics: () -> Unit,
     onNavigateToOverallAnalytics: () -> Unit,
+    onNavigateToEnergy: () -> Unit,
     isUserSubscribed: Boolean,
     onNavigateToPaywall: () -> Unit,
     modifier: Modifier = Modifier,
@@ -100,7 +102,12 @@ fun HabitsList(
     PageFill(modifier = modifier.fillMaxSize()) {
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
         Column(modifier = Modifier.widthIn(max = 700.dp)) {
-            HabitsTopAppBar(state = state, onAction = onAction, scrollBehavior = scrollBehavior)
+            HabitsTopAppBar(
+                state = state,
+                onAction = onAction,
+                onNavigateToEnergy = onNavigateToEnergy,
+                scrollBehavior = scrollBehavior,
+            )
 
             PageFill {
                 val lazyListState = rememberLazyListState()
@@ -136,6 +143,7 @@ fun HabitsList(
 private fun HabitsTopAppBar(
     state: HabitState,
     onAction: (HabitsAction) -> Unit,
+    onNavigateToEnergy: () -> Unit,
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
@@ -155,6 +163,13 @@ private fun HabitsTopAppBar(
                             stringResource(Res.string.completed),
                     fontFamily = flexFontRounded(),
                 )
+                state.activity?.let {
+                    ActivityHeaderLine(
+                        activeDays = it.currentStreak,
+                        energy = it.energy,
+                        onClick = onNavigateToEnergy,
+                    )
+                }
             }
         },
         actions = {
