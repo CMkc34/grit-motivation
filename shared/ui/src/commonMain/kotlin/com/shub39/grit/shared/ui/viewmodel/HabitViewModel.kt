@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.grit.core.AnalyticsEvent
 import com.shub39.grit.core.activity.ActivityRepo
+import com.shub39.grit.core.activity.DayStatus
 import com.shub39.grit.core.activity.FreezeNotice
 import com.shub39.grit.core.habits.Habit
 import com.shub39.grit.core.habits.HabitRepo
@@ -312,8 +313,9 @@ class HabitViewModel(
             repo.deleteHabitStatus(habit.id, date)
         } else {
             analytics.trackEvent(AnalyticsEvent.HABIT_COMPLETED, emptyMap())
+            val firstOfDay = !isTodayActive()
             repo.insertHabitStatus(HabitStatus(habitId = habit.id, date = date))
-            showMotivationPopup(habit, date)
+            showMotivationPopup(habit, date, firstOfDay)
         }
     }
 
@@ -330,18 +332,24 @@ class HabitViewModel(
             return
         }
         analytics.trackEvent(AnalyticsEvent.HABIT_COMPLETED, emptyMap())
+        val firstOfDay = !isTodayActive()
         repo.insertHabitStatus(HabitStatus(habitId = habit.id, date = date, value = value))
         // only the first value of a day is a check-in, corrections stay silent
-        if (!isStatusAdded) showMotivationPopup(habit, date)
+        if (!isStatusAdded) showMotivationPopup(habit, date, firstOfDay)
     }
+
+    /** Whether today already has a check-in, read before saving the next one. */
+    private suspend fun isTodayActive(): Boolean =
+        activityRepo.getActivityReport().first().days[LocalDate.now()] == DayStatus.ACTIVE
 
     /**
      * Reads the streak after a check-in from the repository, the same number the habit card shows.
      * Only check-ins for today or yesterday are celebrated; catching up on older days stays silent,
      * as does a check-in that does not extend an active streak (streak 0), and every check-in while
-     * the popup is turned off in the settings.
+     * the popup is turned off in the settings. The first check-in of the day ([firstOfDay]) also
+     * shows the activity streak that it extended, as it earns the day's energy.
      */
-    private suspend fun showMotivationPopup(habit: Habit, date: LocalDate) {
+    private suspend fun showMotivationPopup(habit: Habit, date: LocalDate, firstOfDay: Boolean) {
         if (!motivationSettings.getPopupEnabled().first()) return
         if (date < LocalDate.now().minus(1, DateTimeUnit.DAY)) return
         val streak =
@@ -349,8 +357,12 @@ class HabitViewModel(
         if (streak == null || streak < 1) return
         val quote = GritQuoteEngine.getQuote(streak, previous = lastQuoteId)
         lastQuoteId = quote.id
+        val activityStreak =
+            if (firstOfDay) activityRepo.getActivityReport().first().currentStreak else null
         _state.update {
-            it.copy(motivationPopup = MotivationPopupState(habit.title, streak, quote))
+            it.copy(
+                motivationPopup = MotivationPopupState(habit.title, streak, quote, activityStreak)
+            )
         }
     }
 }

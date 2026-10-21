@@ -19,10 +19,16 @@ package com.shub39.grit.shared.ui.habit.motivation
 import androidx.compose.runtime.Immutable
 import com.shub39.grit.core.motivation.MotivationQuote
 
-/** Data for the popup shown after a habit check-in. */
+/**
+ * Data for the popup shown after a habit check-in.
+ *
+ * @property activityStreak Activity streak after the first check-in of the day, shown as "+1 ⚡"
+ *   line; `null` for later check-ins that day, which earn no energy.
+ */
 @Immutable
 data class MotivationPopupState(
     val habitTitle: String,
     val activeDays: Int,
     val quote: MotivationQuote,
+    val activityStreak: Int? = null,
 )

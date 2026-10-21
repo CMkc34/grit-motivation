@@ -35,6 +35,7 @@ import com.shub39.grit.shared.ui.components.GritDialog
 import com.shub39.grit.shared.ui.habit.motivation.textResource
 import com.shub39.grit.shared.ui.theme.flexFontEmphasis
 import grit.shared.ui.generated.resources.Res
+import grit.shared.ui.generated.resources.energy_popup_line
 import grit.shared.ui.generated.resources.motivation_button
 import grit.shared.ui.generated.resources.motivation_header_motivating
 import grit.shared.ui.generated.resources.motivation_header_sarcastic
@@ -44,13 +45,15 @@ import org.jetbrains.compose.resources.stringResource
 
 /**
  * Shown after a habit check-in. Closes via the button or the back key, not by tapping outside, so
- * the quote is not lost by accident.
+ * the quote is not lost by accident. [activityStreak] adds the "+1 ⚡" line for the first check-in
+ * of the day.
  */
 @Composable
 fun HabitMotivationPopup(
     habitTitle: String,
     activeDays: Int,
     quote: MotivationQuote,
+    activityStreak: Int?,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -85,6 +88,14 @@ fun HabitMotivationPopup(
                 ),
             textAlign = TextAlign.Center,
         )
+        activityStreak?.let {
+            Text(
+                text = pluralStringResource(Res.plurals.energy_popup_line, it, it),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.tertiary,
+                textAlign = TextAlign.Center,
+            )
+        }
         Text(
             text = stringResource(quote.textResource(), activeDays),
             style = MaterialTheme.typography.bodyLarge,
@@ -105,6 +116,7 @@ private fun MotivatingPreview() {
         activeDays = 1,
         quote =
             MotivationQuote("quote_starter_motivating_1", QuoteTone.MOTIVATING, StreakTier.STARTER),
+        activityStreak = 13,
         onDismiss = {},
     )
 }
@@ -122,6 +134,7 @@ private fun SarcasticPreview() {
                 QuoteTone.SARCASTIC,
                 StreakTier.ESTABLISHED,
             ),
+        activityStreak = null,
         onDismiss = {},
     )
 }
