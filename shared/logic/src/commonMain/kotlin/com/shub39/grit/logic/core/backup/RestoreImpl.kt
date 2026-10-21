@@ -17,6 +17,8 @@
 package com.shub39.grit.logic.core.backup
 
 import com.shub39.grit.core.GritLogger
+import com.shub39.grit.core.activity.ActivityData
+import com.shub39.grit.core.activity.ActivityStore
 import com.shub39.grit.core.habits.HabitRepo
 import com.shub39.grit.core.interfaces.AlarmScheduler
 import com.shub39.grit.core.settings.backup.RestoreRepo
@@ -33,6 +35,7 @@ import io.github.vinceglb.filekit.readString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -43,6 +46,7 @@ class RestoreImpl(
     private val taskRepo: TaskRepo,
     private val habitRepo: HabitRepo,
     private val alarmScheduler: AlarmScheduler,
+    private val activityStore: ActivityStore,
 ) : RestoreRepo {
     override suspend fun restoreData(): RestoreResult {
         return try {
@@ -60,6 +64,9 @@ class RestoreImpl(
             ) {
                 throw SchemaMismatchException()
             }
+
+            // restoring check-ins marks today active, which is not a real check-in
+            val activityBefore = activityStore.getActivity().first()
 
             withContext(Dispatchers.IO) {
                 awaitAll(
@@ -101,6 +108,12 @@ class RestoreImpl(
                     },
                 )
             }
+
+            activityStore.replaceAll(
+                activityBefore.mergedWith(
+                    jsonDeserialized.activity?.toActivityData() ?: ActivityData()
+                )
+            )
 
             RestoreResult.Success
         } catch (e: SchemaMismatchException) {

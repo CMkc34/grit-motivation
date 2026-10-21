@@ -16,6 +16,7 @@
  */
 package com.shub39.grit.logic.activity
 
+import com.shub39.grit.core.activity.ActivityData
 import com.shub39.grit.logic.core.datastore.createDataStore
 import kotlin.io.path.createTempDirectory
 import kotlin.test.Test
@@ -74,5 +75,31 @@ class ActivityStoreImplTest {
         store.markFreezesSeen(setOf(second))
 
         assertEquals(setOf(first, second), store.getActivity().first().seenFreezes)
+    }
+
+    @Test
+    fun `replacing all stores exactly the given data`() = runTest {
+        val store = store()
+        val restored =
+            ActivityData(
+                startDate = LocalDate(2026, 10, 1),
+                activeDays = setOf(LocalDate(2026, 10, 1), LocalDate(2026, 10, 2)),
+                seenFreezes = setOf(LocalDate(2026, 10, 3)),
+            )
+        store.markActive(day)
+
+        store.replaceAll(restored)
+
+        assertEquals(restored, store.getActivity().first())
+    }
+
+    @Test
+    fun `replacing with empty data clears the start date`() = runTest {
+        val store = store()
+        store.markActive(day)
+
+        store.replaceAll(ActivityData())
+
+        assertEquals(ActivityData(), store.getActivity().first())
     }
 }

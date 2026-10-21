@@ -16,6 +16,7 @@
  */
 package com.shub39.grit.logic.core.backup
 
+import com.shub39.grit.core.activity.ActivityStore
 import com.shub39.grit.core.habits.HabitRepo
 import com.shub39.grit.core.now
 import com.shub39.grit.core.settings.backup.ExportRepo
@@ -26,13 +27,18 @@ import io.github.vinceglb.filekit.writeString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Single
 
 @Single(binds = [ExportRepo::class])
-class ExportImpl(private val taskRepo: TaskRepo, private val habitsRepo: HabitRepo) : ExportRepo {
+class ExportImpl(
+    private val taskRepo: TaskRepo,
+    private val habitsRepo: HabitRepo,
+    private val activityStore: ActivityStore,
+) : ExportRepo {
     override suspend fun exportToJson() {
         coroutineScope {
             val habitsDef =
@@ -75,6 +81,8 @@ class ExportImpl(private val taskRepo: TaskRepo, private val habitsRepo: HabitRe
                     }
                     .await()
 
+            val activity = activityStore.getActivity().first().toActivitySchema()
+
             val time = LocalDateTime.now().toString().replace(":", "").replace(" ", "")
             val file =
                 FileKit.openFileSaver(
@@ -90,6 +98,7 @@ class ExportImpl(private val taskRepo: TaskRepo, private val habitsRepo: HabitRe
                         tasks = tasksDef,
                         categories = categoriesDef,
                         subTasks = subTasksDef,
+                        activity = activity,
                     )
                 )
             )

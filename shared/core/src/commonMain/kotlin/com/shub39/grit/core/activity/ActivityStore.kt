@@ -24,7 +24,18 @@ data class ActivityData(
     val startDate: LocalDate? = null,
     val activeDays: Set<LocalDate> = emptySet(),
     val seenFreezes: Set<LocalDate> = emptySet(),
-)
+) {
+    /**
+     * Combines two records, e.g. the current one and a restored backup: the earlier start date
+     * wins, active days and seen freezes are joined.
+     */
+    fun mergedWith(other: ActivityData): ActivityData =
+        ActivityData(
+            startDate = listOfNotNull(startDate, other.startDate).minOrNull(),
+            activeDays = activeDays + other.activeDays,
+            seenFreezes = seenFreezes + other.seenFreezes,
+        )
+}
 
 interface ActivityStore {
     fun getActivity(): Flow<ActivityData>
@@ -37,4 +48,7 @@ interface ActivityStore {
 
     /** Remembers [days] as freezes the user has already been told about. */
     suspend fun markFreezesSeen(days: Set<LocalDate>)
+
+    /** Replaces everything stored with [data], used when restoring a backup. */
+    suspend fun replaceAll(data: ActivityData)
 }
