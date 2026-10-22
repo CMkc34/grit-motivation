@@ -37,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
@@ -135,6 +136,8 @@ fun AvatarCard(avatar: AvatarState, onRenameClick: () -> Unit, modifier: Modifie
                 style =
                     MaterialTheme.typography.headlineSmall.copy(fontFamily = flexFontEmphasis()),
                 textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.clickable(onClick = onRenameClick).padding(4.dp),
             )
 
@@ -191,7 +194,15 @@ fun RenameAvatarDialog(currentName: String, onSave: (String) -> Unit, onDismiss:
             onValueChange = { name = it.take(MAX_NAME_LENGTH) },
             singleLine = true,
             placeholder = { Text(stringResource(Res.string.avatar_default_name)) },
-            supportingText = { Text(stringResource(Res.string.avatar_rename_hint)) },
+            supportingText = {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = stringResource(Res.string.avatar_rename_hint),
+                        modifier = Modifier.weight(1f),
+                    )
+                    Text(text = "${name.length}/$MAX_NAME_LENGTH")
+                }
+            },
         )
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
             TextButton(onClick = onDismiss) { Text(stringResource(Res.string.avatar_cancel)) }
