@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.tooling.preview.Preview
@@ -178,11 +179,14 @@ private class PlantPainter(
     }
 
     private fun DrawScope.drawMeadow() {
-        drawOval(
-            color = meadowGreen.mood(),
-            topLeft = Offset(x(-0.1f), y(0.82f)),
-            size = Size(x(1.2f), y(0.3f)),
-        )
+        // the hill is cut at the bottom edge so it never covers the name below the plant
+        clipRect {
+            drawOval(
+                color = meadowGreen.mood(),
+                topLeft = Offset(x(-0.1f), y(0.82f)),
+                size = Size(x(1.2f), y(0.3f)),
+            )
+        }
         // the pot color lives on as a little sign next to the tree
         drawLine(trunkBrown, Offset(x(0.16f), y(0.9f)), Offset(x(0.16f), y(0.78f)), x(0.015f))
         drawRoundRect(
