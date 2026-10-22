@@ -235,6 +235,7 @@ private fun EntryProviderScope<Routes>.habitsScreens(
 
         EnergyPage(
             activity = state.activity,
+            stats = state.stats,
             onNavigateBack = { topLevelBackStack.removeLast() },
             modifier = Modifier.background(colorScheme.background),
         )
