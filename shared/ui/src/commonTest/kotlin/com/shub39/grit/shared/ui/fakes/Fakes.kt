@@ -196,7 +196,10 @@ class FakeActivityRepo(
     }
 }
 
-/** [AvatarRepo] on top of [activityRepo]; the shop is not simulated, buying always succeeds. */
+/**
+ * [AvatarRepo] on top of [activityRepo]. The shop is not simulated: buying always succeeds and is
+ * recorded in [bought], wearing treats every item as an accessory.
+ */
 class FakeAvatarRepo(
     private val activityRepo: FakeActivityRepo = FakeActivityRepo(),
     val data: MutableStateFlow<AvatarData> = MutableStateFlow(AvatarData()),
@@ -206,11 +209,19 @@ class FakeAvatarRepo(
             AvatarState(PlantState.of(report), report.energy, data)
         }
 
-    override suspend fun buy(itemId: String): PurchaseCheck = PurchaseCheck.OK
+    val bought = mutableListOf<String>()
+
+    override suspend fun buy(itemId: String): PurchaseCheck {
+        bought += itemId
+        return PurchaseCheck.OK
+    }
 
     override suspend fun rename(name: String) = data.update { it.copy(name = name) }
 
-    override suspend fun wear(itemId: String, worn: Boolean) {}
+    override suspend fun wear(itemId: String, worn: Boolean) =
+        data.update {
+            it.copy(accessories = if (worn) it.accessories + itemId else it.accessories - itemId)
+        }
 
     override suspend fun markStageSeen(stage: PlantStage) =
         data.update { it.copy(seenStage = stage.number) }
