@@ -16,6 +16,7 @@
  */
 package com.shub39.grit.core.activity
 
+import com.shub39.grit.core.avatar.Purchase
 import kotlinx.datetime.LocalDate
 
 enum class DayStatus {
@@ -51,13 +52,28 @@ object ActivityPlanner {
      * whole: when it is at most [MAX_FROZEN_DAYS_IN_A_ROW] long and the energy covers all of it.
      * Otherwise the streak breaks and no energy is spent. [today] without activity does not break
      * the streak.
+     *
+     * Energy spent on [purchases] is taken on the day of the purchase, but only after a gap that is
+     * open on that day has been decided, so a purchase never undoes a freeze that was shown before.
      */
-    fun plan(activeDays: Set<LocalDate>, startDate: LocalDate, today: LocalDate): ActivityReport {
+    fun plan(
+        activeDays: Set<LocalDate>,
+        startDate: LocalDate,
+        today: LocalDate,
+        purchases: List<Purchase> = emptyList(),
+    ): ActivityReport {
         var streak = 0
         var longest = 0
         var energy = 0
+        var pendingSpend = 0
         val days = linkedMapOf<LocalDate, DayStatus>()
         val gap = mutableListOf<LocalDate>()
+        val spendByDay = purchases.groupBy({ it.date }, { it.price })
+
+        fun spendPending() {
+            energy -= pendingSpend
+            pendingSpend = 0
+        }
 
         fun closeGap() {
             if (gap.isEmpty()) return
@@ -69,6 +85,7 @@ object ActivityPlanner {
                 streak = 0
             }
             gap.clear()
+            spendPending()
         }
 
         for (epochDay in startDate.toEpochDays()..today.toEpochDays()) {
@@ -87,8 +104,18 @@ object ActivityPlanner {
                 }
                 else -> days[day] = DayStatus.OPEN
             }
+            // purchases made before the start date count on the start date
+            val spentToday =
+                if (epochDay == startDate.toEpochDays()) {
+                    spendByDay.filterKeys { it <= startDate }.values.flatten().sum()
+                } else {
+                    spendByDay[day].orEmpty().sum()
+                }
+            pendingSpend += spentToday
+            if (gap.isEmpty()) spendPending()
         }
         closeGap()
+        spendPending()
 
         return ActivityReport(
             currentStreak = streak,
