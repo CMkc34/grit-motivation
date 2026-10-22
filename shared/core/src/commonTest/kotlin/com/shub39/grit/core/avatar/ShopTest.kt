@@ -46,7 +46,7 @@ class ShopTest {
 
     @Test
     fun `a purchase lowers the energy`() {
-        val report = plan(active = (0..19).toList(), today = 19, purchases = listOf(buy(10, 5)))
+        val report = plan(active = (0..19).toList(), today = 19, purchases = listOf(buy(10, 15)))
 
         assertEquals(10, report.energy)
     }
@@ -96,6 +96,32 @@ class ShopTest {
 
         assertEquals(DayStatus.FROZEN, report.days[day(10)])
         assertEquals(10 - ActivityPlanner.FREEZE_COST - 3 + 1, report.energy)
+    }
+
+    @Test
+    fun `a purchase never takes the energy below zero`() {
+        // 3 energy left, a merged backup brings a 15 energy purchase from another device
+        val report =
+            plan(
+                active = (0..9).toList(),
+                today = 9,
+                purchases = listOf(buy(price = 7, onDay = 9), buy(price = 15, onDay = 9)),
+            )
+
+        assertEquals(0, report.energy)
+    }
+
+    @Test
+    fun `energy earned after an unaffordable purchase counts in full`() {
+        val report =
+            plan(
+                active = (0..9).toList(),
+                today = 9,
+                purchases = listOf(buy(price = 20, onDay = 2)),
+            )
+
+        // 3 energy on day 2, purchase drops it to 0, days 3 to 9 earn 7
+        assertEquals(7, report.energy)
     }
 
     @Test
