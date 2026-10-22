@@ -66,6 +66,7 @@ import grit.shared.ui.generated.resources.energy_current_streak
 import grit.shared.ui.generated.resources.energy_days
 import grit.shared.ui.generated.resources.energy_last_days
 import grit.shared.ui.generated.resources.energy_legend_active
+import grit.shared.ui.generated.resources.energy_legend_before_start
 import grit.shared.ui.generated.resources.energy_legend_frozen
 import grit.shared.ui.generated.resources.energy_legend_missed
 import grit.shared.ui.generated.resources.energy_legend_open
@@ -257,6 +258,9 @@ private fun RecentDaysCard(days: List<RecentDay>, modifier: Modifier = Modifier)
                 LegendItem(DayStatus.FROZEN, stringResource(Res.string.energy_legend_frozen))
                 LegendItem(DayStatus.MISSED, stringResource(Res.string.energy_legend_missed))
                 LegendItem(DayStatus.OPEN, stringResource(Res.string.energy_legend_open))
+                if (days.any { it.status == null }) {
+                    LegendItem(null, stringResource(Res.string.energy_legend_before_start))
+                }
             }
         }
     }
@@ -304,7 +308,7 @@ private fun DayCell(status: DayStatus?, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun LegendItem(status: DayStatus, label: String) {
+private fun LegendItem(status: DayStatus?, label: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
