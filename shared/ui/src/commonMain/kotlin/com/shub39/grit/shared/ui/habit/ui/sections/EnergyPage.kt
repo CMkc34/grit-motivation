@@ -38,6 +38,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -74,6 +75,9 @@ import com.shub39.grit.shared.ui.habit.avatar.RenameAvatarDialog
 import com.shub39.grit.shared.ui.theme.flexFontEmphasis
 import com.shub39.grit.shared.ui.theme.flexFontRounded
 import grit.shared.ui.generated.resources.Res
+import grit.shared.ui.generated.resources.energy_auto_freeze_off
+import grit.shared.ui.generated.resources.energy_auto_freeze_on
+import grit.shared.ui.generated.resources.energy_auto_freeze_title
 import grit.shared.ui.generated.resources.energy_balance
 import grit.shared.ui.generated.resources.energy_current_streak
 import grit.shared.ui.generated.resources.energy_days
@@ -85,6 +89,7 @@ import grit.shared.ui.generated.resources.energy_legend_missed
 import grit.shared.ui.generated.resources.energy_legend_open
 import grit.shared.ui.generated.resources.energy_longest_streak
 import grit.shared.ui.generated.resources.energy_rule_active
+import grit.shared.ui.generated.resources.energy_rule_auto_freeze
 import grit.shared.ui.generated.resources.energy_rule_break
 import grit.shared.ui.generated.resources.energy_rule_energy
 import grit.shared.ui.generated.resources.energy_rule_freeze
@@ -191,6 +196,13 @@ fun EnergyPage(
 
             if (stats.energyPerMonth.isNotEmpty()) {
                 item { MonthlyEnergyCard(months = stats.energyPerMonth) }
+            }
+
+            item {
+                AutoFreezeCard(
+                    enabled = activity.autoFreeze,
+                    onToggle = { onAction(HabitsAction.SetAutoFreeze(it)) },
+                )
             }
 
             item { RulesCard() }
@@ -393,6 +405,45 @@ private fun LegendItem(status: DayStatus?, label: String) {
 }
 
 @Composable
+private fun AutoFreezeCard(
+    enabled: Boolean,
+    onToggle: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.widthIn(max = 500.dp).fillMaxWidth(),
+        shape = MaterialTheme.shapes.large,
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                Text(
+                    text = stringResource(Res.string.energy_auto_freeze_title),
+                    fontFamily = flexFontRounded(),
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                Text(
+                    text =
+                        stringResource(
+                            if (enabled) Res.string.energy_auto_freeze_on
+                            else Res.string.energy_auto_freeze_off
+                        ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Switch(checked = enabled, onCheckedChange = onToggle)
+        }
+    }
+}
+
+@Composable
 private fun RulesCard(modifier: Modifier = Modifier) {
     val rules =
         listOf(
@@ -405,6 +456,7 @@ private fun RulesCard(modifier: Modifier = Modifier) {
             ),
             stringResource(Res.string.energy_rule_frozen_day),
             stringResource(Res.string.energy_rule_break),
+            stringResource(Res.string.energy_rule_auto_freeze),
         )
 
     Card(

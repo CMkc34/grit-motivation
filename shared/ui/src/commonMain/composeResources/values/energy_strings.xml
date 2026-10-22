@@ -35,6 +35,11 @@
     <string name="energy_rule_freeze">Missed a day? A freeze costs %1$d ⚡ per day and saves your streak automatically, for up to %2$d days in a row.</string>
     <string name="energy_rule_frozen_day">A frozen day keeps your streak alive but does not count towards it.</string>
     <string name="energy_rule_break">If your streak breaks anyway, you keep your energy.</string>
+    <string name="energy_rule_auto_freeze">You can switch automatic freezes off below to save energy for the shop.</string>
+    <!-- Switch for automatic freezes -->
+    <string name="energy_auto_freeze_title">Use freezes automatically</string>
+    <string name="energy_auto_freeze_on">Missed days are saved with energy when there is enough.</string>
+    <string name="energy_auto_freeze_off">Off: a missed day breaks the streak and your energy stays for the shop. Earlier freezes stay.</string>
     <!-- Freeze notice when the app opens: %1$d = activity streak, %2$d = energy spent, %3$d = energy left -->
     <string name="freeze_notice_title">❄️ Streak saved</string>
     <plurals name="freeze_notice_text">

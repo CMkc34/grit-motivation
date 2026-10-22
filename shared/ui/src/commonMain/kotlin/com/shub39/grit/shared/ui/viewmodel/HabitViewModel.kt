@@ -231,6 +231,8 @@ class HabitViewModel(
 
                 is HabitsAction.RenameAvatar -> avatarRepo.rename(action.name.trim())
 
+                is HabitsAction.SetAutoFreeze -> activityRepo.setAutoFreeze(action.enabled)
+
                 is HabitsAction.BuyShopItem -> avatarRepo.buy(action.itemId)
 
                 is HabitsAction.WearShopItem -> avatarRepo.wear(action.itemId, action.worn)

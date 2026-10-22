@@ -78,4 +78,7 @@ sealed interface HabitsAction {
 
     /** put an owned shop item on the plant or take it off */
     data class WearShopItem(val itemId: String, val worn: Boolean) : HabitsAction
+
+    /** switch automatic freezes on or off from today on */
+    data class SetAutoFreeze(val enabled: Boolean) : HabitsAction
 }

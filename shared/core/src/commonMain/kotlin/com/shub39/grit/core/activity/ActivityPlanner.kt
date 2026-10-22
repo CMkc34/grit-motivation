@@ -36,6 +36,8 @@ data class ActivityReport(
     val energy: Int,
     /** Status of every day from the start date up to today, in order. */
     val days: Map<LocalDate, DayStatus>,
+    /** Whether missed days are frozen automatically from today on. */
+    val autoFreeze: Boolean = true,
 ) {
     val frozenDays: Set<LocalDate>
         get() = days.filterValues { it == DayStatus.FROZEN }.keys
@@ -55,12 +57,16 @@ object ActivityPlanner {
      *
      * Energy spent on [purchases] is taken on the day of the purchase, but only after a gap that is
      * open on that day has been decided, so a purchase never undoes a freeze that was shown before.
+     *
+     * A gap is not frozen when [autoFreeze] was off on any of its days. Switching freezes off keeps
+     * the freezes of earlier days.
      */
     fun plan(
         activeDays: Set<LocalDate>,
         startDate: LocalDate,
         today: LocalDate,
         purchases: List<Purchase> = emptyList(),
+        autoFreeze: AutoFreezeSwitches = AutoFreezeSwitches(),
     ): ActivityReport {
         var streak = 0
         var longest = 0
@@ -78,7 +84,8 @@ object ActivityPlanner {
         fun closeGap() {
             if (gap.isEmpty()) return
             val cost = gap.size * FREEZE_COST
-            if (streak > 0 && gap.size <= MAX_FROZEN_DAYS_IN_A_ROW && energy >= cost) {
+            val canFreeze = streak > 0 && gap.size <= MAX_FROZEN_DAYS_IN_A_ROW && energy >= cost
+            if (canFreeze && gap.all(autoFreeze::isOn)) {
                 gap.forEach { days[it] = DayStatus.FROZEN }
                 energy -= cost
             } else {
@@ -122,6 +129,7 @@ object ActivityPlanner {
             longestStreak = longest,
             energy = energy,
             days = days,
+            autoFreeze = autoFreeze.isOn(today),
         )
     }
 }

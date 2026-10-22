@@ -123,4 +123,15 @@ class HabitViewModelActivityTest {
             assertEquals(notice.frozenDays, activityRepo.seenFreezes)
             assertNull(viewModel.freezeNotice.value)
         }
+
+    @Test
+    fun `auto freeze switch reaches the activity report`() =
+        runTest(dispatcher) {
+            val viewModel = viewModel()
+            backgroundScope.launch { viewModel.state.collect {} }
+
+            viewModel.onAction(HabitsAction.SetAutoFreeze(false))
+
+            assertEquals(false, viewModel.state.value.activity?.autoFreeze)
+        }
 }

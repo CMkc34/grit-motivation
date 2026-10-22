@@ -24,6 +24,7 @@ import com.shub39.grit.core.now
 import com.shub39.grit.logic.avatar.FakeAvatarStore
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlinx.coroutines.flow.Flow
@@ -50,6 +51,10 @@ private class FakeActivityStore(initial: ActivityData = ActivityData()) : Activi
 
     override suspend fun markFreezesSeen(days: Set<LocalDate>) {
         data.update { it.copy(seenFreezes = it.seenFreezes + days) }
+    }
+
+    override suspend fun setAutoFreeze(day: LocalDate, enabled: Boolean) {
+        data.update { it.copy(autoFreeze = it.autoFreeze.switched(day, enabled)) }
     }
 
     override suspend fun replaceAll(data: ActivityData) {
@@ -120,5 +125,23 @@ class ActivityRepositoryTest {
         val report = ActivityRepository(store, avatarStore).getActivityReport().first()
 
         assertEquals(2, report.energy)
+    }
+
+    @Test
+    fun `switching auto freeze off keeps earlier freezes`() = runTest {
+        val store =
+            FakeActivityStore(
+                ActivityData(
+                    startDate = daysAgo(8),
+                    activeDays = (2..8).map(::daysAgo).toSet() + today,
+                )
+            )
+        val repository = ActivityRepository(store, FakeAvatarStore())
+
+        repository.setAutoFreeze(false)
+        val report = repository.getActivityReport().first()
+
+        assertFalse(report.autoFreeze)
+        assertEquals(setOf(daysAgo(1)), report.frozenDays)
     }
 }

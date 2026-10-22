@@ -47,6 +47,9 @@ class ActivityRepository(private val store: ActivityStore, private val avatarSto
 
     override suspend fun markFreezesSeen(days: Set<LocalDate>) = store.markFreezesSeen(days)
 
+    override suspend fun setAutoFreeze(enabled: Boolean) =
+        store.setAutoFreeze(LocalDate.now(), enabled)
+
     private fun activity(): Flow<ActivityData> =
         store
             .getActivity()
@@ -64,6 +67,7 @@ class ActivityRepository(private val store: ActivityStore, private val avatarSto
             startDate = data.startDate ?: today,
             today = today,
             purchases = purchases,
+            autoFreeze = data.autoFreeze,
         )
     }
 }
