@@ -10,6 +10,13 @@
     <string name="stats_energy_earned">⚡ earned</string>
     <string name="stats_energy_spent">❄️ spent on freezes</string>
 
+    <!-- Overall analytics -->
+    <string name="stats_month_review">This month</string>
+    <string name="stats_previous_month">Previous month: %1$s</string>
+    <string name="stats_no_planned_days">Nothing planned this month yet</string>
+    <string name="stats_streak_overview">Streaks</string>
+    <string name="stats_checks_per_week">Check-ins per week</string>
+
     <!-- Short month names for the charts -->
     <string name="stats_month_1">Jan</string>
     <string name="stats_month_2">Feb</string>
