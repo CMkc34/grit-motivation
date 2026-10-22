@@ -66,4 +66,10 @@ sealed interface HabitsAction {
 
     /** close the freeze notice and remember its freezes as seen */
     data object DismissFreezeNotice : HabitsAction
+
+    /** give the plant avatar a new name, blank brings back the default */
+    data class RenameAvatar(val name: String) : HabitsAction
+
+    /** close the notice about a new plant stage and remember the stage as seen */
+    data object DismissNewStage : HabitsAction
 }

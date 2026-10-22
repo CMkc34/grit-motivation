@@ -19,6 +19,7 @@ package com.shub39.grit.shared.ui.habit
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import com.shub39.grit.core.activity.ActivityReport
+import com.shub39.grit.core.avatar.AvatarState
 import com.shub39.grit.core.habits.HabitWithAnalytics
 import com.shub39.grit.core.habits.OverallAnalytics
 import com.shub39.grit.core.stats.ForkStats
@@ -45,6 +46,7 @@ import kotlinx.datetime.DayOfWeek
  *   start on.
  * @property motivationPopup Popup shown after a habit check-in, `null` when hidden.
  * @property activity Activity streak and energy across all habits, `null` until loaded.
+ * @property avatar The plant avatar on the energy page, `null` until loaded.
  */
 @Stable
 @Immutable
@@ -58,6 +60,7 @@ data class HabitState(
     val motivationPopup: MotivationPopupState? = null,
     val activity: ActivityReport? = null,
     val stats: ForkStats = ForkStats(),
+    val avatar: AvatarState? = null,
 
     // datastore
     val compactHabitView: Boolean = false,
