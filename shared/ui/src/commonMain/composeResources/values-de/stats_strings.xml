@@ -10,6 +10,13 @@
     <string name="stats_energy_earned">⚡ verdient</string>
     <string name="stats_energy_spent">❄️ für Freezes</string>
 
+    <!-- Gesamt-Statistik -->
+    <string name="stats_month_review">Dieser Monat</string>
+    <string name="stats_previous_month">Vormonat: %1$s</string>
+    <string name="stats_no_planned_days">Diesen Monat ist noch nichts geplant</string>
+    <string name="stats_streak_overview">Serien</string>
+    <string name="stats_checks_per_week">Häkchen pro Woche</string>
+
     <!-- Kurze Monatsnamen für die Diagramme -->
     <string name="stats_month_1">Jan</string>
     <string name="stats_month_2">Feb</string>

@@ -219,6 +219,8 @@ fun OverallAnalytics(
                     modifier = Modifier.widthIn(max = maxWidth),
                 )
             }
+
+            forkOverallStats(stats = state.stats, maxWidth = maxWidth)
         }
     }
 }
