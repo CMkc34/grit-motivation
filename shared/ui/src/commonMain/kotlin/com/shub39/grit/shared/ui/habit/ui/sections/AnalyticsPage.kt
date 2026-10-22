@@ -66,6 +66,7 @@ import com.shub39.grit.shared.ui.WindowSize.Companion.isExpanded
 import com.shub39.grit.shared.ui.components.GritDialog
 import com.shub39.grit.shared.ui.habit.HabitState
 import com.shub39.grit.shared.ui.habit.HabitsAction
+import com.shub39.grit.shared.ui.habit.ui.component.ComebacksCard
 import com.shub39.grit.shared.ui.habit.ui.component.HabitStatusDialog
 import com.shub39.grit.shared.ui.habit.ui.component.HabitUpsertSheet
 import com.shub39.grit.shared.ui.habit.ui.component.stats.CalendarMap
@@ -203,6 +204,14 @@ fun AnalyticsPage(
                     startDate = currentHabit.habit.time.date,
                     bestStreak = currentHabit.bestStreak,
                     currentStreak = currentHabit.currentStreak,
+                )
+            }
+
+            item {
+                ComebacksCard(
+                    comebacks = state.stats.comebacks[currentHabit.habit.id] ?: 0,
+                    overall = false,
+                    modifier = Modifier.widthIn(max = maxWidth),
                 )
             }
 

@@ -17,6 +17,18 @@
     <string name="stats_streak_overview">Serien</string>
     <string name="stats_checks_per_week">Häkchen pro Woche</string>
 
+    <!-- Comebacks: neue Serien nach einer Pause -->
+    <string name="stats_comebacks">Comebacks</string>
+    <plurals name="stats_comebacks_habit">
+        <item quantity="one">Du bist %1$d-mal wieder eingestiegen.</item>
+        <item quantity="other">Du bist %1$d-mal wieder eingestiegen.</item>
+    </plurals>
+    <plurals name="stats_comebacks_total">
+        <item quantity="one">Über alle Routinen bist du %1$d-mal wieder eingestiegen.</item>
+        <item quantity="other">Über alle Routinen bist du %1$d-mal wieder eingestiegen.</item>
+    </plurals>
+    <string name="stats_comebacks_none">Bisher war kein Neustart nötig.</string>
+
     <!-- Kurze Monatsnamen für die Diagramme -->
     <string name="stats_month_1">Jan</string>
     <string name="stats_month_2">Feb</string>
