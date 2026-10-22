@@ -46,7 +46,7 @@ class ShopTest {
 
     @Test
     fun `a purchase lowers the energy`() {
-        val report = plan(active = (0..19).toList(), today = 19, purchases = listOf(buy(10, 5)))
+        val report = plan(active = (0..19).toList(), today = 19, purchases = listOf(buy(10, 15)))
 
         assertEquals(10, report.energy)
     }
