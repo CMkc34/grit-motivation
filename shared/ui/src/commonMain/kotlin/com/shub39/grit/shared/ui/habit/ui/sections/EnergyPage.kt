@@ -58,6 +58,7 @@ import com.shub39.grit.core.activity.ActivityPlanner
 import com.shub39.grit.core.activity.ActivityReport
 import com.shub39.grit.core.activity.DayStatus
 import com.shub39.grit.core.avatar.AvatarState
+import com.shub39.grit.core.avatar.ShopItem
 import com.shub39.grit.core.stats.ForkStats
 import com.shub39.grit.shared.ui.GritPreviewWrapper
 import com.shub39.grit.shared.ui.LocalWindowSizeClass
@@ -66,6 +67,8 @@ import com.shub39.grit.shared.ui.habit.HabitsAction
 import com.shub39.grit.shared.ui.habit.activity.RecentDay
 import com.shub39.grit.shared.ui.habit.activity.recentDays
 import com.shub39.grit.shared.ui.habit.avatar.AvatarCard
+import com.shub39.grit.shared.ui.habit.avatar.AvatarShop
+import com.shub39.grit.shared.ui.habit.avatar.BuyItemDialog
 import com.shub39.grit.shared.ui.habit.avatar.NewStageDialog
 import com.shub39.grit.shared.ui.habit.avatar.RenameAvatarDialog
 import com.shub39.grit.shared.ui.theme.flexFontEmphasis
@@ -99,7 +102,7 @@ private const val DAYS_PER_ROW = 10
 
 /**
  * The plant avatar, energy balance, activity streak, the last 30 days, monthly statistics and the
- * rules. Built as a list of cards, so the shop (phase 4) can go below the rules.
+ * rules, with the plant's shop at the bottom.
  */
 @Composable
 fun EnergyPage(
@@ -113,6 +116,7 @@ fun EnergyPage(
 ) {
     val windowSizeClass = LocalWindowSizeClass.current
     var showRename by remember { mutableStateOf(false) }
+    var itemToBuy by remember { mutableStateOf<ShopItem?>(null) }
 
     Column(modifier = modifier.fillMaxSize()) {
         TopAppBar(
@@ -190,6 +194,18 @@ fun EnergyPage(
             }
 
             item { RulesCard() }
+
+            if (avatar != null) {
+                item {
+                    AvatarShop(
+                        avatar = avatar,
+                        onBuyClick = { itemToBuy = it },
+                        onWear = { item, worn ->
+                            onAction(HabitsAction.WearShopItem(item.id, worn))
+                        },
+                    )
+                }
+            }
         }
     }
 
@@ -201,6 +217,19 @@ fun EnergyPage(
                 showRename = false
             },
             onDismiss = { showRename = false },
+        )
+    }
+
+    val buying = itemToBuy
+    if (avatar != null && buying != null) {
+        BuyItemDialog(
+            avatar = avatar,
+            item = buying,
+            onConfirm = {
+                onAction(HabitsAction.BuyShopItem(buying.id))
+                itemToBuy = null
+            },
+            onDismiss = { itemToBuy = null },
         )
     }
 

@@ -231,6 +231,10 @@ class HabitViewModel(
 
                 is HabitsAction.RenameAvatar -> avatarRepo.rename(action.name.trim())
 
+                is HabitsAction.BuyShopItem -> avatarRepo.buy(action.itemId)
+
+                is HabitsAction.WearShopItem -> avatarRepo.wear(action.itemId, action.worn)
+
                 HabitsAction.DismissNewStage -> {
                     _state.value.avatar?.let { avatarRepo.markStageSeen(it.plant.stage) }
                 }

@@ -72,4 +72,10 @@ sealed interface HabitsAction {
 
     /** close the notice about a new plant stage and remember the stage as seen */
     data object DismissNewStage : HabitsAction
+
+    /** buy an item from the plant's shop with energy */
+    data class BuyShopItem(val itemId: String) : HabitsAction
+
+    /** put an owned shop item on the plant or take it off */
+    data class WearShopItem(val itemId: String, val worn: Boolean) : HabitsAction
 }

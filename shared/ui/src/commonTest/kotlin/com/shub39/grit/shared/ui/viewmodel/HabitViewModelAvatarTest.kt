@@ -115,4 +115,17 @@ class HabitViewModelAvatarTest {
 
             assertNull(viewModel.state.value.avatar?.newStage)
         }
+
+    @Test
+    fun `shop actions reach the repository`() =
+        runTest(dispatcher) {
+            val viewModel = viewModel()
+            backgroundScope.launch { viewModel.state.collect {} }
+
+            viewModel.onAction(HabitsAction.BuyShopItem("acc_ladybug"))
+            viewModel.onAction(HabitsAction.WearShopItem("acc_bird", worn = true))
+
+            assertEquals(listOf("acc_ladybug"), avatarRepo.bought)
+            assertEquals(setOf("acc_bird"), viewModel.state.value.avatar?.data?.accessories)
+        }
 }
