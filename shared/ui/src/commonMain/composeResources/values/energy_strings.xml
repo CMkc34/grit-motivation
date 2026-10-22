@@ -26,6 +26,7 @@
     <string name="energy_legend_frozen">Frozen</string>
     <string name="energy_legend_missed">Missed</string>
     <string name="energy_legend_open">Today, still open</string>
+    <string name="energy_legend_before_start">Before start</string>
 
     <!-- Rules: %1$d = energy per active day, freeze cost, max frozen days in a row -->
     <string name="energy_rules_title">How it works</string>
