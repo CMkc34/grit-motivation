@@ -18,7 +18,10 @@ package com.shub39.grit.logic.activity
 
 import com.shub39.grit.core.activity.ActivityData
 import com.shub39.grit.core.activity.ActivityStore
+import com.shub39.grit.core.avatar.AvatarData
+import com.shub39.grit.core.avatar.Purchase
 import com.shub39.grit.core.now
+import com.shub39.grit.logic.avatar.FakeAvatarStore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -71,7 +74,7 @@ class ActivityRepositoryTest {
                 )
             )
 
-        val report = ActivityRepository(store).getActivityReport().first()
+        val report = ActivityRepository(store, FakeAvatarStore()).getActivityReport().first()
 
         assertEquals(3, report.currentStreak)
         assertEquals(3, report.energy)
@@ -81,7 +84,7 @@ class ActivityRepositoryTest {
     fun `reading the report sets the start date on first use`() = runTest {
         val store = FakeActivityStore()
 
-        ActivityRepository(store).getActivityReport().first()
+        ActivityRepository(store, FakeAvatarStore()).getActivityReport().first()
 
         assertEquals(today, store.data.value.startDate)
     }
@@ -95,7 +98,7 @@ class ActivityRepositoryTest {
                     activeDays = (2..8).map(::daysAgo).toSet() + today,
                 )
             )
-        val repository = ActivityRepository(store)
+        val repository = ActivityRepository(store, FakeAvatarStore())
 
         val notice = assertNotNull(repository.getFreezeNotice().first())
         assertEquals(setOf(daysAgo(1)), notice.frozenDays)
@@ -103,5 +106,19 @@ class ActivityRepositoryTest {
         repository.markFreezesSeen(notice.frozenDays)
 
         assertNull(repository.getFreezeNotice().first())
+    }
+
+    @Test
+    fun `purchases from the plant shop lower the energy`() = runTest {
+        val store =
+            FakeActivityStore(
+                ActivityData(startDate = daysAgo(4), activeDays = (0..4).map(::daysAgo).toSet())
+            )
+        val avatarStore =
+            FakeAvatarStore(AvatarData(purchases = listOf(Purchase("pot_blue", daysAgo(1), 3))))
+
+        val report = ActivityRepository(store, avatarStore).getActivityReport().first()
+
+        assertEquals(2, report.energy)
     }
 }

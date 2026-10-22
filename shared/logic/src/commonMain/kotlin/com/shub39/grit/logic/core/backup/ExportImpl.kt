@@ -17,6 +17,7 @@
 package com.shub39.grit.logic.core.backup
 
 import com.shub39.grit.core.activity.ActivityStore
+import com.shub39.grit.core.avatar.AvatarStore
 import com.shub39.grit.core.habits.HabitRepo
 import com.shub39.grit.core.now
 import com.shub39.grit.core.settings.backup.ExportRepo
@@ -38,6 +39,7 @@ class ExportImpl(
     private val taskRepo: TaskRepo,
     private val habitsRepo: HabitRepo,
     private val activityStore: ActivityStore,
+    private val avatarStore: AvatarStore,
 ) : ExportRepo {
     override suspend fun exportToJson() {
         coroutineScope {
@@ -82,6 +84,7 @@ class ExportImpl(
                     .await()
 
             val activity = activityStore.getActivity().first().toActivitySchema()
+            val avatar = avatarStore.getAvatar().first().toAvatarSchema()
 
             val time = LocalDateTime.now().toString().replace(":", "").replace(" ", "")
             val file =
@@ -99,6 +102,7 @@ class ExportImpl(
                         categories = categoriesDef,
                         subTasks = subTasksDef,
                         activity = activity,
+                        avatar = avatar,
                     )
                 )
             )
