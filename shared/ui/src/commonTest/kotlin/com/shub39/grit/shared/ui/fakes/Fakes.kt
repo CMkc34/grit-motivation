@@ -21,6 +21,12 @@ import com.shub39.grit.core.activity.ActivityRepo
 import com.shub39.grit.core.activity.ActivityReport
 import com.shub39.grit.core.activity.DayStatus
 import com.shub39.grit.core.activity.FreezeNotice
+import com.shub39.grit.core.avatar.AvatarData
+import com.shub39.grit.core.avatar.AvatarRepo
+import com.shub39.grit.core.avatar.AvatarState
+import com.shub39.grit.core.avatar.PlantStage
+import com.shub39.grit.core.avatar.PlantState
+import com.shub39.grit.core.avatar.PurchaseCheck
 import com.shub39.grit.core.habits.Habit
 import com.shub39.grit.core.habits.HabitRepo
 import com.shub39.grit.core.habits.HabitStatus
@@ -38,6 +44,7 @@ import com.shub39.grit.core.tasks.SubTask
 import com.shub39.grit.core.tasks.Task
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -187,6 +194,26 @@ class FakeActivityRepo(
             notice?.takeUnless { it.frozenDays.all(seenFreezes::contains) }
         }
     }
+}
+
+/** [AvatarRepo] on top of [activityRepo]; the shop is not simulated, buying always succeeds. */
+class FakeAvatarRepo(
+    private val activityRepo: FakeActivityRepo = FakeActivityRepo(),
+    val data: MutableStateFlow<AvatarData> = MutableStateFlow(AvatarData()),
+) : AvatarRepo {
+    override fun getAvatarState(): Flow<AvatarState> =
+        combine(activityRepo.report, data) { report, data ->
+            AvatarState(PlantState.of(report), report.energy, data)
+        }
+
+    override suspend fun buy(itemId: String): PurchaseCheck = PurchaseCheck.OK
+
+    override suspend fun rename(name: String) = data.update { it.copy(name = name) }
+
+    override suspend fun wear(itemId: String, worn: Boolean) {}
+
+    override suspend fun markStageSeen(stage: PlantStage) =
+        data.update { it.copy(seenStage = stage.number) }
 }
 
 class FakeAlarmScheduler : AlarmScheduler {

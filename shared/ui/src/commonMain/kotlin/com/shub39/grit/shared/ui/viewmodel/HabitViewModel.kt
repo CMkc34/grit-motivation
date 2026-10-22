@@ -22,6 +22,7 @@ import com.shub39.grit.core.AnalyticsEvent
 import com.shub39.grit.core.activity.ActivityRepo
 import com.shub39.grit.core.activity.DayStatus
 import com.shub39.grit.core.activity.FreezeNotice
+import com.shub39.grit.core.avatar.AvatarRepo
 import com.shub39.grit.core.habits.Habit
 import com.shub39.grit.core.habits.HabitRepo
 import com.shub39.grit.core.habits.HabitStatus
@@ -64,6 +65,7 @@ class HabitViewModel(
     @Provided private val analytics: AnalyticsWrapper,
     @Provided private val motivationSettings: MotivationSettings,
     @Provided private val activityRepo: ActivityRepo,
+    @Provided private val avatarRepo: AvatarRepo,
 ) : ViewModel() {
     private var habitStatusJob: Job? = null
     private var overallAnalyticsJob: Job? = null
@@ -71,6 +73,7 @@ class HabitViewModel(
     private var completedHabitsFetchJob: Job? = null
     private var activityJob: Job? = null
     private var statsJob: Job? = null
+    private var avatarJob: Job? = null
 
     // id of the last motivation quote, so the next popup shows a different one
     private var lastQuoteId: String? = null
@@ -86,6 +89,7 @@ class HabitViewModel(
                 observeOverallAnalytics()
                 observeActivity()
                 observeStats()
+                observeAvatar()
 
                 rescheduleAllHabits()
             }
@@ -225,6 +229,12 @@ class HabitViewModel(
                     freezeNotice.value?.let { activityRepo.markFreezesSeen(it.frozenDays) }
                 }
 
+                is HabitsAction.RenameAvatar -> avatarRepo.rename(action.name.trim())
+
+                HabitsAction.DismissNewStage -> {
+                    _state.value.avatar?.let { avatarRepo.markStageSeen(it.plant.stage) }
+                }
+
                 is HabitsAction.InsertMeasuredStatus -> {
                     insertHabitStatus(action.habit, action.date, action.value)
                 }
@@ -281,6 +291,15 @@ class HabitViewModel(
                     ForkStats.of(habits, activity, startingDay, LocalDate.now())
                 }
                 .onEach { stats -> _state.update { it.copy(stats = stats) } }
+                .launchIn(viewModelScope)
+    }
+
+    private fun observeAvatar() {
+        avatarJob?.cancel()
+        avatarJob =
+            avatarRepo
+                .getAvatarState()
+                .onEach { avatar -> _state.update { it.copy(avatar = avatar) } }
                 .launchIn(viewModelScope)
     }
 

@@ -23,6 +23,7 @@ import com.shub39.grit.core.now
 import com.shub39.grit.shared.ui.fakes.FakeActivityRepo
 import com.shub39.grit.shared.ui.fakes.FakeAlarmScheduler
 import com.shub39.grit.shared.ui.fakes.FakeAnalytics
+import com.shub39.grit.shared.ui.fakes.FakeAvatarRepo
 import com.shub39.grit.shared.ui.fakes.FakeHabitRepo
 import com.shub39.grit.shared.ui.fakes.FakeMotivationSettings
 import com.shub39.grit.shared.ui.fakes.FakeSettingsDatastore
@@ -66,6 +67,7 @@ class HabitViewModelActivityTest {
             FakeAnalytics(),
             FakeMotivationSettings(),
             activityRepo,
+            FakeAvatarRepo(activityRepo),
         )
 
     @Test

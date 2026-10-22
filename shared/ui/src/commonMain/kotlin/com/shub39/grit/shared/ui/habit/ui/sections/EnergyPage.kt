@@ -42,6 +42,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -53,12 +57,17 @@ import androidx.compose.ui.unit.dp
 import com.shub39.grit.core.activity.ActivityPlanner
 import com.shub39.grit.core.activity.ActivityReport
 import com.shub39.grit.core.activity.DayStatus
+import com.shub39.grit.core.avatar.AvatarState
 import com.shub39.grit.core.stats.ForkStats
 import com.shub39.grit.shared.ui.GritPreviewWrapper
 import com.shub39.grit.shared.ui.LocalWindowSizeClass
 import com.shub39.grit.shared.ui.WindowSize.Companion.isExpanded
+import com.shub39.grit.shared.ui.habit.HabitsAction
 import com.shub39.grit.shared.ui.habit.activity.RecentDay
 import com.shub39.grit.shared.ui.habit.activity.recentDays
+import com.shub39.grit.shared.ui.habit.avatar.AvatarCard
+import com.shub39.grit.shared.ui.habit.avatar.NewStageDialog
+import com.shub39.grit.shared.ui.habit.avatar.RenameAvatarDialog
 import com.shub39.grit.shared.ui.theme.flexFontEmphasis
 import com.shub39.grit.shared.ui.theme.flexFontRounded
 import grit.shared.ui.generated.resources.Res
@@ -89,18 +98,21 @@ private const val DAYS_SHOWN = 30
 private const val DAYS_PER_ROW = 10
 
 /**
- * Energy balance, activity streak, the last 30 days, monthly statistics and the rules. Built as a
- * list of cards, so a shop (phase 4) can go below the rules.
+ * The plant avatar, energy balance, activity streak, the last 30 days, monthly statistics and the
+ * rules. Built as a list of cards, so the shop (phase 4) can go below the rules.
  */
 @Composable
 fun EnergyPage(
     activity: ActivityReport?,
     onNavigateBack: () -> Unit,
     stats: ForkStats = ForkStats(),
+    avatar: AvatarState? = null,
+    onAction: (HabitsAction) -> Unit = {},
     modifier: Modifier = Modifier,
     showNavigateBack: Boolean = true,
 ) {
     val windowSizeClass = LocalWindowSizeClass.current
+    var showRename by remember { mutableStateOf(false) }
 
     Column(modifier = modifier.fillMaxSize()) {
         TopAppBar(
@@ -141,6 +153,10 @@ fun EnergyPage(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            if (avatar != null) {
+                item { AvatarCard(avatar = avatar, onRenameClick = { showRename = true }) }
+            }
+
             item { EnergyBalance(energy = activity.energy) }
 
             item {
@@ -175,6 +191,25 @@ fun EnergyPage(
 
             item { RulesCard() }
         }
+    }
+
+    if (avatar != null && showRename) {
+        RenameAvatarDialog(
+            currentName = avatar.data.name,
+            onSave = {
+                onAction(HabitsAction.RenameAvatar(it))
+                showRename = false
+            },
+            onDismiss = { showRename = false },
+        )
+    }
+
+    avatar?.newStage?.let { stage ->
+        NewStageDialog(
+            avatar = avatar,
+            stage = stage,
+            onDismiss = { onAction(HabitsAction.DismissNewStage) },
+        )
     }
 }
 

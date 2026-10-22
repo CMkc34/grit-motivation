@@ -29,7 +29,13 @@ class ForkTranslationTest {
     private val resources = File("src/commonMain/composeResources")
 
     // the fork's own string files, kept apart from the upstream strings.xml
-    private val files = listOf("motivation_strings.xml", "energy_strings.xml", "stats_strings.xml")
+    private val files =
+        listOf(
+            "motivation_strings.xml",
+            "energy_strings.xml",
+            "stats_strings.xml",
+            "avatar_strings.xml",
+        )
 
     private fun forkStrings(valuesDir: String): List<Document> =
         files.map { name ->
