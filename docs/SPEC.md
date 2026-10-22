@@ -3,7 +3,7 @@
 Privater Fork von [shub39/Grit](https://github.com/shub39/Grit) (GPL-3.0, Kotlin Multiplatform,
 Compose Material 3, Room). Ziel: kontextsensitives Motivations-/Sarkasmus-Pop-up beim Abhaken von
 Habits (Phase 1); danach Energie & Aktiv-Serie (Phase 2, Abschnitt 4), Statistiken (Phase 3, Abschnitt 6) und ein
-Avatar (Roadmap in Abschnitt 5).
+Avatar (Phase 4, Abschnitt 7; Roadmap in Abschnitt 5).
 
 Basis-Stand: Upstream `master` @ `3e203449` (Release 6.2.2).
 
@@ -294,7 +294,7 @@ Belohnt wird die **Nutzung der App**, nicht die Serie einzelner Routinen.
 | 1 | Motivations-Pop-up | abgeschlossen (Meilenstein „Phase 1“, #1–#9) |
 | 2 | Energie & Aktiv-Serie | Meilenstein „Phase 2“, Epic #14, Abschnitt 4 |
 | 3 | Statistiken | Meilenstein „Phase 3“, Epic #10, Abschnitt 6 |
-| 4 | Avatar / Maskottchen | Meilenstein „Phase 4“, Epic #15 |
+| 4 | Avatar (wachsende Pflanze) | Meilenstein „Phase 4“, Epic #15, Abschnitt 7 |
 
 Reihenfolge und Abhängigkeiten:
 
@@ -363,11 +363,96 @@ Design-Interview abgeschlossen am 2026-10-22. Epic #10, Meilenstein „Phase 3 �
 | #43 | Energie-Seite: aktive Tage pro Monat, Energie-Verlauf |
 | #44 | Gesamt-Statistik: Monatsrückblick, Serien-Überblick, Häkchen pro Woche |
 | #45 | Comeback-Zähler |
-| #46 | Abnahme auf dem Gerät (optional) |
+| #46 | Abnahme auf dem Gerät – übersprungen (Entscheidung 2026-10-22) |
 
 ---
 
-## 7. Offene Fragen
+## 7. Phase 4 – Avatar (wachsende Pflanze)
+
+Design-Interview abgeschlossen am 2026-10-22. Epic #15, Meilenstein „Phase 4 – Avatar“.
+
+### 7.1 Grundidee
+- Ein **Pflänzchen**, das mit der **Gesamtzahl aktiver Tage** (Status `ACTIVE` im Aktiv-Bericht,
+  gefrorene Tage zählen nicht) in **12 Stufen** zum großen Baum wächst.
+- Energie wird nur im **Shop** ausgegeben; die Stufe hängt nicht an Energie.
+- Serie gerissen (Aktiv-Serie 0) → die Pflanze wirkt **müde** (hängende Blätter, blasser).
+  **Nie Rückstufung.** Sobald die Serie wieder läuft, ist sie wieder fröhlich.
+- Selbst gezeichnet in Compose (`Canvas`, Vektor), keine fremden Assets, keine Lizenzfragen.
+  Leichte Animation (Wiegen), aus bei „Animationen entfernen“.
+- Anzeige **oben auf der Energie-Seite**, darunter Kontostand, Statistiken und der Shop.
+  Pop-up oder Widget eventuell später.
+
+### 7.2 Stufen
+| Stufe | Name (DE) | ab aktiven Tagen |
+|---|---|---|
+| 1 | Samen | 0 |
+| 2 | Keim | 3 |
+| 3 | Keimling | 7 |
+| 4 | Sprössling | 14 |
+| 5 | Pflänzchen | 21 |
+| 6 | Jungpflanze | 30 |
+| 7 | Bäumchen | 45 |
+| 8 | Junger Baum | 60 |
+| 9 | Baum | 90 |
+| 10 | Großer Baum | 150 |
+| 11 | Blühender Baum | 240 |
+| 12 | Mächtiger Baum | 365 |
+
+Die Schwellen stehen nur in `PlantStage` (`core.avatar`). Bis Stufe 7 steht die Pflanze im Topf,
+ab Stufe 8 auf einer Wiese (Topffarbe dann als Farbe der Bank/des Schildes neben dem Baum).
+
+### 7.3 Shop (Vorschlag, Preise in `ShopCatalog`)
+| Art | Gegenstand | Preis | ab Stufe |
+|---|---|---|---|
+| Topffarbe | Terrakotta (Standard) | 0 | 1 |
+| Topffarbe | Blau, Gelb, Grün | je 10 ⚡ | 1 |
+| Topffarbe | Lila | 15 ⚡ | 3 |
+| Topffarbe | Gold | 40 ⚡ | 6 |
+| Accessoire | Gießkanne | 25 ⚡ | 1 |
+| Accessoire | Marienkäfer | 15 ⚡ | 2 |
+| Accessoire | Schmetterling | 20 ⚡ | 4 |
+| Accessoire | Blüten | 30 ⚡ | 5 |
+| Accessoire | Vogel | 40 ⚡ | 8 |
+| Accessoire | Vogelhäuschen | 50 ⚡ | 9 |
+| Accessoire | Früchte | 60 ⚡ | 10 |
+| Accessoire | Lichterkette | 70 ⚡ | 10 |
+| Accessoire | Schaukel | 80 ⚡ | 11 |
+
+- Jeder Gegenstand nur einmal; Topffarbe: genau eine gewählt, Accessoires: beliebig viele.
+- Kauf nur bei genug Energie und erreichter Stufe, mit Bestätigung; Hinweis, wenn danach weniger als
+  ein Freeze (7 ⚡) übrig ist.
+
+### 7.4 Kontostand und Freezes
+- **Kontostand bleibt berechnet.** Gespeichert werden nur die Käufe (`itemId`, Datum).
+  `ActivityPlanner` bucht jeden Kauf an seinem Tag ab, **nach** den Freezes der Lücken, die bis dahin
+  geschlossen sind. Ohne Käufe ist das Ergebnis exakt wie in Phase 2.
+- Ein Kauf macht frühere Freezes nie rückgängig; spätere Lücken werden nur gefroren, wenn danach noch
+  genug Energie da ist (Regel aus 4.2).
+- **#30:** Schalter „Freezes automatisch einsetzen“ auf der Energie-Seite, Standard an. Gespeichert mit
+  Datum der Änderung; aus → ab diesem Tag keine Freezes, frühere bleiben.
+
+### 7.5 Datenhaltung
+- `AvatarStore` (`core.avatar`), Implementierung in `logic/avatar/` über die bestehende
+  Preferences-Datei: `avatar_name`, `avatar_purchases`, `avatar_equipped`; dazu `activity_auto_freeze`.
+- Backup: optionales Feld `avatar` im `ExportSchema`, Import führt zusammen (Käufe vereinigt, Name aus
+  dem Backup, falls lokal leer). Ältere Backups bleiben importierbar.
+- Standardname „Grit“, umbenennbar per Tippen auf den Namen.
+
+### 7.6 Issues
+| # | Inhalt |
+|---|---|
+| #48 | Domain: Wachstumsstufen und Stimmung |
+| #49 | Domain: Shop, Käufe, Kontostand |
+| #50 | Avatar-Daten speichern + Backup |
+| #51 | Pflanze zeichnen (12 Stufen) |
+| #52 | Energie-Seite: Pflanze, Name, Fortschritt |
+| #53 | Shop-UI |
+| #30 | Freezes abschaltbar |
+| #54 | Abnahme auf dem Gerät – übersprungen (Entscheidung 2026-10-22) |
+
+---
+
+## 8. Offene Fragen
 
 - ~~Soll das Pop-up per Einstellung abschaltbar sein?~~ Umgesetzt in #9 (siehe 3.3).
 - ~~Pop-up beim Abhaken eines vergangenen Tages ohne laufende Serie?~~ Entschieden: kein Pop-up bei
