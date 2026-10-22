@@ -2,7 +2,8 @@
 
 Privater Fork von [shub39/Grit](https://github.com/shub39/Grit) (GPL-3.0, Kotlin Multiplatform,
 Compose Material 3, Room). Ziel: kontextsensitives Motivations-/Sarkasmus-Pop-up beim Abhaken von
-Habits (Phase 1); danach Energie & Aktiv-Serie (Phase 2, Abschnitt 4), Statistiken und ein Avatar (Abschnitt 5).
+Habits (Phase 1); danach Energie & Aktiv-Serie (Phase 2, Abschnitt 4), Statistiken (Phase 3, Abschnitt 6) und ein
+Avatar (Roadmap in Abschnitt 5).
 
 Basis-Stand: Upstream `master` @ `3e203449` (Release 6.2.2).
 
@@ -292,7 +293,7 @@ Belohnt wird die **Nutzung der App**, nicht die Serie einzelner Routinen.
 |---|---|---|
 | 1 | Motivations-Pop-up | abgeschlossen (Meilenstein „Phase 1“, #1–#9) |
 | 2 | Energie & Aktiv-Serie | Meilenstein „Phase 2“, Epic #14, Abschnitt 4 |
-| 3 | Statistiken | Meilenstein „Phase 3“, #10 |
+| 3 | Statistiken | Meilenstein „Phase 3“, Epic #10, Abschnitt 6 |
 | 4 | Avatar / Maskottchen | Meilenstein „Phase 4“, Epic #15 |
 
 Reihenfolge und Abhängigkeiten:
@@ -300,7 +301,8 @@ Reihenfolge und Abhängigkeiten:
 - **Phase 4 nach Phase 2:** Der Avatar baut auf der Energie und den aktiven Tagen auf; Energie wird
   dort für Gegenstände ausgegeben (gespeicherte Ausgaben, Kontostand bleibt berechnet).
   Klein anfangen (Stufen/Aussehen), Training und Anpassung später.
-- Phase 3 ist von Phase 2 unabhängig, da die Serien der einzelnen Routinen unverändert bleiben.
+- Phase 3 nutzt für zwei Statistiken (aktive Tage, Energie-Verlauf) den Aktiv-Bericht aus Phase 2;
+  die Serien der einzelnen Routinen bleiben unverändert.
 - Epics werden erst kurz vor Beginn der jeweiligen Phase per Design-Interview in Teilaufgaben
   zerlegt.
 
@@ -312,7 +314,60 @@ Reihenfolge und Abhängigkeiten:
   halten, neue Logik in neue Dateien legen (siehe `docs/WORKFLOW.md`).
 - Neue Room-Tabellen brauchen eine Migration, bestehende Nutzerdaten dürfen nicht verloren gehen.
 
-## 6. Offene Fragen
+## 6. Phase 3 – Statistiken
+
+Design-Interview abgeschlossen am 2026-10-22. Epic #10, Meilenstein „Phase 3 – Statistiken“.
+
+### 6.1 Auswahl und Platzierung
+| Nr. | Statistik | Ort | Datenquelle |
+|---|---|---|---|
+| 1 | Aktive Tage pro Monat (letzte 6 Monate, Balken) | Energie-Seite | Aktiv-Bericht (Phase 2) |
+| 6 | Energie-Verlauf: verdient ⚡ / durch Freezes verbraucht ❄️ pro Monat (letzte 6 Monate) | Energie-Seite | Aktiv-Bericht (Phase 2) |
+| 2 | Monatsrückblick: Erfüllungsquote dieser Monat vs. Vormonat | Gesamt-Statistik | Häkchen |
+| 3 | Serien-Überblick: alle Routinen nach aktueller Serie, mit Bestwert | Gesamt-Statistik | `HabitWithAnalytics` |
+| 5 | Häkchen pro Woche über alle Routinen (letzte 12 Wochen) | Gesamt-Statistik | Häkchen |
+| 4 | Comeback-Zähler | Routinen-Statistik + Summe in der Gesamt-Statistik | Häkchen |
+
+- **Feste Zeiträume**, kein Umschalter (kann später kommen).
+- **Keine Uhrzeit** speichern, keine Änderung an der Datenbank des Originals.
+- Auf der Energie-Seite stehen die neuen Karten zwischen „Letzte 30 Tage“ und den Regeln.
+
+### 6.2 Definitionen
+- **Aktive Tage pro Monat:** Anzahl Tage mit Status `ACTIVE` im Aktiv-Bericht. Monate vor dem
+  Startdatum werden leer dargestellt, nicht als 0.
+- **Energie-Verlauf:** verdient = aktive Tage × `ENERGY_PER_ACTIVE_DAY`, verbraucht = gefrorene Tage ×
+  `FREEZE_COST`, jeweils pro Monat.
+- **Erfüllungsquote:** erledigte / geplante Tage über alle Routinen. Geplant sind nur die Wochentage
+  der Routine, ab ihrem ersten Häkchen und höchstens bis heute (wie `calculateConsistency`). Ein
+  Häkchen zählt, sobald ein Status existiert. Ohne geplante Tage → kein Wert (Hinweis statt 0 %).
+- **Comebacks:** Anzahl Serien einer Routine, die nach mindestens einem verpassten geplanten Tag neu
+  begonnen haben (= Anzahl Serien − 1, nie negativ). 0 Comebacks wird neutral angezeigt, nie als Tadel.
+- **Häkchen pro Woche:** Anzahl Status pro Woche; Wochenbeginn nach der Einstellung „Erster Wochentag“
+  (`HabitState.startingDay`), aktuelle Woche zuletzt.
+
+### 6.3 Architektur
+- Berechnungen als reine Funktionen in `com.shub39.grit.core.stats` (`shared:core`), `today` als
+  Parameter, Tests in `commonTest` (#41).
+- `StatsRepo` (Schnittstelle in `core.stats`) und `StatsRepository` (`logic/stats/`) liefern ein
+  `ForkStats` als Flow; `HabitViewModel` beobachtet es nur, solange eine Statistik- oder die
+  Energie-Seite offen ist, und legt es in `HabitState.stats` (#42).
+- UI in eigenen Dateien (z. B. `ForkOverallStats.kt`), in Upstream-Dateien wie `OverallAnalytics.kt`
+  und `AnalyticsPage.kt` nur eingebunden. Texte in `stats_strings.xml` (DE + EN).
+- `core.motivation` bleibt unberührt.
+
+### 6.4 Issues
+| # | Inhalt |
+|---|---|
+| #41 | Domain: Berechnungen in `core.stats` (test-first) |
+| #42 | `StatsRepo` + `HabitState.stats` |
+| #43 | Energie-Seite: aktive Tage pro Monat, Energie-Verlauf |
+| #44 | Gesamt-Statistik: Monatsrückblick, Serien-Überblick, Häkchen pro Woche |
+| #45 | Comeback-Zähler |
+| #46 | Abnahme auf dem Gerät (optional) |
+
+---
+
+## 7. Offene Fragen
 
 - ~~Soll das Pop-up per Einstellung abschaltbar sein?~~ Umgesetzt in #9 (siehe 3.3).
 - ~~Pop-up beim Abhaken eines vergangenen Tages ohne laufende Serie?~~ Entschieden: kein Pop-up bei
