@@ -40,6 +40,7 @@ import com.shub39.grit.core.stats.MonthReview
 import com.shub39.grit.core.stats.WeeklyChecks
 import com.shub39.grit.shared.ui.GritPreviewWrapper
 import com.shub39.grit.shared.ui.habit.ui.component.BarSeries
+import com.shub39.grit.shared.ui.habit.ui.component.ComebacksCard
 import com.shub39.grit.shared.ui.habit.ui.component.StatsBarChart
 import com.shub39.grit.shared.ui.habit.ui.component.StatsCard
 import com.shub39.grit.shared.ui.theme.flexFontEmphasis
@@ -61,6 +62,14 @@ private const val WEEK_LABEL_EVERY = 4
 fun LazyStaggeredGridScope.forkOverallStats(stats: ForkStats, maxWidth: Dp) {
     item {
         MonthReviewCard(review = stats.monthReview, modifier = Modifier.widthIn(max = maxWidth))
+    }
+
+    item {
+        ComebacksCard(
+            comebacks = stats.totalComebacks,
+            overall = true,
+            modifier = Modifier.widthIn(max = maxWidth),
+        )
     }
 
     if (stats.streakOverview.isNotEmpty()) {

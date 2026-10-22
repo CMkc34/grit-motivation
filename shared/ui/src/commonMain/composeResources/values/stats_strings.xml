@@ -17,6 +17,18 @@
     <string name="stats_streak_overview">Streaks</string>
     <string name="stats_checks_per_week">Check-ins per week</string>
 
+    <!-- Comebacks: new streaks after a break -->
+    <string name="stats_comebacks">Comebacks</string>
+    <plurals name="stats_comebacks_habit">
+        <item quantity="one">You got back on track %1$d time.</item>
+        <item quantity="other">You got back on track %1$d times.</item>
+    </plurals>
+    <plurals name="stats_comebacks_total">
+        <item quantity="one">Across all habits you got back on track %1$d time.</item>
+        <item quantity="other">Across all habits you got back on track %1$d times.</item>
+    </plurals>
+    <string name="stats_comebacks_none">No restart needed so far.</string>
+
     <!-- Short month names for the charts -->
     <string name="stats_month_1">Jan</string>
     <string name="stats_month_2">Feb</string>
