@@ -57,6 +57,8 @@ object ActivityPlanner {
      *
      * Energy spent on [purchases] is taken on the day of the purchase, but only after a gap that is
      * open on that day has been decided, so a purchase never undoes a freeze that was shown before.
+     * A purchase never takes the energy below 0: when a merged backup brings in a purchase that was
+     * not affordable here, the difference is dropped.
      *
      * A gap is not frozen when [autoFreeze] was off on any of its days. Switching freezes off keeps
      * the freezes of earlier days.
@@ -77,7 +79,7 @@ object ActivityPlanner {
         val spendByDay = purchases.groupBy({ it.date }, { it.price })
 
         fun spendPending() {
-            energy -= pendingSpend
+            energy = maxOf(0, energy - pendingSpend)
             pendingSpend = 0
         }
 

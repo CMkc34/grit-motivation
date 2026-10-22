@@ -429,6 +429,8 @@ ab Stufe 8 auf einer Wiese (Topffarbe dann als Farbe der Bank/des Schildes neben
   geschlossen sind. Ohne Käufe ist das Ergebnis exakt wie in Phase 2.
 - Ein Kauf macht frühere Freezes nie rückgängig; spätere Lücken werden nur gefroren, wenn danach noch
   genug Energie da ist (Regel aus 4.2).
+- Der Kontostand fällt nie unter 0: Bringt ein Backup-Import einen Kauf mit, der hier nicht bezahlbar
+  war, bleibt der Gegenstand erhalten und die Differenz verfällt (#68).
 - **#30:** Schalter „Freezes automatisch einsetzen“ auf der Energie-Seite, Standard an. Gespeichert mit
   Datum der Änderung; aus → ab diesem Tag keine Freezes, frühere bleiben.
 
