@@ -16,8 +16,10 @@
  */
 package com.shub39.grit.shared.ui.viewmodel
 
+import com.shub39.grit.core.activity.ActivityPlanner
 import com.shub39.grit.core.activity.ActivityReport
 import com.shub39.grit.core.activity.FreezeNotice
+import com.shub39.grit.core.now
 import com.shub39.grit.shared.ui.fakes.FakeActivityRepo
 import com.shub39.grit.shared.ui.fakes.FakeAlarmScheduler
 import com.shub39.grit.shared.ui.fakes.FakeAnalytics
@@ -38,6 +40,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.yearMonth
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HabitViewModelActivityTest {
@@ -81,6 +84,21 @@ class HabitViewModelActivityTest {
             activityRepo.report.value = report
 
             assertEquals(report, viewModel.state.value.activity)
+        }
+
+    @Test
+    fun `statistics follow the activity report`() =
+        runTest(dispatcher) {
+            val viewModel = viewModel()
+            backgroundScope.launch { viewModel.state.collect {} }
+
+            val today = LocalDate.now()
+            activityRepo.report.value =
+                ActivityPlanner.plan(activeDays = setOf(today), startDate = today, today = today)
+
+            val thisMonth = viewModel.state.value.stats.activeDaysPerMonth.last()
+            assertEquals(today.yearMonth, thisMonth.month)
+            assertEquals(1, thisMonth.activeDays)
         }
 
     @Test

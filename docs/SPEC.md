@@ -348,9 +348,10 @@ Design-Interview abgeschlossen am 2026-10-22. Epic #10, Meilenstein „Phase 3 �
 ### 6.3 Architektur
 - Berechnungen als reine Funktionen in `com.shub39.grit.core.stats` (`shared:core`), `today` als
   Parameter, Tests in `commonTest` (#41).
-- `StatsRepo` (Schnittstelle in `core.stats`) und `StatsRepository` (`logic/stats/`) liefern ein
-  `ForkStats` als Flow; `HabitViewModel` beobachtet es nur, solange eine Statistik- oder die
-  Energie-Seite offen ist, und legt es in `HabitState.stats` (#42).
+- Kein eigenes Repository: Alle Daten liegen schon in `HabitState` (`habitsWithAnalytics` mit allen
+  Häkchen, `activity`, `startingDay`). `ForkStats.of(...)` (`core.stats`) berechnet daraus alle Werte;
+  `HabitViewModel.observeStats()` rechnet neu, sobald sich eins davon ändert, und legt das Ergebnis in
+  `HabitState.stats` (#42).
 - UI in eigenen Dateien (z. B. `ForkOverallStats.kt`), in Upstream-Dateien wie `OverallAnalytics.kt`
   und `AnalyticsPage.kt` nur eingebunden. Texte in `stats_strings.xml` (DE + EN).
 - `core.motivation` bleibt unberührt.
@@ -359,7 +360,7 @@ Design-Interview abgeschlossen am 2026-10-22. Epic #10, Meilenstein „Phase 3 �
 | # | Inhalt |
 |---|---|
 | #41 | Domain: Berechnungen in `core.stats` (test-first) |
-| #42 | `StatsRepo` + `HabitState.stats` |
+| #42 | `ForkStats` + `HabitState.stats` |
 | #43 | Energie-Seite: aktive Tage pro Monat, Energie-Verlauf |
 | #44 | Gesamt-Statistik: Monatsrückblick, Serien-Überblick, Häkchen pro Woche |
 | #45 | Comeback-Zähler |

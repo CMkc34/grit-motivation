@@ -21,6 +21,7 @@ import androidx.compose.runtime.Stable
 import com.shub39.grit.core.activity.ActivityReport
 import com.shub39.grit.core.habits.HabitWithAnalytics
 import com.shub39.grit.core.habits.OverallAnalytics
+import com.shub39.grit.core.stats.ForkStats
 import com.shub39.grit.shared.ui.habit.motivation.MotivationPopupState
 import kotlinx.datetime.DayOfWeek
 
@@ -56,6 +57,7 @@ data class HabitState(
     val editState: Boolean = false,
     val motivationPopup: MotivationPopupState? = null,
     val activity: ActivityReport? = null,
+    val stats: ForkStats = ForkStats(),
 
     // datastore
     val compactHabitView: Boolean = false,

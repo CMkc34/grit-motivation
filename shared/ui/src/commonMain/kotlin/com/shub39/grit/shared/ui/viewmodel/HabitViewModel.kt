@@ -31,6 +31,7 @@ import com.shub39.grit.core.interfaces.SettingsDatastore
 import com.shub39.grit.core.motivation.GritQuoteEngine
 import com.shub39.grit.core.motivation.MotivationSettings
 import com.shub39.grit.core.now
+import com.shub39.grit.core.stats.ForkStats
 import com.shub39.grit.shared.ui.habit.HabitState
 import com.shub39.grit.shared.ui.habit.HabitsAction
 import com.shub39.grit.shared.ui.habit.motivation.MotivationPopupState
@@ -69,6 +70,7 @@ class HabitViewModel(
     private var observeDatastoreJob: Job? = null
     private var completedHabitsFetchJob: Job? = null
     private var activityJob: Job? = null
+    private var statsJob: Job? = null
 
     // id of the last motivation quote, so the next popup shows a different one
     private var lastQuoteId: String? = null
@@ -83,6 +85,7 @@ class HabitViewModel(
                 observeHabitStatuses()
                 observeOverallAnalytics()
                 observeActivity()
+                observeStats()
 
                 rescheduleAllHabits()
             }
@@ -264,6 +267,20 @@ class HabitViewModel(
             activityRepo
                 .getActivityReport()
                 .onEach { report -> _state.update { it.copy(activity = report) } }
+                .launchIn(viewModelScope)
+    }
+
+    /** Derives the fork's statistics from the habits and the activity report already in [state]. */
+    private fun observeStats() {
+        statsJob?.cancel()
+        statsJob =
+            _state
+                .map { Triple(it.habitsWithAnalytics, it.activity, it.startingDay) }
+                .distinctUntilChanged()
+                .map { (habits, activity, startingDay) ->
+                    ForkStats.of(habits, activity, startingDay, LocalDate.now())
+                }
+                .onEach { stats -> _state.update { it.copy(stats = stats) } }
                 .launchIn(viewModelScope)
     }
 
