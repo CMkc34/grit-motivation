@@ -45,14 +45,17 @@ import com.shub39.grit.shared.ui.habit.ui.component.StatsBarChart
 import com.shub39.grit.shared.ui.habit.ui.component.StatsCard
 import com.shub39.grit.shared.ui.theme.flexFontEmphasis
 import grit.shared.ui.generated.resources.Res
+import grit.shared.ui.generated.resources.stats_change_points
 import grit.shared.ui.generated.resources.stats_checks_per_week
 import grit.shared.ui.generated.resources.stats_month_review
 import grit.shared.ui.generated.resources.stats_no_planned_days
 import grit.shared.ui.generated.resources.stats_previous_month
 import grit.shared.ui.generated.resources.stats_streak_overview
+import kotlin.math.abs
 import kotlin.math.roundToInt
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.number
+import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 
 // every n-th week gets a date label, counted from the current week
@@ -131,14 +134,16 @@ private fun CompletionSummary(current: Completion, previous: Completion?) {
         val change = current.percent() - previous.percent()
         val arrow =
             when {
-                change > 0 -> "↑ +$change"
-                change < 0 -> "↓ $change"
-                else -> "→ 0"
+                change > 0 -> "↑"
+                change < 0 -> "↓"
+                else -> "→"
             }
+        val points =
+            pluralStringResource(Res.plurals.stats_change_points, abs(change), arrow, abs(change))
         Text(
             text =
                 stringResource(Res.string.stats_previous_month, "${previous.percent()}%") +
-                    " · $arrow",
+                    " · $points",
             style = MaterialTheme.typography.bodyMedium,
         )
     }

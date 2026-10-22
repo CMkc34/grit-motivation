@@ -12,6 +12,10 @@
 
     <!-- Overall analytics -->
     <string name="stats_month_review">This month</string>
+    <plurals name="stats_change_points">
+        <item quantity="one">%1$s %2$d percentage point</item>
+        <item quantity="other">%1$s %2$d percentage points</item>
+    </plurals>
     <string name="stats_previous_month">Previous month: %1$s</string>
     <string name="stats_no_planned_days">Nothing planned this month yet</string>
     <string name="stats_streak_overview">Streaks</string>
