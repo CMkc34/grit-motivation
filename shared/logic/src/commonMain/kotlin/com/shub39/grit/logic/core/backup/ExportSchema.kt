@@ -31,6 +31,7 @@ data class ExportSchema(
     val subTasks: List<SubTaskSchema>,
     // fork: missing in older backups and in backups from the original app
     val activity: ActivitySchema? = null,
+    val avatar: AvatarSchema? = null,
 )
 
 @Serializable

@@ -1,0 +1,58 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package com.shub39.grit.core.avatar
+
+import kotlinx.coroutines.flow.Flow
+
+/** The plant as the UI shows it. */
+data class AvatarState(val plant: PlantState, val energy: Int, val data: AvatarData) {
+    val owned: Set<String>
+        get() = Shop.owned(data.purchases)
+
+    /** A stage reached since the user last looked, `null` when there is nothing new. */
+    val newStage: PlantStage?
+        get() = plant.stage.takeIf { it.number > data.seenStage && data.seenStage > 0 }
+
+    fun check(item: ShopItem): PurchaseCheck = Shop.check(item, plant.stage, energy, data.purchases)
+
+    fun isWorn(item: ShopItem): Boolean =
+        when (item.kind) {
+            ShopItemKind.POT_COLOR -> data.potColor == item.id
+            ShopItemKind.ACCESSORY -> item.id in data.accessories
+        }
+
+    /** What the plant would look like with [item] on, for the preview before buying. */
+    fun tryOn(item: ShopItem): AvatarData =
+        when (item.kind) {
+            ShopItemKind.POT_COLOR -> data.copy(potColor = item.id)
+            ShopItemKind.ACCESSORY -> data.copy(accessories = data.accessories + item.id)
+        }
+}
+
+interface AvatarRepo {
+    fun getAvatarState(): Flow<AvatarState>
+
+    /** Buys [itemId] and puts it on; returns why not when it cannot be bought. */
+    suspend fun buy(itemId: String): PurchaseCheck
+
+    suspend fun rename(name: String)
+
+    /** Puts an owned item on or takes it off; a pot color can only be replaced, not removed. */
+    suspend fun wear(itemId: String, worn: Boolean)
+
+    suspend fun markStageSeen(stage: PlantStage)
+}

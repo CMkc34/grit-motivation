@@ -19,6 +19,7 @@ package com.shub39.grit.logic.core.backup
 import com.shub39.grit.core.GritLogger
 import com.shub39.grit.core.activity.ActivityData
 import com.shub39.grit.core.activity.ActivityStore
+import com.shub39.grit.core.avatar.AvatarStore
 import com.shub39.grit.core.habits.HabitRepo
 import com.shub39.grit.core.interfaces.AlarmScheduler
 import com.shub39.grit.core.settings.backup.RestoreRepo
@@ -47,6 +48,7 @@ class RestoreImpl(
     private val habitRepo: HabitRepo,
     private val alarmScheduler: AlarmScheduler,
     private val activityStore: ActivityStore,
+    private val avatarStore: AvatarStore,
 ) : RestoreRepo {
     override suspend fun restoreData(): RestoreResult {
         return try {
@@ -114,6 +116,12 @@ class RestoreImpl(
                     jsonDeserialized.activity?.toActivityData() ?: ActivityData()
                 )
             )
+
+            jsonDeserialized.avatar?.let { backup ->
+                avatarStore.replaceAll(
+                    avatarStore.getAvatar().first().mergedWith(backup.toAvatarData())
+                )
+            }
 
             RestoreResult.Success
         } catch (e: SchemaMismatchException) {

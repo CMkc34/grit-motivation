@@ -22,20 +22,28 @@ import com.shub39.grit.core.activity.ActivityRepo
 import com.shub39.grit.core.activity.ActivityReport
 import com.shub39.grit.core.activity.ActivityStore
 import com.shub39.grit.core.activity.FreezeNotice
+import com.shub39.grit.core.avatar.AvatarStore
+import com.shub39.grit.core.avatar.Purchase
 import com.shub39.grit.core.now
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.datetime.LocalDate
 import org.koin.core.annotation.Single
 
 @Single(binds = [ActivityRepo::class])
-class ActivityRepository(private val store: ActivityStore) : ActivityRepo {
+class ActivityRepository(private val store: ActivityStore, private val avatarStore: AvatarStore) :
+    ActivityRepo {
 
-    override fun getActivityReport(): Flow<ActivityReport> = activity().map { plan(it) }
+    override fun getActivityReport(): Flow<ActivityReport> =
+        combine(activity(), purchases()) { data, purchases -> plan(data, purchases) }
 
     override fun getFreezeNotice(): Flow<FreezeNotice?> =
-        activity().map { data -> FreezeNotice.of(plan(data), data.seenFreezes) }
+        combine(activity(), purchases()) { data, purchases ->
+            FreezeNotice.of(plan(data, purchases), data.seenFreezes)
+        }
 
     override suspend fun markFreezesSeen(days: Set<LocalDate>) = store.markFreezesSeen(days)
 
@@ -45,12 +53,17 @@ class ActivityRepository(private val store: ActivityStore) : ActivityRepo {
             // the first look at the activity marks the start of the system ("from installation")
             .onStart { store.ensureStartDate(LocalDate.now()) }
 
-    private fun plan(data: ActivityData): ActivityReport {
+    // energy spent in the plant's shop (phase 4)
+    private fun purchases(): Flow<List<Purchase>> =
+        avatarStore.getAvatar().map { it.purchases }.distinctUntilChanged()
+
+    private fun plan(data: ActivityData, purchases: List<Purchase>): ActivityReport {
         val today = LocalDate.now()
         return ActivityPlanner.plan(
             activeDays = data.activeDays,
             startDate = data.startDate ?: today,
             today = today,
+            purchases = purchases,
         )
     }
 }
