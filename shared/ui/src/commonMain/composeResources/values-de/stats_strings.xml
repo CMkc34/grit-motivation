@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Statistiken (Phase 3): Energie-Seite und Gesamt-Statistik.
+  Eigene Datei des Forks, die strings.xml des Originals bleibt unberührt.
+-->
+<resources>
+    <!-- Energie-Seite -->
+    <string name="stats_active_days_per_month">Aktive Tage pro Monat</string>
+    <string name="stats_energy_per_month">Energie pro Monat</string>
+    <string name="stats_energy_earned">⚡ verdient</string>
+    <string name="stats_energy_spent">❄️ für Freezes</string>
+
+    <!-- Kurze Monatsnamen für die Diagramme -->
+    <string name="stats_month_1">Jan</string>
+    <string name="stats_month_2">Feb</string>
+    <string name="stats_month_3">Mär</string>
+    <string name="stats_month_4">Apr</string>
+    <string name="stats_month_5">Mai</string>
+    <string name="stats_month_6">Jun</string>
+    <string name="stats_month_7">Jul</string>
+    <string name="stats_month_8">Aug</string>
+    <string name="stats_month_9">Sep</string>
+    <string name="stats_month_10">Okt</string>
+    <string name="stats_month_11">Nov</string>
+    <string name="stats_month_12">Dez</string>
+</resources>

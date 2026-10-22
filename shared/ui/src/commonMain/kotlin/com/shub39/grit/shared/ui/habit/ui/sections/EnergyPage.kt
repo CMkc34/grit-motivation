@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import com.shub39.grit.core.activity.ActivityPlanner
 import com.shub39.grit.core.activity.ActivityReport
 import com.shub39.grit.core.activity.DayStatus
+import com.shub39.grit.core.stats.ForkStats
 import com.shub39.grit.shared.ui.GritPreviewWrapper
 import com.shub39.grit.shared.ui.LocalWindowSizeClass
 import com.shub39.grit.shared.ui.WindowSize.Companion.isExpanded
@@ -88,13 +89,14 @@ private const val DAYS_SHOWN = 30
 private const val DAYS_PER_ROW = 10
 
 /**
- * Energy balance, activity streak, the last 30 days and the rules. Built as a list of cards, so a
- * shop (phase 4) can go below the rules.
+ * Energy balance, activity streak, the last 30 days, monthly statistics and the rules. Built as a
+ * list of cards, so a shop (phase 4) can go below the rules.
  */
 @Composable
 fun EnergyPage(
     activity: ActivityReport?,
     onNavigateBack: () -> Unit,
+    stats: ForkStats = ForkStats(),
     modifier: Modifier = Modifier,
     showNavigateBack: Boolean = true,
 ) {
@@ -162,6 +164,14 @@ fun EnergyPage(
             }
 
             item { RecentDaysCard(days = activity.recentDays(DAYS_SHOWN)) }
+
+            if (stats.activeDaysPerMonth.isNotEmpty()) {
+                item { MonthlyActiveDaysCard(months = stats.activeDaysPerMonth) }
+            }
+
+            if (stats.energyPerMonth.isNotEmpty()) {
+                item { MonthlyEnergyCard(months = stats.energyPerMonth) }
+            }
 
             item { RulesCard() }
         }
