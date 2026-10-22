@@ -24,16 +24,18 @@ data class ActivityData(
     val startDate: LocalDate? = null,
     val activeDays: Set<LocalDate> = emptySet(),
     val seenFreezes: Set<LocalDate> = emptySet(),
+    val autoFreeze: AutoFreezeSwitches = AutoFreezeSwitches(),
 ) {
     /**
      * Combines two records, e.g. the current one and a restored backup: the earlier start date
-     * wins, active days and seen freezes are joined.
+     * wins, active days, seen freezes and freeze switches are joined.
      */
     fun mergedWith(other: ActivityData): ActivityData =
         ActivityData(
             startDate = listOfNotNull(startDate, other.startDate).minOrNull(),
             activeDays = activeDays + other.activeDays,
             seenFreezes = seenFreezes + other.seenFreezes,
+            autoFreeze = autoFreeze.mergedWith(other.autoFreeze),
         )
 }
 
@@ -48,6 +50,9 @@ interface ActivityStore {
 
     /** Remembers [days] as freezes the user has already been told about. */
     suspend fun markFreezesSeen(days: Set<LocalDate>)
+
+    /** Switches automatic freezes on or off from [day] on. */
+    suspend fun setAutoFreeze(day: LocalDate, enabled: Boolean)
 
     /** Replaces everything stored with [data], used when restoring a backup. */
     suspend fun replaceAll(data: ActivityData)

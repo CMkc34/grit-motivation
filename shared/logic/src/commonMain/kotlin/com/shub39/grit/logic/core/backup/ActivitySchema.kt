@@ -17,6 +17,7 @@
 package com.shub39.grit.logic.core.backup
 
 import com.shub39.grit.core.activity.ActivityData
+import com.shub39.grit.core.activity.AutoFreezeSwitches
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 
@@ -26,6 +27,8 @@ data class ActivitySchema(
     val startDate: String? = null,
     val activeDays: List<String> = emptyList(),
     val seenFreezes: List<String> = emptyList(),
+    /** Day to whether automatic freezes were on from then; missing in older backups. */
+    val autoFreeze: Map<String, Boolean> = emptyMap(),
 )
 
 fun ActivityData.toActivitySchema(): ActivitySchema {
@@ -33,6 +36,7 @@ fun ActivityData.toActivitySchema(): ActivitySchema {
         startDate = startDate?.toString(),
         activeDays = activeDays.sorted().map(LocalDate::toString),
         seenFreezes = seenFreezes.sorted().map(LocalDate::toString),
+        autoFreeze = autoFreeze.changes.mapKeys { it.key.toString() },
     )
 }
 
@@ -41,5 +45,6 @@ fun ActivitySchema.toActivityData(): ActivityData {
         startDate = startDate?.let(LocalDate::parse),
         activeDays = activeDays.mapTo(mutableSetOf(), LocalDate::parse),
         seenFreezes = seenFreezes.mapTo(mutableSetOf(), LocalDate::parse),
+        autoFreeze = AutoFreezeSwitches(autoFreeze.mapKeys { LocalDate.parse(it.key) }),
     )
 }

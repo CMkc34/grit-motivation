@@ -23,6 +23,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.shub39.grit.core.activity.ActivityData
 import com.shub39.grit.core.activity.ActivityStore
+import com.shub39.grit.core.activity.AutoFreezeSwitches
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.LocalDate
@@ -36,6 +37,8 @@ class ActivityStoreImpl(private val datastore: DataStore<Preferences>) : Activit
         private val startDateKey = stringPreferencesKey("activity_start_date")
         private val activeDaysKey = stringSetPreferencesKey("activity_days")
         private val seenFreezesKey = stringSetPreferencesKey("activity_seen_freezes")
+        // "2026-10-22|false": automatic freezes switched off on that day
+        private val autoFreezeKey = stringSetPreferencesKey("activity_auto_freeze")
     }
 
     override fun getActivity(): Flow<ActivityData> =
@@ -44,6 +47,7 @@ class ActivityStoreImpl(private val datastore: DataStore<Preferences>) : Activit
                 startDate = prefs[startDateKey]?.let(LocalDate::parse),
                 activeDays = prefs[activeDaysKey].orEmpty().toDates(),
                 seenFreezes = prefs[seenFreezesKey].orEmpty().toDates(),
+                autoFreeze = prefs[autoFreezeKey].orEmpty().toSwitches(),
             )
         }
 
@@ -64,6 +68,13 @@ class ActivityStoreImpl(private val datastore: DataStore<Preferences>) : Activit
         }
     }
 
+    override suspend fun setAutoFreeze(day: LocalDate, enabled: Boolean) {
+        datastore.edit {
+            val switches = it[autoFreezeKey].orEmpty().toSwitches().switched(day, enabled)
+            it[autoFreezeKey] = switches.toStrings()
+        }
+    }
+
     override suspend fun replaceAll(data: ActivityData) {
         datastore.edit {
             val startDate = data.startDate
@@ -71,9 +82,21 @@ class ActivityStoreImpl(private val datastore: DataStore<Preferences>) : Activit
             else it[startDateKey] = startDate.toString()
             it[activeDaysKey] = data.activeDays.mapTo(mutableSetOf(), LocalDate::toString)
             it[seenFreezesKey] = data.seenFreezes.mapTo(mutableSetOf(), LocalDate::toString)
+            it[autoFreezeKey] = data.autoFreeze.toStrings()
         }
     }
 
     private fun Set<String>.toDates(): Set<LocalDate> =
         mapTo(mutableSetOf()) { LocalDate.parse(it) }
+
+    private fun Set<String>.toSwitches(): AutoFreezeSwitches =
+        AutoFreezeSwitches(
+            associate { entry ->
+                val (day, enabled) = entry.split("|")
+                LocalDate.parse(day) to enabled.toBoolean()
+            }
+        )
+
+    private fun AutoFreezeSwitches.toStrings(): Set<String> =
+        changes.mapTo(mutableSetOf()) { (day, enabled) -> "$day|$enabled" }
 }

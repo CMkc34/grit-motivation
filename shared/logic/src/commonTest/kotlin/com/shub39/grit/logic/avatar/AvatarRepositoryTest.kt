@@ -58,6 +58,8 @@ private class FakeActivityRepo(
     override fun getFreezeNotice(): Flow<FreezeNotice?> = flowOf(null)
 
     override suspend fun markFreezesSeen(days: Set<LocalDate>) = Unit
+
+    override suspend fun setAutoFreeze(enabled: Boolean) = Unit
 }
 
 class AvatarRepositoryTest {

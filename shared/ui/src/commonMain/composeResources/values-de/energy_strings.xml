@@ -35,6 +35,11 @@
     <string name="energy_rule_freeze">Einen Tag verpasst? Ein Freeze kostet %1$d ⚡ pro Tag und rettet deine Serie automatisch, bis zu %2$d Tage am Stück.</string>
     <string name="energy_rule_frozen_day">Ein gefrorener Tag hält deine Serie, zählt aber nicht mit.</string>
     <string name="energy_rule_break">Reißt die Serie trotzdem, bleibt deine Energie erhalten.</string>
+    <string name="energy_rule_auto_freeze">Unten kannst du automatische Freezes ausschalten, um Energie für den Shop zu sparen.</string>
+    <!-- Schalter für automatische Freezes -->
+    <string name="energy_auto_freeze_title">Freezes automatisch einsetzen</string>
+    <string name="energy_auto_freeze_on">Verpasste Tage werden mit Energie gerettet, wenn sie reicht.</string>
+    <string name="energy_auto_freeze_off">Aus: Ein verpasster Tag beendet die Serie, deine Energie bleibt für den Shop. Frühere Freezes bleiben.</string>
     <!-- Freeze-Hinweis beim Öffnen: %1$d = Aktiv-Serie, %2$d = verbrauchte Energie, %3$d = restliche Energie -->
     <string name="freeze_notice_title">❄️ Serie gerettet</string>
     <plurals name="freeze_notice_text">

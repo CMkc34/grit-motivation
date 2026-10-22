@@ -28,4 +28,7 @@ interface ActivityRepo {
 
     /** Remembers [days] as shown, so their freezes are not announced again. */
     suspend fun markFreezesSeen(days: Set<LocalDate>)
+
+    /** Switches automatic freezes on or off from today on; earlier freezes stay. */
+    suspend fun setAutoFreeze(enabled: Boolean)
 }

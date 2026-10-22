@@ -188,6 +188,9 @@ class FakeActivityRepo(
         }
     }
 
+    override suspend fun setAutoFreeze(enabled: Boolean) =
+        report.update { it.copy(autoFreeze = enabled) }
+
     override suspend fun markFreezesSeen(days: Set<LocalDate>) {
         seenFreezes += days
         freezeNotice.update { notice ->
