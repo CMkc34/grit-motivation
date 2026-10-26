@@ -36,6 +36,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -90,10 +91,10 @@ private const val DAYS_PER_ROW = 5
 private const val TODAY_TINT = 0.18f
 
 /**
- * Routine card of the habits list (fork, #81): header with name, flame with the streak and the
- * statistics button; below the icon tile on the left and the last 10 days as 2 × 5 boxes on the
- * right (oldest top left, today bottom right). Tapping the card checks off today, tapping a box
- * that day. The compact view shows only the header with a small tile.
+ * Routine card of the habits list (fork, #81): header with the name in capitals, flame with the
+ * streak and the statistics button; below a divider the icon tile on the left and the last 10 days
+ * as 2 × 5 boxes on the right (oldest top left, today bottom right). Tapping the card checks off
+ * today, tapping a box that day. The compact view shows only the header with a small tile.
  */
 @Composable
 fun RoutineCard(
@@ -164,7 +165,7 @@ fun RoutineCard(
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = habit.title,
+                        text = habit.title.uppercase(),
                         maxLines = 1,
                         style =
                             MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
@@ -226,6 +227,8 @@ fun RoutineCard(
             }
 
             if (!compactView) {
+                HorizontalDivider(color = cardContent.copy(alpha = 0.2f))
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
