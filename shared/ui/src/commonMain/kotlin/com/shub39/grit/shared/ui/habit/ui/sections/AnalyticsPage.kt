@@ -61,6 +61,7 @@ import com.kizitonwose.calendar.compose.heatmapcalendar.rememberHeatMapCalendarS
 import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.minusMonths
 import com.kizitonwose.calendar.core.now
+import com.shub39.grit.core.habits.style.styleOf
 import com.shub39.grit.shared.ui.LocalWindowSizeClass
 import com.shub39.grit.shared.ui.WindowSize.Companion.isExpanded
 import com.shub39.grit.shared.ui.components.GritDialog
@@ -347,9 +348,13 @@ fun AnalyticsPage(
         HabitUpsertSheet(
             habit = currentHabit.habit,
             onDismissRequest = { editDialog = false },
-            onUpsertHabit = { onAction(HabitsAction.UpdateHabit(it)) },
+            onUpsertHabit = { habit, style ->
+                onAction(HabitsAction.UpdateHabit(habit))
+                onAction(HabitsAction.SetRoutineStyle(habit.id, style))
+            },
             is24Hr = state.is24Hr,
             isEditSheet = true,
+            style = state.routineStyles.styleOf(currentHabit.habit.id),
         )
     }
 

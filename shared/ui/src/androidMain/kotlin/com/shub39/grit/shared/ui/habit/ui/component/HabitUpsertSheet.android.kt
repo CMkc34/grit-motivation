@@ -31,16 +31,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import com.shub39.grit.core.habits.Habit
+import com.shub39.grit.core.habits.style.RoutineStyle
 import com.shub39.grit.shared.ui.components.genericSaver
 
 @Composable
 actual fun HabitUpsertSheet(
     habit: Habit,
     onDismissRequest: () -> Unit,
-    onUpsertHabit: (Habit) -> Unit,
+    onUpsertHabit: (Habit, RoutineStyle) -> Unit,
     is24Hr: Boolean,
     modifier: Modifier,
     isEditSheet: Boolean,
+    style: RoutineStyle,
 ) {
     val context = LocalContext.current
 
@@ -80,5 +82,6 @@ actual fun HabitUpsertSheet(
             }
         },
         modifier = modifier,
+        style = style,
     )
 }

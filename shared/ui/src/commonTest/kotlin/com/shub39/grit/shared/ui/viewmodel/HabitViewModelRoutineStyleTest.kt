@@ -105,4 +105,17 @@ class HabitViewModelRoutineStyleTest {
 
             assertEquals(emptyMap(), viewModel.state.value.routineStyles)
         }
+
+    @Test
+    fun `a new routine keeps the style chosen in the form`() =
+        runTest(dispatcher) {
+            val viewModel = viewModel()
+            backgroundScope.launch { viewModel.state.collect {} }
+            val newHabit = habit.copy(id = 2, title = "Run")
+            val style = RoutineStyle(RoutineColor.BLUE, RoutineIcon.RUN)
+
+            viewModel.onAction(HabitsAction.AddHabit(newHabit, style))
+
+            assertEquals(style, viewModel.state.value.routineStyles[2])
+        }
 }

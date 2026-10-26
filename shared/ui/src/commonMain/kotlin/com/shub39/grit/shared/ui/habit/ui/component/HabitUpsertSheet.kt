@@ -55,6 +55,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -70,7 +71,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.shub39.grit.core.habits.Habit
+import com.shub39.grit.core.habits.style.RoutineColor
+import com.shub39.grit.core.habits.style.RoutineIcon
+import com.shub39.grit.core.habits.style.RoutineStyle
 import com.shub39.grit.core.now
+import com.shub39.grit.core.theme.AppTheme
+import com.shub39.grit.core.theme.Theme
 import com.shub39.grit.core.toFormattedString
 import com.shub39.grit.shared.ui.components.ExpressiveSwitch
 import com.shub39.grit.shared.ui.components.GritBottomSheet
@@ -114,14 +120,22 @@ private enum class HabitType {
     }
 }
 
+// fork: colour and icon are saved together with the habit
+private val routineStyleSaver =
+    Saver<RoutineStyle, String>(
+        save = { "${it.color.key}|${it.icon.key}" },
+        restore = { RoutineStyle.fromKeys(it.substringBefore("|"), it.substringAfter("|")) },
+    )
+
 @Composable
 expect fun HabitUpsertSheet(
     habit: Habit,
     onDismissRequest: () -> Unit,
-    onUpsertHabit: (Habit) -> Unit,
+    onUpsertHabit: (Habit, RoutineStyle) -> Unit,
     is24Hr: Boolean,
     modifier: Modifier = Modifier,
     isEditSheet: Boolean = false,
+    style: RoutineStyle = RoutineStyle.DEFAULT,
 )
 
 @Composable
@@ -130,16 +144,19 @@ fun HabitUpsertSheetContent(
     newHabit: Habit,
     updateHabit: (Habit) -> Unit,
     onDismissRequest: () -> Unit,
-    onUpsertHabit: (Habit) -> Unit,
+    onUpsertHabit: (Habit, RoutineStyle) -> Unit,
     is24Hr: Boolean,
     isEditSheet: Boolean = false,
     notificationPermission: Boolean,
     onRequestPermission: () -> Unit,
+    style: RoutineStyle = RoutineStyle.DEFAULT,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
 
     var timePickerDialog by rememberSaveable { mutableStateOf(false) }
+    var currentStyle by rememberSaveable(stateSaver = routineStyleSaver) { mutableStateOf(style) }
+    var stylePicker by rememberSaveable { mutableStateOf(false) }
 
     var currentHabitType by remember {
         mutableStateOf(if (newHabit.isMeasurable) HabitType.MEASURE_ABLE else HabitType.YES_NO)
@@ -223,32 +240,43 @@ fun HabitUpsertSheetContent(
         ) {
             item {
                 Column {
-                    // title
-                    OutlinedTextField(
-                        state = titleTextFieldState,
-                        lineLimits = TextFieldLineLimits.SingleLine,
-                        shape = MaterialTheme.shapes.medium,
-                        keyboardOptions =
-                            KeyboardOptions(
-                                capitalization = KeyboardCapitalization.Sentences,
-                                imeAction = ImeAction.Next,
-                            ),
-                        label = {
-                            if (titleTextFieldState.text.length <= TITLE_STRING_LIMIT) {
-                                Text(
-                                    text =
-                                        stringResource(
-                                            if (isEditSheet) Res.string.update_title
-                                            else Res.string.title
-                                        )
-                                )
-                            } else {
-                                Text(text = stringResource(Res.string.too_long))
-                            }
-                        },
-                        isError = titleTextFieldState.text.length > TITLE_STRING_LIMIT,
-                        modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
-                    )
+                    // fork: colour/icon tile next to the title
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        RoutineStyleTile(
+                            style = currentStyle,
+                            onClick = { stylePicker = true },
+                            modifier = Modifier.padding(top = 8.dp),
+                        )
+                        // title
+                        OutlinedTextField(
+                            state = titleTextFieldState,
+                            lineLimits = TextFieldLineLimits.SingleLine,
+                            shape = MaterialTheme.shapes.medium,
+                            keyboardOptions =
+                                KeyboardOptions(
+                                    capitalization = KeyboardCapitalization.Sentences,
+                                    imeAction = ImeAction.Next,
+                                ),
+                            label = {
+                                if (titleTextFieldState.text.length <= TITLE_STRING_LIMIT) {
+                                    Text(
+                                        text =
+                                            stringResource(
+                                                if (isEditSheet) Res.string.update_title
+                                                else Res.string.title
+                                            )
+                                    )
+                                } else {
+                                    Text(text = stringResource(Res.string.too_long))
+                                }
+                            },
+                            isError = titleTextFieldState.text.length > TITLE_STRING_LIMIT,
+                            modifier = Modifier.weight(1f).focusRequester(focusRequester),
+                        )
+                    }
 
                     // desc
                     OutlinedTextField(
@@ -490,7 +518,8 @@ fun HabitUpsertSheetContent(
                                         targetValueState.text.toString().toDoubleOrNull() ?: 1.0
                                     else 0.0,
                                 targetUnit = targetUnitState.text.toString(),
-                            )
+                            ),
+                            currentStyle,
                         )
                         onDismissRequest()
                     },
@@ -526,6 +555,17 @@ fun HabitUpsertSheetContent(
             }
         }
 
+        if (stylePicker) {
+            RoutineStylePicker(
+                initial = currentStyle,
+                onConfirm = {
+                    currentStyle = it
+                    stylePicker = false
+                },
+                onDismiss = { stylePicker = false },
+            )
+        }
+
         if (timePickerDialog) {
             val timePickerState =
                 rememberTimePickerState(
@@ -558,12 +598,11 @@ fun HabitUpsertSheetContent(
     }
 }
 
-@Preview
 @Composable
-private fun Preview() {
-    GritTheme {
-        HabitUpsertSheet(
-            habit =
+private fun UpsertSheetPreview(theme: Theme) {
+    GritTheme(theme = theme) {
+        HabitUpsertSheetContent(
+            newHabit =
                 Habit(
                     id = 1,
                     title = "New Habit",
@@ -573,10 +612,26 @@ private fun Preview() {
                     index = 1,
                     reminder = false,
                 ),
+            updateHabit = {},
             onDismissRequest = {},
-            onUpsertHabit = {},
+            onUpsertHabit = { _, _ -> },
             is24Hr = true,
             isEditSheet = true,
+            notificationPermission = true,
+            onRequestPermission = {},
+            style = RoutineStyle(RoutineColor.INDIGO, RoutineIcon.BOOK),
         )
     }
+}
+
+@Preview
+@Composable
+private fun Preview() {
+    UpsertSheetPreview(Theme(appTheme = AppTheme.LIGHT))
+}
+
+@Preview
+@Composable
+private fun DarkPreview() {
+    UpsertSheetPreview(Theme(appTheme = AppTheme.DARK))
 }
