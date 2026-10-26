@@ -51,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.shub39.grit.core.habits.Habit
+import com.shub39.grit.core.habits.style.styleOf
 import com.shub39.grit.core.now
 import com.shub39.grit.shared.ui.components.Empty
 import com.shub39.grit.shared.ui.components.PageFill
@@ -62,10 +63,10 @@ import com.shub39.grit.shared.ui.components.middleItemShape
 import com.shub39.grit.shared.ui.habit.HabitState
 import com.shub39.grit.shared.ui.habit.HabitsAction
 import com.shub39.grit.shared.ui.habit.ui.component.ActivityHeaderLine
-import com.shub39.grit.shared.ui.habit.ui.component.HabitCard
 import com.shub39.grit.shared.ui.habit.ui.component.HabitListFABs
 import com.shub39.grit.shared.ui.habit.ui.component.HabitStatusDialog
 import com.shub39.grit.shared.ui.habit.ui.component.HabitUpsertSheet
+import com.shub39.grit.shared.ui.habit.ui.component.RoutineCard
 import com.shub39.grit.shared.ui.theme.flexFontEmphasis
 import com.shub39.grit.shared.ui.theme.flexFontRounded
 import grit.shared.ui.generated.resources.Res
@@ -264,8 +265,10 @@ private fun HabitsListContent(
                             else -> middleItemShape(radius = 8)
                         }
 
-                    HabitCard(
+                    // fork (#81): routine card with colour, icon and the last 10 days
+                    RoutineCard(
                         habitWithAnalytics = habitWithAnalytics,
+                        style = state.routineStyles.styleOf(habitWithAnalytics.habit.id),
                         completed = completed,
                         onInsertStatus = { habit, date, value ->
                             if (habitWithAnalytics.habit.isMeasurable) {
@@ -274,7 +277,6 @@ private fun HabitsListContent(
                             } else onAction(HabitsAction.InsertStatus(habit, date))
                         },
                         onPrepareAnalytics = { onAction(HabitsAction.PrepareAnalytics(it)) },
-                        startingDay = state.startingDay,
                         editState = state.editState,
                         onNavigateToAnalytics = onNavigateToAnalytics,
                         is24Hr = state.is24Hr,
