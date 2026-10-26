@@ -39,9 +39,6 @@ import com.shub39.grit.core.interfaces.AnalyticsWrapper
 import com.shub39.grit.core.interfaces.SettingsDatastore
 import com.shub39.grit.core.motivation.MotivationSettings
 import com.shub39.grit.core.now
-import com.shub39.grit.core.settings.Sections
-import com.shub39.grit.core.tasks.SubTask
-import com.shub39.grit.core.tasks.Task
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -127,10 +124,6 @@ class FakeSettingsDatastore : SettingsDatastore {
 
     override suspend fun setStartOfWeek(day: DayOfWeek) {}
 
-    override fun getStartingSectionPref(): Flow<Sections> = flowOf(Sections.Habits)
-
-    override suspend fun setStartingPage(page: Sections) {}
-
     override fun getIs24Hr(): Flow<Boolean> = flowOf(true)
 
     override suspend fun setIs24Hr(pref: Boolean) {}
@@ -142,10 +135,6 @@ class FakeSettingsDatastore : SettingsDatastore {
     override fun getBiometricLockPref(): Flow<Boolean> = flowOf(false)
 
     override suspend fun setBiometricPref(pref: Boolean) {}
-
-    override fun getTaskReorderPref(): Flow<Boolean> = flowOf(false)
-
-    override suspend fun setTaskReorderPref(pref: Boolean) {}
 
     override fun getCompactViewPref(): Flow<Boolean> = flowOf(false)
 
@@ -233,15 +222,7 @@ class FakeAvatarRepo(
 class FakeAlarmScheduler : AlarmScheduler {
     override fun schedule(habit: Habit) {}
 
-    override fun schedule(task: Task) {}
-
-    override fun schedule(subTask: SubTask) {}
-
     override fun cancel(habit: Habit) {}
-
-    override fun cancel(task: Task) {}
-
-    override fun cancel(subTask: SubTask) {}
 
     override fun cancelAll() {}
 }

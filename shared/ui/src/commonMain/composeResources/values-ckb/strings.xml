@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="tasks">کارەکان</string>
     <string name="material_theme">ڕووکاری ماتیریال یوو</string>
     <string name="done">تەواو</string>
-    <string name="add_task">زیادکردنی کار</string>
     <string name="add_habit">زیادکردنی خوویەکی نوێ</string>
     <string name="update_description">دەستکاریکردنی کوورتەباس</string>
     <string name="delete">سڕینەوە</string>
@@ -16,12 +14,7 @@
     <string name="settings">ڕێکخستنەکان</string>
     <string name="too_long">زۆر درێژە</string>
     <string name="save">هەڵگرتن</string>
-    <string name="edit_task">دەستکاریکردنی کارەکە</string>
-    <string name="delete_tasks">دڵنیایت هەموو کارە تەواوکراوەکان دەسڕیتەوە؟</string>
     <string name="update_title">دەستکاریکردنی ناونیشانەکە</string>
-    <string name="edit_categories">دەستکاریکردنی پۆلەکان</string>
-    <string name="delete_category">ئایا دڵنیایت؟ هەموو کارەکانی ناو ئەم پۆلە دەسڕێنەوە</string>
-    <string name="add_category">زیادکردنی پۆل</string>
     <string name="add">شتێک زیاد بکە</string>
     <string name="habit_map">نەخشەی گەرمیی خووەکان</string>
     <string name="look_and_feel">شێوە و ڕووکار</string>
@@ -38,8 +31,6 @@
     <string name="restore">گەڕاندنەوە</string>
     <string name="restore_desc">گەڕاندنەوەی کار و خووەکان لەو فایلەی دیاریت کردووە</string>
     <string name="material_theme_desc">بەکارهێنانی ڕەنگەکان لەسەر بنەمای وێنەی پاشبنەما</string>
-    <string name="show_habits">سەرەتا خووەکان پیشان بدە</string>
-    <string name="show_habits_desc">لەکاتی کردنەوەی ئەپەکە، یەکەمجار لاپەڕەی خووەکان پیشان بدە</string>
     <string name="use_24Hr">کاتژمێری ٢٤ کاتژمێری بەکاربهێنە</string>
     <string name="use_24Hr_desc">کاتژمێری ٢٤ کاتژمێری بۆ دیاریکردنی کات بەکاربێنە</string>
     <string name="staring_day">هەفتە لە یەکشەممەوە دەست پێ بکات</string>
@@ -52,7 +43,6 @@
     <string name="started_on">دەستی پێ کردووە لە</string>
     <string name="weekly_graph">هەڵسەنگاندنی هەفتانە</string>
     <string name="not_enough_data">زانیاری پێویست نییە</string>
-    <string name="items_completed">تەواوکرا</string>
     <string name="completed">ئەمڕۆ تەواو کراوە</string>
     <string name="title">ناونیشان</string>
     <string name="description">زانیاری</string>

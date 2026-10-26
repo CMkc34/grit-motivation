@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="tasks">Tarefas</string>
-    <string name="add_task">Criar Tarefa</string>
     <string name="material_theme">Tema Material You</string>
     <string name="add_habit">Criar Novo Hábito</string>
     <string name="update_description">Editar Descrição</string>
@@ -15,12 +13,7 @@
     <string name="settings">Configurações</string>
     <string name="too_long">Muito Longo</string>
     <string name="save">Salvar</string>
-    <string name="edit_task">Editar Tarefa</string>
-    <string name="delete_tasks">Você tem certeza que quer deletar todas as tarefas completadas?</string>
     <string name="update_title">Editar Título</string>
-    <string name="edit_categories">Editar Categorias</string>
-    <string name="delete_category">Você tem certeza? Todas as tarefas nesta categoria serão deletadas</string>
-    <string name="add_category">Adicionar Categoria</string>
     <string name="add">Adicione uma tarefa</string>
     <string name="habit_map">Mapa de Calor do Hábito</string>
     <string name="look_and_feel">Aparência e estilo</string>
@@ -37,8 +30,6 @@
     <string name="restore">Restaurar</string>
     <string name="restore_desc">Restaurar tarefas e hábitos do arquivo selecionado</string>
     <string name="material_theme_desc">Use cores com base no papel de parede</string>
-    <string name="show_habits">Mostrar hábitos primeiro</string>
-    <string name="show_habits_desc">Mostrar página de hábitos ao entrar no aplicativo</string>
     <string name="use_24Hr">Usar formato 24h</string>
     <string name="use_24Hr_desc">Use o relógio de 24 horas para definir o horário</string>
     <string name="staring_day">Iniciar semanas aos domingos</string>
@@ -51,7 +42,6 @@
     <string name="started_on">Iniciado em</string>
     <string name="weekly_graph">Comparação semanal</string>
     <string name="not_enough_data">Dados não suficientes</string>
-    <string name="items_completed">concluída</string>
     <string name="completed">Concluído hoje</string>
     <string name="title">Título</string>
     <string name="description">Descrição</string>
@@ -70,9 +60,6 @@
     <string name="foss">Você está usando a variante FOSS</string>
     <string name="foss_desc">Todos os recursos são desbloqueados. Esta variante do aplicativo não suporta compras no aplicativo. Se este aplicativo adicionou valor à sua vida, apoie-me ao doar em</string>
     <string name="add_reminder">Adicionar lembrete</string>
-    <string name="invalid_date_time">O tempo selecionado está no passado</string>
-    <string name="reorder_tasks">Reordenar tarefas</string>
-    <string name="reorder_tasks_desc">Reordenar tarefas quando marcadas como concluídas</string>
     <string name="translate">Traduzir</string>
     <string name="changelog">Mudanças</string>
     <string name="done">Concluído</string>

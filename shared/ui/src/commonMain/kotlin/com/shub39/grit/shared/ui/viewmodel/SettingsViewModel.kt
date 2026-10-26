@@ -129,14 +129,6 @@ class SettingsViewModel(
                     settingsDatastore.setStartOfWeek(action.pref)
                 }
 
-                is ChangeStartingPage -> {
-                    analytics.trackEvent(
-                        AnalyticsEvent.SETTINGS_UPDATED,
-                        mapOf("setting" to "ChangeStartingPage", "value" to action.page.name),
-                    )
-                    settingsDatastore.setStartingPage(action.page)
-                }
-
                 OnResetBackupState -> {
                     _state.update { it.copy(backupState = BackupState()) }
                 }
@@ -206,14 +198,6 @@ class SettingsViewModel(
                     settingsDatastore.setBiometricPref(action.pref)
                 }
 
-                is ChangeReorderTasks -> {
-                    analytics.trackEvent(
-                        AnalyticsEvent.SETTINGS_UPDATED,
-                        mapOf("setting" to "ChangeReorderTasks", "value" to action.pref),
-                    )
-                    settingsDatastore.setTaskReorderPref(action.pref)
-                }
-
                 is ChangeMotivationPopup -> {
                     analytics.trackEvent(
                         AnalyticsEvent.SETTINGS_UPDATED,
@@ -256,11 +240,6 @@ class SettingsViewModel(
         viewModelScope.launch {
             observeJob?.cancel()
             observeJob = launch {
-                settingsDatastore
-                    .getTaskReorderPref()
-                    .onEach { pref -> _state.update { it.copy(reorderTasks = pref) } }
-                    .launchIn(this)
-
                 settingsDatastore
                     .getNotificationsFlow()
                     .onEach { pref -> _state.update { it.copy(pauseNotifications = pref) } }
@@ -311,11 +290,6 @@ class SettingsViewModel(
                 settingsDatastore
                     .getIs24Hr()
                     .onEach { flow -> _state.update { it.copy(is24Hr = flow) } }
-                    .launchIn(this)
-
-                settingsDatastore
-                    .getStartingSectionPref()
-                    .onEach { flow -> _state.update { it.copy(startingPage = flow) } }
                     .launchIn(this)
 
                 settingsDatastore

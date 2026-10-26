@@ -26,7 +26,6 @@ import com.shub39.grit.billing.BillingInitializer
 import com.shub39.grit.core.GritLogger
 import com.shub39.grit.core.data.notification.GritNotificationManager
 import com.shub39.grit.di.GritModules
-import com.shub39.grit.widgets.all_tasks_widget.AllTasksWidgetReceiver
 import com.shub39.grit.widgets.habit_overview_widget.HabitOverviewWidgetReceiver
 import com.shub39.grit.widgets.habit_streak_widget.HabitStreakWidgetReceiver
 import com.shub39.grit.widgets.habit_week_chart_widget.HabitWeekChartWidgetReceiver
@@ -42,6 +41,9 @@ class GritApplication : Application() {
         super.onCreate()
 
         GritNotificationManager.createNotificationChannel(this)
+
+        // Fork: the tasks feature was removed; drop its leftover database (no-op once gone)
+        deleteDatabase("task_database")
 
         startKoin<GritModules> {
             if (BuildConfig.DEBUG) androidLogger()
@@ -59,7 +61,6 @@ class GritApplication : Application() {
                 try {
                     manager.setWidgetPreviews(HabitOverviewWidgetReceiver::class)
                     manager.setWidgetPreviews(HabitStreakWidgetReceiver::class)
-                    manager.setWidgetPreviews(AllTasksWidgetReceiver::class)
                     manager.setWidgetPreviews(HabitWeekChartWidgetReceiver::class)
                 } catch (e: Exception) {
                     GritLogger.e("GritApplication", "Error while setting up widget previews", e)

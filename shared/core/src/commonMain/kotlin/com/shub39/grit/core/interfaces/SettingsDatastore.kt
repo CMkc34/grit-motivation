@@ -16,7 +16,6 @@
  */
 package com.shub39.grit.core.interfaces
 
-import com.shub39.grit.core.settings.Sections
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.DayOfWeek
 
@@ -24,10 +23,6 @@ interface SettingsDatastore {
     fun getStartOfTheWeekPref(): Flow<DayOfWeek>
 
     suspend fun setStartOfWeek(day: DayOfWeek)
-
-    fun getStartingSectionPref(): Flow<Sections>
-
-    suspend fun setStartingPage(page: Sections)
 
     fun getIs24Hr(): Flow<Boolean>
 
@@ -40,10 +35,6 @@ interface SettingsDatastore {
     fun getBiometricLockPref(): Flow<Boolean>
 
     suspend fun setBiometricPref(pref: Boolean)
-
-    fun getTaskReorderPref(): Flow<Boolean>
-
-    suspend fun setTaskReorderPref(pref: Boolean)
 
     fun getCompactViewPref(): Flow<Boolean>
 

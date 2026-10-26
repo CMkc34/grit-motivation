@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="tasks">Tugas</string>
     <string name="material_theme">Tema You Material</string>
     <string name="done">Beres</string>
-    <string name="add_task">Tambahin tugas</string>
     <string name="add_habit">Tambahin kebiasaan baru</string>
     <string name="update_description">Edit deskripsi</string>
     <string name="delete">Hapus</string>
@@ -16,12 +14,7 @@
     <string name="settings">Pengaturan</string>
     <string name="too_long">Lama waktu</string>
     <string name="save">Simpan</string>
-    <string name="edit_task">Edit tugas</string>
-    <string name="delete_tasks">Yakin mau hapus semua jejak perjuanganmu?</string>
     <string name="update_title">Edit judul</string>
-    <string name="edit_categories">Edit kategori</string>
-    <string name="delete_category">Yakin? Semua bukti kerja kerasmu di kategori ini bakal musnah lho! :\u0027)</string>
-    <string name="add_category">Tambahkan kategori</string>
     <string name="add">Tambahkan sesuatu</string>
     <string name="habit_map">Peta Kebiasaan</string>
     <string name="look_and_feel">Gaya dan estetika</string>
@@ -38,8 +31,6 @@
     <string name="restore">Balikin data</string>
     <string name="restore_desc">Pulihkan tugas dan kebiasaan dari file yang dipilih</string>
     <string name="material_theme_desc">Ikuti warna walpaper</string>
-    <string name="show_habits">Tampilkan kebiasaan terlebih dulu</string>
-    <string name="show_habits_desc">Buka halaman kebiasaan saat aplikasi dimulai</string>
     <string name="use_24Hr">Pakai format 24 jam</string>
     <string name="use_24Hr_desc">Pakai format 24 jam buat mengatur waktu</string>
     <string name="staring_day">Mulai pekan pada hari Minggu</string>
@@ -52,7 +43,6 @@
     <string name="started_on">Dimulai pada</string>
     <string name="weekly_graph">Perbandingan Mingguan</string>
     <string name="not_enough_data">Belum ada data yang bisa dipamerin</string>
-    <string name="items_completed">Beres</string>
     <string name="completed">Beres buat hari ini</string>
     <string name="title">Judul</string>
     <string name="description">Deskripsi</string>
@@ -72,9 +62,6 @@
     <string name="foss_desc">Udah kebuka semua ya fiturnya! Versi ini bebas biaya alias gak ada in-app purchase. Kalau ngerasa Grit bikin hidupmu lebih tertata, yuk traktir kopi aku di</string>
     <string name="add_reminder">Tambahin Pengingat</string>
     <string name="add_reminder_desc">Terima pengingat notifikasi pada hari-hari tertentu</string>
-    <string name="invalid_date_time">Waduh, masa lalu jangan diungkit lagi</string>
-    <string name="reorder_tasks">Atur ulang tugas</string>
-    <string name="reorder_tasks_desc">Atur ulang tugas saat ditandai udah selesai</string>
     <string name="translate">Terjemahan</string>
     <string name="changelog">Catatan update</string>
     <string name="whats_changed">Apa aja yang Berubah</string>

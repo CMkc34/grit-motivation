@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="tasks">Úkoly</string>
     <string name="material_theme">Téma Material You</string>
     <string name="done">Hotovo</string>
-    <string name="add_task">Přidat Úkol</string>
     <string name="add_habit">Přidat Nový Návyk</string>
     <string name="update_description">Upravit Popis</string>
     <string name="delete">Smazat</string>
@@ -16,12 +14,7 @@
     <string name="settings">Nastavení</string>
     <string name="too_long">Příliš dlouhé</string>
     <string name="save">Uložit</string>
-    <string name="edit_task">Upravit Úkol</string>
-    <string name="delete_tasks">Jste si jistí, že chcete smazat všechny dokončené úkoly?</string>
     <string name="update_title">Upravit Název</string>
-    <string name="edit_categories">Upravit Kategorie</string>
-    <string name="delete_category">Jste si jistí? Všechny úkoly v této kategorii budou smazány</string>
-    <string name="add_category">Přidat Kategorii</string>
     <string name="add">Přidat Něco</string>
     <string name="habit_map">Mapa Návyků</string>
     <string name="look_and_feel">Vzhled</string>
@@ -38,8 +31,6 @@
     <string name="restore">Obnovit</string>
     <string name="restore_desc">Obnovit úkoly a návyky z vybraného souboru</string>
     <string name="material_theme_desc">Použit barvy z tapety</string>
-    <string name="show_habits">Zobrazovat návyky první</string>
-    <string name="show_habits_desc">Zobrazovat stránku návyků první při spuštění aplikace</string>
     <string name="use_24Hr">24-hodinový formát</string>
     <string name="use_24Hr_desc">Používat 24-hodinový formát při nastavovaní času</string>
     <string name="staring_day">Začínat týden v neděli</string>
@@ -52,7 +43,6 @@
     <string name="started_on">Začalo</string>
     <string name="weekly_graph">Týdenní srovnání</string>
     <string name="not_enough_data">Nedostatek údajů</string>
-    <string name="items_completed">dokončeno</string>
     <string name="completed">Dokončeno dnes</string>
     <string name="title">Název</string>
     <string name="description">Popis</string>
@@ -73,9 +63,6 @@
     <string name="foss_desc">Všechny funkce jsou odemčeny. Tato verze aplikace nepodporuje mikro-transakce. Pokud vás tato aplikace něčím obohatila, Podpořte mě příspěvkem na</string>
     <string name="add_reminder">Přidat Připomínku</string>
     <string name="add_reminder_desc">Zapnout připomínky na vybrané dny</string>
-    <string name="invalid_date_time">Zvolili jste čas v minulosti</string>
-    <string name="reorder_tasks">Změnit pořadí úkolů</string>
-    <string name="reorder_tasks_desc">Změnit pořadí úkolů, když jsou označeny jako dokončené</string>
     <string name="translate">Přeložit</string>
     <string name="translate_desc">Přeložte Grit do svého jazyka</string>
     <string name="changelog">Seznam změn</string>

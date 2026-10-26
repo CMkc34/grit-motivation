@@ -17,7 +17,6 @@
 package com.shub39.grit.shared.ui.setting
 
 import androidx.compose.ui.graphics.Color
-import com.shub39.grit.core.settings.Sections
 import com.shub39.grit.core.theme.AppTheme
 import com.shub39.grit.core.theme.Fonts
 import com.shub39.grit.core.theme.PaletteStyle
@@ -34,11 +33,7 @@ sealed interface SettingsAction {
 
     data class ChangeIs24Hr(val pref: Boolean) : SettingsAction
 
-    data class ChangeStartingPage(val page: Sections) : SettingsAction
-
     data class ChangePauseNotifications(val pref: Boolean) : SettingsAction
-
-    data class ChangeReorderTasks(val pref: Boolean) : SettingsAction
 
     data class ChangeAppTheme(val appTheme: AppTheme) : SettingsAction
 

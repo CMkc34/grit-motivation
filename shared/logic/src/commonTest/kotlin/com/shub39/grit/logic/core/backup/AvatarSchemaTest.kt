@@ -30,14 +30,7 @@ class AvatarSchemaTest {
     private val json = Json { ignoreUnknownKeys = true }
 
     private fun schema(avatar: AvatarSchema?) =
-        ExportSchema(
-            habits = emptyList(),
-            habitStatus = emptyList(),
-            tasks = emptyList(),
-            categories = emptyList(),
-            subTasks = emptyList(),
-            avatar = avatar,
-        )
+        ExportSchema(habits = emptyList(), habitStatus = emptyList(), avatar = avatar)
 
     @Test
     fun `avatar survives export and import`() {

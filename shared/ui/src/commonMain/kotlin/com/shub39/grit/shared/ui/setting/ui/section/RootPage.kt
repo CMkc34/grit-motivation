@@ -42,7 +42,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
-import com.shub39.grit.core.settings.Sections
 import com.shub39.grit.shared.ui.GritPreviewWrapper
 import com.shub39.grit.shared.ui.components.ExpressiveSwitch
 import com.shub39.grit.shared.ui.components.PageFill
@@ -144,48 +143,6 @@ fun RootPage(
                             },
                             colors = listItemColors(),
                             modifier = Modifier.clip(leadingItemShape()),
-                        )
-
-                        ListItem(
-                            headlineContent = {
-                                Text(text = stringResource(Res.string.reorder_tasks))
-                            },
-                            supportingContent = {
-                                Text(text = stringResource(Res.string.reorder_tasks_desc))
-                            },
-                            trailingContent = {
-                                ExpressiveSwitch(
-                                    checked = state.reorderTasks,
-                                    onCheckedChange = {
-                                        onAction(SettingsAction.ChangeReorderTasks(it))
-                                    },
-                                )
-                            },
-                            colors = listItemColors(),
-                            modifier = Modifier.clip(middleItemShape()),
-                        )
-
-                        ListItem(
-                            headlineContent = {
-                                Text(text = stringResource(Res.string.show_habits))
-                            },
-                            supportingContent = {
-                                Text(text = stringResource(Res.string.show_habits_desc))
-                            },
-                            trailingContent = {
-                                ExpressiveSwitch(
-                                    checked = state.startingPage == Sections.Habits,
-                                    onCheckedChange = {
-                                        onAction(
-                                            SettingsAction.ChangeStartingPage(
-                                                if (it) Sections.Habits else Sections.Tasks
-                                            )
-                                        )
-                                    },
-                                )
-                            },
-                            colors = listItemColors(),
-                            modifier = Modifier.clip(middleItemShape()),
                         )
 
                         ListItem(

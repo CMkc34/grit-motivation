@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="tasks">المهام</string>
     <string name="material_theme">سمة Material You</string>
     <string name="done">تم</string>
-    <string name="add_task">أضف مهمة</string>
     <string name="add_habit">أضف عادة جديدة</string>
     <string name="update_description">حرّر الوصف</string>
     <string name="delete">احذف</string>
@@ -16,12 +14,7 @@
     <string name="settings">الإعدادات</string>
     <string name="too_long">طويل جدًا</string>
     <string name="save">احفظ</string>
-    <string name="edit_task">حرّر المهمة</string>
-    <string name="delete_tasks">أمتأكد من حذف كل المهام المكتملة؟</string>
     <string name="update_title">حرّر العنوان</string>
-    <string name="edit_categories">حرّر التصنيفات</string>
-    <string name="delete_category">أمتأكد؟ سيتم حذف كل المهام في هذا التصنيف</string>
-    <string name="add_category">أضف تصنيف</string>
     <string name="add">أضف شيء</string>
     <string name="habit_map">خريطة حرارة العادات</string>
     <string name="look_and_feel">المظهر والتجربة</string>
@@ -38,8 +31,6 @@
     <string name="restore">استعادة</string>
     <string name="restore_desc">استعِد المهام والعادات من الملف المختار</string>
     <string name="material_theme_desc">استخدام الوان بناء على خلفية الشاشة</string>
-    <string name="show_habits">إظهار العادات أولاً</string>
-    <string name="show_habits_desc">أظهر صفحة العادات أولاً عند فتح التطبيق</string>
     <string name="use_24Hr">استخدام نظام 24 ساعة</string>
     <string name="use_24Hr_desc">استخدام نظام 24 ساعة لضبط الوقت</string>
     <string name="staring_day">بدء الاسابيع من يوم الاحد</string>
@@ -52,7 +43,6 @@
     <string name="started_on">بدء في</string>
     <string name="weekly_graph">مقارنة اسبوعية</string>
     <string name="not_enough_data">بيانات غير كافية</string>
-    <string name="items_completed">تمت</string>
     <string name="completed">تمت اليوم</string>
     <string name="title">العنوان</string>
     <string name="description">الوصف</string>
@@ -71,9 +61,6 @@
     <string name="foss">انت تستخدم نسخة FOSS</string>
     <string name="foss_desc">جميع المزايا مفتوحة. هذه النسخة لا تدعم الشراء داخل التطبيق. اذا كان Grit اضاف قيمة لحياتك، ادعمني بالتبرع عبر</string>
     <string name="add_reminder">أضف تذكير</string>
-    <string name="invalid_date_time">الوقت المحدد في الماضي</string>
-    <string name="reorder_tasks">إعادة ترتيب المهام</string>
-    <string name="reorder_tasks_desc">أعد ترتيب المهام عند اكمالها</string>
     <string name="translate">ترجم</string>
     <string name="changelog">سجل التغييرات</string>
     <string name="whats_changed">التغييرات</string>

@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="tasks">Ընելիքներ</string>
     <string name="material_theme">Material You Թեմա</string>
     <string name="done">Վերջ</string>
-    <string name="add_task">Ընելիք Շինէ</string>
     <string name="add_habit">Նոր Բնաւորութիւն Շինել</string>
     <string name="update_description">Խմբագրել Բացատրութիւնը</string>
     <string name="delete">Սրբել</string>
@@ -16,12 +14,7 @@
     <string name="settings">Կարգաւորումներ</string>
     <string name="too_long">Չափազանց Երկար</string>
     <string name="save">Պահել</string>
-    <string name="edit_task">Խմբագրել Ընելիքը</string>
-    <string name="delete_tasks">Վստա՞հ էս որ բոլոր ընելիքները կուզես սրբել։</string>
     <string name="update_title">Վերնագիրը Բոխել</string>
-    <string name="edit_categories">Տեսակները Բոխել</string>
-    <string name="delete_category">Վստա՞հ ես։ Բոլոր ընելիքները այս կատեգորեային մէտ պիտ սրբուին</string>
-    <string name="add_category">Աւելցնել Տեսակ</string>
     <string name="add">Բան մը Աւելցուր</string>
     <string name="habit_map">Սովորութեան Ջերմային Քարտէս</string>
     <string name="look_and_feel">Տեսք</string>
@@ -38,8 +31,6 @@
     <string name="restore">Ետ բեր</string>
     <string name="restore_desc">Ընելիքներ ու սովորութիւններ ընտրուած ցանկեն ետ բերել</string>
     <string name="material_theme_desc">Պաստառեն ընրտէ գոյները</string>
-    <string name="show_habits">Նախ սովորութիւնները ցցուր</string>
-    <string name="show_habits_desc">Նախ սովորթւոիւնները ցցուր հաւելուածը բացուած ատենը</string>
     <string name="use_24Hr">24-ժամնոց ժամացոյց</string>
     <string name="use_24Hr_desc">24ժ ժամացոյց գործածել ժամը ընտրելու համար</string>
     <string name="staring_day">Շաբաթը Կիրակիեն Սկսի</string>
@@ -52,7 +43,6 @@
     <string name="started_on">Սկսուած օրը</string>
     <string name="weekly_graph">Շաբթական համեմատութիւն</string>
     <string name="not_enough_data">Բաւական Տեղեկութիւն չի կայ</string>
-    <string name="items_completed">Վերջացած</string>
     <string name="completed">Այսոր Վերջացուած</string>
     <string name="title">Անուն</string>
     <string name="description">Բացատրութիւն</string>
@@ -73,9 +63,6 @@
     <string name="foss_desc">Բոլոր ցուցադրուածները բաց են։ Եթե այս հաւելուախը գեզի օգնեց, ինծի օգնէ նուիրելով</string>
     <string name="add_reminder">Յիշեցնող Դիր</string>
     <string name="add_reminder_desc">Ծանուցում ստացիր ընտրուած օրերուն</string>
-    <string name="invalid_date_time">Ընրտրուած ժամանակը անցեալին մէջ է</string>
-    <string name="reorder_tasks">Կարգը Բոխել</string>
-    <string name="reorder_tasks_desc">Ընելիքներուն կարգը բոխէ երբ վերջանան</string>
     <string name="translate">Թարքմանել</string>
     <string name="translate_desc">Թարքմանէ Grit-ը գու լեզուովդ</string>
     <string name="changelog">Նորութիւններ</string>

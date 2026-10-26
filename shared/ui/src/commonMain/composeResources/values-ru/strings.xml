@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="tasks">Задачи</string>
     <string name="material_theme">Тема Material You</string>
     <string name="done">Готово</string>
-    <string name="add_task">Добавить задачу</string>
     <string name="add_habit">Добавить привычку</string>
     <string name="update_description">Изменить описание</string>
     <string name="delete">Удалить</string>
@@ -15,12 +13,7 @@
     <string name="best_streak">Лучшая серия</string>
     <string name="settings">Настройки</string>
     <string name="too_long">Слишком долго</string>
-    <string name="edit_task">Изменить задачу</string>
-    <string name="delete_tasks">Вы уверены, что хотите удалить все завершенные задания?</string>
     <string name="update_title">Изменить название</string>
-    <string name="edit_categories">Изменить категории</string>
-    <string name="delete_category">Вы уверены? Все задачи в этой категории будут удалены</string>
-    <string name="add_category">Добавить категорию</string>
     <string name="add">Добавьте что‑нибудь</string>
     <string name="habit_map">Карта выполнения привычек</string>
     <string name="look_and_feel">Внешний вид</string>
@@ -37,8 +30,6 @@
     <string name="restore">Восстановить</string>
     <string name="restore_desc">Восстановить задачи и привычки из выбранного файла</string>
     <string name="material_theme_desc">Использовать цвета обоев</string>
-    <string name="show_habits">Показывать сначала привычки</string>
-    <string name="show_habits_desc">Показывать страницу привычек при старте приложения</string>
     <string name="use_24Hr">24-часовой формат времени</string>
     <string name="use_24Hr_desc">Использовать 24-часовой формат времени</string>
     <string name="staring_day">Начинать неделю с воскресенья</string>
@@ -51,7 +42,6 @@
     <string name="started_on">Начато</string>
     <string name="weekly_graph">Сравнение по неделям</string>
     <string name="not_enough_data">Недостаточно данных</string>
-    <string name="items_completed">завершено</string>
     <string name="completed">Завершено сегодня</string>
     <string name="title">Название</string>
     <string name="description">Описание</string>
@@ -70,9 +60,6 @@
     <string name="foss">Вы используйте вариант приложения с открытым исходным кодом</string>
     <string name="foss_desc">Все улучшения разблокированы. Эта версия приложения не поддерживает встроенные покупки. Если это приложение сделало вашу жизнь лучше, поддержите меня, сделав пожертвование</string>
     <string name="add_reminder">Добавить напоминание</string>
-    <string name="invalid_date_time">Выбранное время уже прошло</string>
-    <string name="reorder_tasks">Изменить порядок задач</string>
-    <string name="reorder_tasks_desc">Изменить порядок задач отмеченных выполненными</string>
     <string name="save">Сохранить</string>
     <string name="add_reminder_desc">Получать уведомления‑напоминания в выбранные дни</string>
     <string name="translate">Перевести</string>

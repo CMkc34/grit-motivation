@@ -18,9 +18,6 @@ package com.shub39.grit.logic.core.backup
 
 import com.shub39.grit.core.habits.Habit
 import com.shub39.grit.core.habits.HabitStatus
-import com.shub39.grit.core.tasks.Category
-import com.shub39.grit.core.tasks.SubTask
-import com.shub39.grit.core.tasks.Task
 import com.shub39.grit.logic.core.Converters
 import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
@@ -70,57 +67,5 @@ fun HabitStatusSchema.toHabitStatus(): HabitStatus {
         habitId = habitId,
         date = Converters.dayFromTimestamp(date),
         value = value,
-    )
-}
-
-fun TaskSchema.toTask(): Task {
-    return Task(
-        id = id,
-        categoryId = categoryId,
-        title = title,
-        status = status,
-        index = index,
-        reminder = reminder?.let { Converters.dateFromTimestamp(it) },
-    )
-}
-
-fun Task.toTaskSchema(): TaskSchema {
-    return TaskSchema(
-        id = id,
-        categoryId = categoryId,
-        title = title,
-        status = status,
-        index = index,
-        reminder = reminder?.let { Converters.dateToTimestamp(it) },
-    )
-}
-
-fun CategorySchema.toCategory(): Category {
-    return Category(id = id, name = name, index = index, color = color)
-}
-
-fun Category.toCategorySchema(): CategorySchema {
-    return CategorySchema(id = id, name = name, index = index, color = color)
-}
-
-fun SubTask.toSubTaskSchema(): SubTaskSchema {
-    return SubTaskSchema(
-        id = id,
-        taskId = taskId,
-        title = title,
-        index = index,
-        status = status,
-        reminder = reminder?.let { Converters.dateToTimestamp(it) },
-    )
-}
-
-fun SubTaskSchema.toSubTask(): SubTask {
-    return SubTask(
-        id = id,
-        taskId = taskId,
-        title = title,
-        index = index,
-        status = status,
-        reminder = reminder?.let { Converters.dateFromTimestamp(it) },
     )
 }

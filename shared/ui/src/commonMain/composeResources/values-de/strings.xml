@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="tasks">Aufgaben</string>
     <string name="material_theme">Material You-Design</string>
     <string name="done">Erledigt</string>
-    <string name="add_task">Aufgabe hinzufügen</string>
     <string name="add_habit">Neue Routine hinzufügen</string>
     <string name="update_description">Beschreibung ändern</string>
     <string name="delete">Löschen</string>
@@ -15,12 +13,8 @@
     <string name="best_streak">Beste Serie</string>
     <string name="settings">Einstellungen</string>
     <string name="too_long">Zu lange</string>
-    <string name="edit_task">Aufgabe bearbeiten</string>
-    <string name="delete_tasks">Möchtest du wirklich alle erledigten Aufgaben löschen?</string>
     <string name="save">Speichern</string>
     <string name="update_title">Titel bearbeiten</string>
-    <string name="delete_category">Bist du sicher? Alle Aufgaben in dieser Kategorie werden gelöscht</string>
-    <string name="add_category">Kategorie hinzufügen</string>
     <string name="add">Füge etwas hinzu</string>
     <string name="use_amoled_desc">Funktioniert am besten auf AMOLED Displays</string>
     <string name="select_seed_desc">Wähle Farbe zum Generieren der Palette</string>
@@ -31,7 +25,6 @@
     <string name="restore">Wiederherstellen</string>
     <string name="restore_desc">Stelle Aufgaben und Gewohnheiten aus ausgewählter Datei wieder her</string>
     <string name="material_theme_desc">Nutze Farben basierend auf Hintergrund</string>
-    <string name="show_habits">Zeige Gewohnheiten zuerst</string>
     <string name="use_24Hr">Nutze 24 Std Uhr</string>
     <string name="staring_day">Starte Woche mit Sonntag</string>
     <string name="system">System</string>
@@ -42,18 +35,15 @@
     <string name="started_on">Gestartet am</string>
     <string name="weekly_graph">Wochenvergleich</string>
     <string name="not_enough_data">Nicht genug Daten</string>
-    <string name="items_completed">abgeschlossen</string>
     <string name="completed">Heute abgeschlossen</string>
     <string name="title">Titel</string>
     <string name="description">Beschreibung</string>
-    <string name="edit_categories">Kategorien bearbeiten</string>
     <string name="habit_map">Gewohnheits-Heatmap</string>
     <string name="look_and_feel">Erscheinungsbild</string>
     <string name="use_amoled">Amoled-Palette</string>
     <string name="select_seed">Wähle Seed Farbe</string>
     <string name="palette_style">Stil der Palette</string>
     <string name="look_and_feel_desc">Passe die App auf verschiedene Weisen an</string>
-    <string name="show_habits_desc">Starte die App auf der Gewohnheiten Seite</string>
     <string name="use_24Hr_desc">Benutze die 24 Stunden Uhr um die Zeit einzustellen</string>
     <string name="app_theme">App Design</string>
     <string name="edit_habit">Gewohnheit bearbeiten</string>
@@ -72,9 +62,6 @@
     <string name="foss_desc">Alle Funktionen sind freigeschaltet. Diese App-Variante unterstützt keine In-App-Käufe. Wenn dir diese App in irgendeiner Weise geholfen hat, unterstütze mich bitte mit einer Spende auf</string>
     <string name="add_reminder">Erinnerung hinzufügen</string>
     <string name="add_reminder_desc">Erhalte eine Benachrichtigung an ausgewählten Tagen</string>
-    <string name="invalid_date_time">Ausgewählte Zeit liegt in der Vergangenheit</string>
-    <string name="reorder_tasks">Aufgaben anordnen</string>
-    <string name="reorder_tasks_desc">Aufgaben neu anordnen, wenn sie abgeschlossen sind</string>
     <string name="translate">Übersetzen</string>
     <string name="changelog">Änderungen</string>
     <string name="whats_changed">Was sich geändert hat</string>

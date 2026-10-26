@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="tasks">Задачы</string>
     <string name="material_theme">Тэма Material You</string>
     <string name="done">Гатова</string>
-    <string name="add_task">Дадаць задачу</string>
     <string name="add_habit">Дадаць звычку</string>
     <string name="update_description">Змяніць апісанне</string>
     <string name="delete">Выдаліць</string>
@@ -16,12 +14,7 @@
     <string name="settings">Налады</string>
     <string name="too_long">Занадта доўга</string>
     <string name="save">Захаваць</string>
-    <string name="edit_task">Змяніць задачу</string>
-    <string name="delete_tasks">Вы ўпэўнены, што хац9це выдаліць усе завершаныя задачы?</string>
     <string name="update_title">Змяніць назву</string>
-    <string name="edit_categories">Змяніць катэгорыі</string>
-    <string name="delete_category">Вы ўпэўнены? Усе задачы ў гэтай катэгорыі будуць выдалены</string>
-    <string name="add_category">Дадаць катэгорыю</string>
     <string name="add">Дадаць штосьці</string>
     <string name="habit_map">Карта выконвання звычак</string>
     <string name="look_and_feel">Знешні выгляд</string>
@@ -38,8 +31,6 @@
     <string name="restore">Аднавіць</string>
     <string name="restore_desc">Аднавіць задачы і звычкі з файла</string>
     <string name="material_theme_desc">Выкарыстоўваць колеры шпалер</string>
-    <string name="show_habits">Паказваць звычкі першымі</string>
-    <string name="show_habits_desc">Паказваць старонку звычак пры старце праграмы</string>
     <string name="use_24Hr">24-гадзінны фармат часу</string>
     <string name="use_24Hr_desc">Выкарыстоўваць 24-гадзінны фармат часу</string>
     <string name="staring_day">Пачынаць тыдзень з нядзелі</string>
@@ -52,7 +43,6 @@
     <string name="started_on">Пачата</string>
     <string name="weekly_graph">Параўнанне па тыдням</string>
     <string name="not_enough_data">Недастаткова даных</string>
-    <string name="items_completed">завершана</string>
     <string name="completed">завершана сёння</string>
     <string name="title">Назва</string>
     <string name="description">Апісанне</string>
@@ -72,9 +62,6 @@
     <string name="foss_desc">Усе функцыі разблакіраваны. Гэта версія праграмы не падтрымлівае пакупкі ўнутры праграмы. Калі гэта праграма зрабіла ваша жыццё лепш, падтрымайце мяне, зрабіўшы ахвяраванне</string>
     <string name="add_reminder">Дадаць напамін</string>
     <string name="add_reminder_desc">Атрымліваць напамін у вызначаныя дні</string>
-    <string name="invalid_date_time">Выбраны час мінуў</string>
-    <string name="reorder_tasks">Змяніць парадак задач</string>
-    <string name="reorder_tasks_desc">Змяніць парадак скончаных задач</string>
     <string name="translate">Перакласці</string>
     <string name="changelog">Спіс змен</string>
     <string name="whats_changed">Што змянілася</string>

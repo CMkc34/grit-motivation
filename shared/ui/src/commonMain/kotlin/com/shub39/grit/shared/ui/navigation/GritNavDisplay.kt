@@ -31,7 +31,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import com.shub39.grit.core.settings.Sections
 import com.shub39.grit.shared.ui.LocalWindowSizeClass
 import com.shub39.grit.shared.ui.app.MainAppState
 import com.shub39.grit.shared.ui.habit.HabitsAction
@@ -48,12 +47,10 @@ import com.shub39.grit.shared.ui.setting.ui.section.BackupPage
 import com.shub39.grit.shared.ui.setting.ui.section.Changelog
 import com.shub39.grit.shared.ui.setting.ui.section.LookAndFeelPage
 import com.shub39.grit.shared.ui.setting.ui.section.RootPage
-import com.shub39.grit.shared.ui.task.ui.TasksPage
 import com.shub39.grit.shared.ui.theme.GritTheme
 import com.shub39.grit.shared.ui.viewmodel.HabitViewModel
 import com.shub39.grit.shared.ui.viewmodel.MainViewModel
 import com.shub39.grit.shared.ui.viewmodel.SettingsViewModel
-import com.shub39.grit.shared.ui.viewmodel.TasksViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -65,16 +62,7 @@ fun GritNavDisplay(
     val globalState by globalVM.state.collectAsStateWithLifecycle()
 
     val adaptiveInfo = currentWindowAdaptiveInfoV2()
-    val topLevelBackStack =
-        retain(globalState.startingSection) {
-            TopLevelBackStack(
-                startKey =
-                    when (globalState.startingSection) {
-                        Sections.Tasks -> TaskList
-                        Sections.Habits -> HabitsList
-                    }
-            )
-        }
+    val topLevelBackStack = retain { TopLevelBackStack(startKey = HabitsList) }
 
     CompositionLocalProvider(LocalWindowSizeClass provides adaptiveInfo.windowSizeClass) {
         GritTheme(theme = globalState.theme) {
@@ -110,18 +98,6 @@ fun GritNavDisplay(
                     onBack = { topLevelBackStack.removeLast() },
                     entryProvider =
                         entryProvider {
-                            entry<TaskList>(metadata = fadeTransitionMetadata()) {
-                                val viewModel = koinViewModel<TasksViewModel>()
-                                val state by viewModel.state.collectAsStateWithLifecycle()
-
-                                TasksPage(
-                                    state = state,
-                                    onAction = viewModel::onAction,
-                                    isPlusUser = globalState.isUserSubscribed,
-                                    onOpenPaywall = { topLevelBackStack.add(Paywall) },
-                                )
-                            }
-
                             habitsScreens(
                                 topLevelBackStack = topLevelBackStack,
                                 globalState = globalState,

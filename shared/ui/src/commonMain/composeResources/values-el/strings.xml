@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="tasks">Υπομνήσεις</string>
     <string name="material_theme">Θέμα Material You</string>
     <string name="done">Τέλος</string>
-    <string name="add_task">Προσθήκη υπόμνησης</string>
     <string name="add_habit">Προσθήκη συνήθειας</string>
     <string name="update_description">Επεξεργασία Περιγραφής</string>
     <string name="delete">Διαγραφή</string>
@@ -13,23 +11,15 @@
     <string name="habits">Συνήθειες</string>
     <string name="settings">Ρυθμίσεις</string>
     <string name="save">Αποθήκευση</string>
-    <string name="edit_task">Επεξεργασία υπόμνησης</string>
-    <string name="delete_tasks">Είστε σίγουρος/η ότι θέλετε να διαγράψετε όλες τις ολοκληρομένες υπομνήσεις;</string>
     <string name="update_title">Επεξεργασία Τίτλου</string>
-    <string name="edit_categories">Επεξεργασία Κατηγοριών</string>
-    <string name="delete_category">Είστε σίγουρος/η; Όλες οι υπομνήσεις σε αυτή την κατηγορία θα διαγραφούν</string>
-    <string name="add_category">Προσθήκη Κατηγορίας</string>
     <string name="add">Προσθήκη</string>
     <string name="look_and_feel">Εξατομίκευση</string>
     <string name="palette_style">Στύλ παλέτας</string>
-    <string name="items_completed">ολοκληρώθηκε</string>
     <string name="too_long">Πάρα πολύ</string>
     <string name="use_amoled">Παλέτα Amoled</string>
     <string name="restore">Επαναφορά</string>
     <string name="restore_desc">Επαναφορά υπομνήσεων και συνηθειών από το επιλεγμένο αρχείο</string>
     <string name="material_theme_desc">Χρησιμοποιήστε χρώματα με βάση τη ταπετσαρία</string>
-    <string name="show_habits">Προβολή συνηθειών πρώτα</string>
-    <string name="show_habits_desc">Προβολή συνηθειών πρώτα κατά την έναρξη της εφαρμογής</string>
     <string name="use_24Hr">Χρήση 24ώρου ρολογιού</string>
     <string name="use_24Hr_desc">Χρήση 24ώρου ρολογιού για την ρύθμιση της ώρας</string>
     <string name="staring_day">Αρχή της Εβδομάδας από την Κυριακή</string>
@@ -59,9 +49,6 @@
     <string name="foss_desc">Όλα τα στοιχεία είναι ξεκλειδωμένα. Αυτή η έκδοση της εφαρμογής δεν υποστηρίζει πληρωμές μέσω εφαρμογής. Εάν αυτή η εφαρμογή σας βοήθησε, υποστηρίξτε με κάνοντας μια δωρεά στο</string>
     <string name="add_reminder">Προσθήκη Ειδοποίησης</string>
     <string name="add_reminder_desc">Λάβετε ειδοποίηση σε επιλεγμένες ημέρες</string>
-    <string name="invalid_date_time">Επιλεγμένη ώρα είναι στο παρελθόν</string>
-    <string name="reorder_tasks">Ταξινόμηση υπομνήσεων</string>
-    <string name="reorder_tasks_desc">Ταξινόμηση υπομνήσεων όταν είναι ολοκληρωμένες</string>
     <string name="translate">Μετάφραση</string>
     <string name="changelog">Αρχείο αλλαγών</string>
     <string name="whats_changed">Τι άλλαξε</string>

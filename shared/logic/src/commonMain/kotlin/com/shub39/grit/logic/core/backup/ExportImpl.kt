@@ -21,7 +21,6 @@ import com.shub39.grit.core.avatar.AvatarStore
 import com.shub39.grit.core.habits.HabitRepo
 import com.shub39.grit.core.now
 import com.shub39.grit.core.settings.backup.ExportRepo
-import com.shub39.grit.core.tasks.TaskRepo
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.dialogs.openFileSaver
 import io.github.vinceglb.filekit.writeString
@@ -36,7 +35,6 @@ import org.koin.core.annotation.Single
 
 @Single(binds = [ExportRepo::class])
 class ExportImpl(
-    private val taskRepo: TaskRepo,
     private val habitsRepo: HabitRepo,
     private val activityStore: ActivityStore,
     private val avatarStore: AvatarStore,
@@ -59,30 +57,6 @@ class ExportImpl(
                     }
                     .await()
 
-            val tasksDef =
-                async {
-                        withContext(Dispatchers.IO) {
-                            taskRepo.getTasks().map { it.toTaskSchema() }
-                        }
-                    }
-                    .await()
-
-            val categoriesDef =
-                async {
-                        withContext(Dispatchers.IO) {
-                            taskRepo.getCategories().map { it.toCategorySchema() }
-                        }
-                    }
-                    .await()
-
-            val subTasksDef =
-                async {
-                        withContext(Dispatchers.IO) {
-                            taskRepo.getSubTasks().map { it.toSubTaskSchema() }
-                        }
-                    }
-                    .await()
-
             val activity = activityStore.getActivity().first().toActivitySchema()
             val avatar = avatarStore.getAvatar().first().toAvatarSchema()
 
@@ -98,9 +72,6 @@ class ExportImpl(
                     ExportSchema(
                         habits = habitsDef,
                         habitStatus = statusesDef,
-                        tasks = tasksDef,
-                        categories = categoriesDef,
-                        subTasks = subTasksDef,
                         activity = activity,
                         avatar = avatar,
                     )
