@@ -68,4 +68,7 @@
     <string name="shop_item_acc_fruits">Fruits</string>
     <string name="shop_item_acc_fairy_lights">Fairy lights</string>
     <string name="shop_item_acc_swing">Swing</string>
+
+    <!-- Avatar tab (Phase 5) -->
+    <string name="avatar_tab">Avatar</string>
 </resources>

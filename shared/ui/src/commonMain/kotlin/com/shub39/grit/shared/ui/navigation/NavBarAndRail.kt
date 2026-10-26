@@ -30,7 +30,9 @@ import androidx.compose.ui.unit.dp
 import grit.shared.ui.generated.resources.Res
 import grit.shared.ui.generated.resources.Res.string
 import grit.shared.ui.generated.resources.alarm
+import grit.shared.ui.generated.resources.avatar_tab
 import grit.shared.ui.generated.resources.habits
+import grit.shared.ui.generated.resources.potted_plant
 import grit.shared.ui.generated.resources.settings
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
@@ -42,6 +44,7 @@ private data class NavItem(val route: Routes, val title: StringResource, val ico
 private val NAV_ITEMS =
     listOf(
         NavItem(Habits, string.habits, Res.drawable.alarm),
+        NavItem(Avatar, string.avatar_tab, Res.drawable.potted_plant),
         NavItem(Settings, string.settings, Res.drawable.settings),
     )
 
@@ -60,6 +63,7 @@ fun NavBar(modifier: Modifier = Modifier, currentRoute: Routes?, onNavigate: (Ro
 
                     when (item.route) {
                         Habits -> onNavigate(HabitsList)
+                        Avatar -> onNavigate(Avatar)
                         Settings -> onNavigate(SettingsHome)
                         else -> {}
                     }
@@ -88,6 +92,7 @@ fun NavRail(modifier: Modifier = Modifier, currentRoute: Routes?, onNavigate: (R
 
                     when (item.route) {
                         Habits -> onNavigate(HabitsList)
+                        Avatar -> onNavigate(Avatar)
                         Settings -> onNavigate(SettingsHome)
                         else -> {}
                     }

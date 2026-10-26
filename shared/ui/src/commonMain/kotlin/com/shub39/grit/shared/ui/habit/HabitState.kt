@@ -46,7 +46,7 @@ import kotlinx.datetime.DayOfWeek
  *   start on.
  * @property motivationPopup Popup shown after a habit check-in, `null` when hidden.
  * @property activity Activity streak and energy across all habits, `null` until loaded.
- * @property avatar The plant avatar on the energy page, `null` until loaded.
+ * @property avatar The plant avatar on the avatar page, `null` until loaded.
  */
 @Stable
 @Immutable
