@@ -35,6 +35,7 @@ data class ExportSchema(
     // fork: missing in older backups and in backups from the original app
     val activity: ActivitySchema? = null,
     val avatar: AvatarSchema? = null,
+    val routineStyles: List<RoutineStyleSchema>? = null,
 )
 
 @Serializable

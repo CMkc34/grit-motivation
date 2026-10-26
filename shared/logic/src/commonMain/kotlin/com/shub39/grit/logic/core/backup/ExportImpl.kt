@@ -19,6 +19,7 @@ package com.shub39.grit.logic.core.backup
 import com.shub39.grit.core.activity.ActivityStore
 import com.shub39.grit.core.avatar.AvatarStore
 import com.shub39.grit.core.habits.HabitRepo
+import com.shub39.grit.core.habits.style.RoutineStyleStore
 import com.shub39.grit.core.now
 import com.shub39.grit.core.settings.backup.ExportRepo
 import io.github.vinceglb.filekit.FileKit
@@ -38,6 +39,7 @@ class ExportImpl(
     private val habitsRepo: HabitRepo,
     private val activityStore: ActivityStore,
     private val avatarStore: AvatarStore,
+    private val routineStyleStore: RoutineStyleStore,
 ) : ExportRepo {
     override suspend fun exportToJson() {
         coroutineScope {
@@ -59,6 +61,7 @@ class ExportImpl(
 
             val activity = activityStore.getActivity().first().toActivitySchema()
             val avatar = avatarStore.getAvatar().first().toAvatarSchema()
+            val routineStyles = routineStyleStore.getStyles().first().toRoutineStyleSchemas()
 
             val time = LocalDateTime.now().toString().replace(":", "").replace(" ", "")
             val file =
@@ -74,6 +77,7 @@ class ExportImpl(
                         habitStatus = statusesDef,
                         activity = activity,
                         avatar = avatar,
+                        routineStyles = routineStyles,
                     )
                 )
             )

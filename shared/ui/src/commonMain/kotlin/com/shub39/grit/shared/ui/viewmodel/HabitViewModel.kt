@@ -26,6 +26,7 @@ import com.shub39.grit.core.avatar.AvatarRepo
 import com.shub39.grit.core.habits.Habit
 import com.shub39.grit.core.habits.HabitRepo
 import com.shub39.grit.core.habits.HabitStatus
+import com.shub39.grit.core.habits.style.RoutineStyleStore
 import com.shub39.grit.core.interfaces.AlarmScheduler
 import com.shub39.grit.core.interfaces.AnalyticsWrapper
 import com.shub39.grit.core.interfaces.SettingsDatastore
@@ -66,6 +67,7 @@ class HabitViewModel(
     @Provided private val motivationSettings: MotivationSettings,
     @Provided private val activityRepo: ActivityRepo,
     @Provided private val avatarRepo: AvatarRepo,
+    @Provided private val routineStyleStore: RoutineStyleStore,
 ) : ViewModel() {
     private var habitStatusJob: Job? = null
     private var overallAnalyticsJob: Job? = null
@@ -74,6 +76,7 @@ class HabitViewModel(
     private var activityJob: Job? = null
     private var statsJob: Job? = null
     private var avatarJob: Job? = null
+    private var routineStylesJob: Job? = null
 
     // id of the last motivation quote, so the next popup shows a different one
     private var lastQuoteId: String? = null
@@ -90,6 +93,7 @@ class HabitViewModel(
                 observeActivity()
                 observeStats()
                 observeAvatar()
+                observeRoutineStyles()
 
                 rescheduleAllHabits()
             }
@@ -241,6 +245,10 @@ class HabitViewModel(
                     _state.value.avatar?.let { avatarRepo.markStageSeen(it.plant.stage) }
                 }
 
+                is HabitsAction.SetRoutineStyle -> {
+                    routineStyleStore.setStyle(action.habitId, action.style)
+                }
+
                 is HabitsAction.InsertMeasuredStatus -> {
                     insertHabitStatus(action.habit, action.date, action.value)
                 }
@@ -309,6 +317,15 @@ class HabitViewModel(
                 .launchIn(viewModelScope)
     }
 
+    private fun observeRoutineStyles() {
+        routineStylesJob?.cancel()
+        routineStylesJob =
+            routineStyleStore
+                .getStyles()
+                .onEach { styles -> _state.update { it.copy(routineStyles = styles) } }
+                .launchIn(viewModelScope)
+    }
+
     private fun observeDataStore() {
         observeDatastoreJob?.cancel()
         observeDatastoreJob =
@@ -342,6 +359,7 @@ class HabitViewModel(
     private suspend fun deleteHabit(habit: Habit) {
         repo.deleteHabit(habit.id)
         scheduler.cancel(habit)
+        routineStyleStore.deleteStyle(habit.id)
     }
 
     private suspend fun insertHabitStatus(habit: Habit, date: LocalDate) {

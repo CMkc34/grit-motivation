@@ -17,6 +17,7 @@
 package com.shub39.grit.shared.ui.habit
 
 import com.shub39.grit.core.habits.Habit
+import com.shub39.grit.core.habits.style.RoutineStyle
 import kotlinx.datetime.LocalDate
 
 /**
@@ -81,4 +82,7 @@ sealed interface HabitsAction {
 
     /** switch automatic freezes on or off from today on */
     data class SetAutoFreeze(val enabled: Boolean) : HabitsAction
+
+    /** give the habit with [habitId] a colour and an icon */
+    data class SetRoutineStyle(val habitId: Long, val style: RoutineStyle) : HabitsAction
 }

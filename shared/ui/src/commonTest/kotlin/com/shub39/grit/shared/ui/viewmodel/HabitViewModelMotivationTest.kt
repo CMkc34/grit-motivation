@@ -27,6 +27,7 @@ import com.shub39.grit.shared.ui.fakes.FakeAnalytics
 import com.shub39.grit.shared.ui.fakes.FakeAvatarRepo
 import com.shub39.grit.shared.ui.fakes.FakeHabitRepo
 import com.shub39.grit.shared.ui.fakes.FakeMotivationSettings
+import com.shub39.grit.shared.ui.fakes.FakeRoutineStyleStore
 import com.shub39.grit.shared.ui.fakes.FakeSettingsDatastore
 import com.shub39.grit.shared.ui.habit.HabitsAction
 import kotlin.test.AfterTest
@@ -94,6 +95,7 @@ class HabitViewModelMotivationTest {
                 motivationSettings,
                 activityRepo,
                 FakeAvatarRepo(activityRepo),
+                FakeRoutineStyleStore(),
             )
         backgroundScope.launch { viewModel.state.collect {} }
         return viewModel
