@@ -42,7 +42,9 @@ sealed interface HabitsAction {
     /** set [habit]'s id to view analytics for */
     data class PrepareAnalytics(val habit: Habit?) : HabitsAction
 
-    data class AddHabit(val habit: Habit) : HabitsAction
+    /** fork: [style] is saved under the id the new habit gets */
+    data class AddHabit(val habit: Habit, val style: RoutineStyle = RoutineStyle.DEFAULT) :
+        HabitsAction
 
     data class DeleteHabit(val habit: Habit) : HabitsAction
 

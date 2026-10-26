@@ -319,7 +319,7 @@ private fun HabitsListContent(
                     reminder = false,
                 ),
             onDismissRequest = { onAction(HabitsAction.DismissAddHabitDialog) },
-            onUpsertHabit = { onAction(HabitsAction.AddHabit(it)) },
+            onUpsertHabit = { habit, style -> onAction(HabitsAction.AddHabit(habit, style)) },
             is24Hr = state.is24Hr,
         )
     }

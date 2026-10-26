@@ -131,7 +131,8 @@ class HabitViewModel(
                             "is_measurable" to action.habit.isMeasurable,
                         ),
                     )
-                    upsertHabit(action.habit)
+                    val newId = upsertHabit(action.habit)
+                    routineStyleStore.setStyle(newId, action.style)
                 }
 
                 is DeleteHabit -> {
@@ -351,9 +352,10 @@ class HabitViewModel(
         repo.getHabits().forEach { habit -> scheduler.schedule(habit) }
     }
 
-    private suspend fun upsertHabit(habit: Habit) {
+    private suspend fun upsertHabit(habit: Habit): Long {
         val newId = repo.upsertHabit(habit)
         scheduler.schedule(habit.copy(id = newId))
+        return newId
     }
 
     private suspend fun deleteHabit(habit: Habit) {
