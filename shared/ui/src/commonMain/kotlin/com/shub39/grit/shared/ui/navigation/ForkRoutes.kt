@@ -18,3 +18,6 @@ package com.shub39.grit.shared.ui.navigation
 
 /** Energy page of the activity streak (fork-specific), opened from the habits header. */
 data object Energy : Routes
+
+/** Own tab with the plant avatar and its shop (fork-specific). */
+data object Avatar : Routes

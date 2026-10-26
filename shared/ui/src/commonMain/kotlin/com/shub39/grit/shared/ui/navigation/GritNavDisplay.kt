@@ -35,6 +35,7 @@ import com.shub39.grit.shared.ui.LocalWindowSizeClass
 import com.shub39.grit.shared.ui.app.MainAppState
 import com.shub39.grit.shared.ui.habit.HabitsAction
 import com.shub39.grit.shared.ui.habit.activity.FreezeNoticeHost
+import com.shub39.grit.shared.ui.habit.avatar.AvatarPage
 import com.shub39.grit.shared.ui.habit.motivation.MotivationPopupHost
 import com.shub39.grit.shared.ui.habit.ui.sections.AnalyticsPage
 import com.shub39.grit.shared.ui.habit.ui.sections.Calendar
@@ -212,9 +213,19 @@ private fun EntryProviderScope<Routes>.habitsScreens(
         EnergyPage(
             activity = state.activity,
             stats = state.stats,
-            avatar = state.avatar,
             onAction = viewModel::onAction,
             onNavigateBack = { topLevelBackStack.removeLast() },
+            modifier = Modifier.background(colorScheme.background),
+        )
+    }
+
+    entry<Avatar>(metadata = fadeTransitionMetadata()) {
+        val viewModel = koinViewModel<HabitViewModel>()
+        val state by viewModel.state.collectAsStateWithLifecycle()
+
+        AvatarPage(
+            avatar = state.avatar,
+            onAction = viewModel::onAction,
             modifier = Modifier.background(colorScheme.background),
         )
     }
