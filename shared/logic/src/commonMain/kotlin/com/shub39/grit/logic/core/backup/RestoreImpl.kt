@@ -21,6 +21,7 @@ import com.shub39.grit.core.activity.ActivityData
 import com.shub39.grit.core.activity.ActivityStore
 import com.shub39.grit.core.avatar.AvatarStore
 import com.shub39.grit.core.habits.HabitRepo
+import com.shub39.grit.core.habits.style.RoutineStyleStore
 import com.shub39.grit.core.interfaces.AlarmScheduler
 import com.shub39.grit.core.settings.backup.RestoreRepo
 import com.shub39.grit.core.settings.backup.RestoreResult
@@ -44,6 +45,7 @@ class RestoreImpl(
     private val alarmScheduler: AlarmScheduler,
     private val activityStore: ActivityStore,
     private val avatarStore: AvatarStore,
+    private val routineStyleStore: RoutineStyleStore,
 ) : RestoreRepo {
     override suspend fun restoreData(): RestoreResult {
         return try {
@@ -88,6 +90,11 @@ class RestoreImpl(
                 avatarStore.replaceAll(
                     avatarStore.getAvatar().first().mergedWith(backup.toAvatarData())
                 )
+            }
+
+            // habits keep their ids on import, so styles map onto them directly
+            jsonDeserialized.routineStyles?.forEach {
+                routineStyleStore.setStyle(it.habitId, it.toRoutineStyle())
             }
 
             RestoreResult.Success

@@ -34,6 +34,8 @@ import com.shub39.grit.core.habits.HabitWithAnalytics
 import com.shub39.grit.core.habits.MeasurableTargets
 import com.shub39.grit.core.habits.OverallAnalytics
 import com.shub39.grit.core.habits.Target
+import com.shub39.grit.core.habits.style.RoutineStyle
+import com.shub39.grit.core.habits.style.RoutineStyleStore
 import com.shub39.grit.core.interfaces.AlarmScheduler
 import com.shub39.grit.core.interfaces.AnalyticsWrapper
 import com.shub39.grit.core.interfaces.SettingsDatastore
@@ -229,4 +231,15 @@ class FakeAlarmScheduler : AlarmScheduler {
 
 class FakeAnalytics : AnalyticsWrapper {
     override fun trackEvent(event: AnalyticsEvent, properties: Map<String, Any>) {}
+}
+
+class FakeRoutineStyleStore : RoutineStyleStore {
+    val styles = MutableStateFlow<Map<Long, RoutineStyle>>(emptyMap())
+
+    override fun getStyles(): Flow<Map<Long, RoutineStyle>> = styles
+
+    override suspend fun setStyle(habitId: Long, style: RoutineStyle) =
+        styles.update { it + (habitId to style) }
+
+    override suspend fun deleteStyle(habitId: Long) = styles.update { it - habitId }
 }
