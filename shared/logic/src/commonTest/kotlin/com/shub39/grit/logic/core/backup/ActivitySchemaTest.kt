@@ -31,14 +31,7 @@ class ActivitySchemaTest {
     private fun day(n: Int) = LocalDate(2026, 10, n)
 
     private fun schema(activity: ActivitySchema?) =
-        ExportSchema(
-            habits = emptyList(),
-            habitStatus = emptyList(),
-            tasks = emptyList(),
-            categories = emptyList(),
-            subTasks = emptyList(),
-            activity = activity,
-        )
+        ExportSchema(habits = emptyList(), habitStatus = emptyList(), activity = activity)
 
     @Test
     fun `activity survives export and import`() {

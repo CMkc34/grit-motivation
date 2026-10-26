@@ -58,6 +58,11 @@ Dann PR öffnen. Hinweis: Für diesen PR muss in den Repo-Einstellungen kurz „
 aktiviert werden (ein Squash würde die Upstream-Historie plattdrücken und spätere Syncs erschweren) –
 alternativ lokal `git switch master && git merge --ff-only chore/sync-upstream-<version> && git push`.
 
+**Gelöschte Aufgaben-Funktion (Phase 5, #77):** Ändert Upstream Dateien, die wir gelöscht haben
+(`core/tasks`, `logic/tasks`, `ui/task`, `TasksViewModel`, Aufgaben-Widget, Task-Schema in
+`shared/logic/schemas`), meldet Git einen „modify/delete“-Konflikt. Auflösung: Datei bleibt gelöscht
+(`git rm <datei>`). Neue Upstream-Verweise auf Aufgaben in anderen Dateien ebenfalls entfernen.
+
 Damit Merges konfliktarm bleiben: Upstream-Dateien nur minimal ändern, neue Logik in **neue Dateien**
 legen (z. B. `core/motivation/`).
 

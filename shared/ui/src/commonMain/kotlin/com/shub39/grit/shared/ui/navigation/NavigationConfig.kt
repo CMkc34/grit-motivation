@@ -23,10 +23,6 @@ interface Routes : NavKey
 
 data object Paywall : Routes
 
-data object Tasks : Routes
-
-data object TaskList : Routes
-
 data object Habits : Routes
 
 data object HabitsList : Routes
@@ -57,7 +53,6 @@ private val HABIT_ROUTES =
 
 fun Routes.getTopLevelRoute(): Routes? =
     when (val subType = this.getSubType()) {
-        Tasks,
         Habits,
         Settings -> subType
         else -> null
@@ -67,11 +62,10 @@ fun Routes.getSubType(): Routes =
     when (this) {
         in HABIT_ROUTES -> Habits
         in SETTINGS_ROUTES -> Settings
-        TaskList -> Tasks
         else -> this
     }
 
-class TopLevelBackStack(private val startKey: Routes = TaskList) {
+class TopLevelBackStack(private val startKey: Routes = HabitsList) {
     val backStack = mutableStateListOf(startKey)
 
     fun isRouteOnTop(route: Routes): Boolean = backStack.lastOrNull() == route

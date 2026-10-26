@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="tasks">Görevler</string>
     <string name="material_theme">Material You Teması</string>
     <string name="done">Tamamlandı</string>
-    <string name="add_task">Görev Ekle</string>
     <string name="add_habit">Yeni Alışkanlık Ekle</string>
     <string name="update_description">Açıklamayı Düzenle</string>
     <string name="delete">Sil</string>
@@ -15,12 +13,7 @@
     <string name="best_streak">En İyi Seri</string>
     <string name="settings">Ayarlar</string>
     <string name="too_long">Çok Uzun</string>
-    <string name="edit_task">Görevi Düzenle</string>
-    <string name="delete_tasks">Tamamlanmış tüm görevleri silmek istediğinizden emin misiniz?</string>
     <string name="update_title">Başlığı Düzenle</string>
-    <string name="edit_categories">Kategorileri Düzenle</string>
-    <string name="delete_category">Emin misiniz? Bu kategorideki tüm görevler silinecek.</string>
-    <string name="add_category">Kategori Ekle</string>
     <string name="add">Bir Şey Ekle</string>
     <string name="habit_map">Alışkanlık Isı Haritası</string>
     <string name="look_and_feel">Görünüm ve His</string>
@@ -37,8 +30,6 @@
     <string name="restore">Geri Yükle</string>
     <string name="restore_desc">Seçilen dosyadan görevleri ve alışkanlıkları geri yükleyin</string>
     <string name="material_theme_desc">Duvar kağıdına dayalı renkler kullan</string>
-    <string name="show_habits">Önce alışkanlıkları göster</string>
-    <string name="show_habits_desc">Uygulama başlangıcında önce alışkanlıklar sayfasını göster</string>
     <string name="use_24Hr">24 saat biçimini kullan</string>
     <string name="use_24Hr_desc">Zamanı ayarlamak için 24 saat biçimini kullan</string>
     <string name="staring_day">Haftaları Pazar\u0027dan başlat</string>
@@ -51,7 +42,6 @@
     <string name="started_on">Başlangıç tarihi</string>
     <string name="weekly_graph">Haftalık Karşılaştırma</string>
     <string name="not_enough_data">Yeterli veri yok</string>
-    <string name="items_completed">tamamlandı</string>
     <string name="completed">Bugün Tamamlananlar</string>
     <string name="title">Başlık</string>
     <string name="description">Açıklama</string>
@@ -73,10 +63,7 @@
     <string name="add_reminder">Hatırlatıcı Ekle</string>
     <string name="translate">Çevir</string>
     <string name="changelog">Değişim Günlüğü</string>
-    <string name="reorder_tasks">Görevleri yeniden yap</string>
     <string name="add_reminder_desc">Seçilmiş günlerde hatırlatma bildirimi al</string>
-    <string name="invalid_date_time">Seçilen zaman geçmişte kaldı</string>
-    <string name="reorder_tasks_desc">Görevleri tamamlandıkları zaman yeniden sırala</string>
     <string name="whats_changed">Neler Değişti</string>
     <string name="select_days">Günleri Seç</string>
     <string name="bmc_desc">Küçük bir bağış yaparak beni destekleyebilirsin</string>
@@ -88,7 +75,6 @@
     <string name="calendar">Takvim</string>
     <string name="monthly">Aylık</string>
     <string name="yearly">Yıllık</string>
-    <string name="add_subtasks">Alt Görev Ekle</string>
     <string name="habit_type">Alışkanlık Türü</string>
     <string name="target_value">Hedef Değeri</string>
     <string name="target_unit">Hedef Birimi</string>

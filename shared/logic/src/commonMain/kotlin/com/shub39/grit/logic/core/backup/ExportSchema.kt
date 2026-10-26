@@ -17,18 +17,21 @@
 package com.shub39.grit.logic.core.backup
 
 import com.shub39.grit.logic.habits.database.HabitDatabase
-import com.shub39.grit.logic.tasks.database.TaskDatabase
 import kotlinx.serialization.Serializable
+
+/** Schema version of the removed task database, kept for backup compatibility. */
+const val LEGACY_TASKS_SCHEMA_VERSION = 6
 
 @Serializable
 data class ExportSchema(
-    val tasksSchemaVersion: Int = TaskDatabase.SCHEMA_VERSION,
+    // fork: tasks were removed; these fields stay so older backups can still be read
+    val tasksSchemaVersion: Int = LEGACY_TASKS_SCHEMA_VERSION,
     val habitsSchemaVersion: Int = HabitDatabase.SCHEMA_VERSION,
     val habits: List<HabitSchema>,
     val habitStatus: List<HabitStatusSchema>,
-    val tasks: List<TaskSchema>,
-    val categories: List<CategorySchema>,
-    val subTasks: List<SubTaskSchema>,
+    val tasks: List<TaskSchema> = emptyList(),
+    val categories: List<CategorySchema> = emptyList(),
+    val subTasks: List<SubTaskSchema> = emptyList(),
     // fork: missing in older backups and in backups from the original app
     val activity: ActivitySchema? = null,
     val avatar: AvatarSchema? = null,

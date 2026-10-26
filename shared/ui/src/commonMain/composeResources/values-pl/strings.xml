@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="tasks">Zadania</string>
     <string name="material_theme">Motyw Material You</string>
     <string name="done">Zrobione</string>
-    <string name="add_task">Dodaj Zadanie</string>
     <string name="add_habit">Dodaj Nową Rutynę</string>
     <string name="update_description">Edytuj Opis</string>
     <string name="delete">Usuń</string>
@@ -16,12 +14,7 @@
     <string name="settings">Ustawienia</string>
     <string name="too_long">Zbyt Długie</string>
     <string name="save">Zapisz</string>
-    <string name="edit_task">Edytuj Zadanie</string>
-    <string name="delete_tasks">Czy na pewno chcesz usunąć wszystkie ukończone zadania?</string>
     <string name="update_title">Zmień tytuł</string>
-    <string name="edit_categories">Zmień kategorie</string>
-    <string name="delete_category">Jesteś pewny? Wszystkie zadania z tej kategorii zostaną usunięte</string>
-    <string name="add_category">Dodaj kategorię</string>
     <string name="add">Dodaj coś</string>
     <string name="habit_map">Mapa nawyków</string>
     <string name="look_and_feel">Wygląd</string>
@@ -38,8 +31,6 @@
     <string name="restore">Przywróć</string>
     <string name="restore_desc">Przywróć zadania i nawyki z pliku</string>
     <string name="material_theme_desc">Użyj kolorów z tapety</string>
-    <string name="show_habits">Najpierw nawyki</string>
-    <string name="show_habits_desc">Uruchamiaj aplikację na karcie nawyków</string>
     <string name="use_24Hr">Format 24-godzinny</string>
     <string name="use_24Hr_desc">Używaj formatu 24-godzinnego przy wyborze czasu</string>
     <string name="staring_day">Zaczynaj tydzień od niedzieli</string>
@@ -52,7 +43,6 @@
     <string name="started_on">Data rozpoczęcia</string>
     <string name="weekly_graph">Zestawienie tygodniowe</string>
     <string name="not_enough_data">Za mało danych</string>
-    <string name="items_completed">ukończono</string>
     <string name="completed">Ukończone dzisiaj</string>
     <string name="title">Tytuł</string>
     <string name="description">Opis</string>
@@ -72,9 +62,6 @@
     <string name="foss_desc">Wszystkie funkcje są dostępne. Ten wariant nie wspiera mikropłatności. Jeśli aplikacja jest dla Ciebie przydatna, możesz wesprzeć moją pracę tutaj</string>
     <string name="add_reminder">Dodaj przypomnienie</string>
     <string name="add_reminder_desc">Otrzymuj przypomnienia w wybrane dni</string>
-    <string name="invalid_date_time">Wybrany czas już minął</string>
-    <string name="reorder_tasks">Zmień kolejność zadań</string>
-    <string name="reorder_tasks_desc">Zmieniaj kolejność po ukończeniu</string>
     <string name="translate">Przetłumacz</string>
     <string name="changelog">Lista zmian</string>
     <string name="whats_changed">Co nowego</string>

@@ -22,7 +22,6 @@ import android.content.Intent
 import com.shub39.grit.core.GritLogger
 import com.shub39.grit.core.habits.HabitRepo
 import com.shub39.grit.core.interfaces.AlarmScheduler
-import com.shub39.grit.core.tasks.TaskRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -38,7 +37,6 @@ class BootReceiver : BroadcastReceiver(), KoinComponent {
         if (intent?.action == Intent.ACTION_BOOT_COMPLETED) {
             val scheduler = get<AlarmScheduler>()
             val habitRepo = get<HabitRepo>()
-            val taskRepo = get<TaskRepo>()
             val pendingResult = goAsync()
 
             receiverScope.launch {
@@ -46,16 +44,6 @@ class BootReceiver : BroadcastReceiver(), KoinComponent {
                     habitRepo.getHabits().forEach {
                         scheduler.schedule(it)
                         GritLogger.d("BootReceiver", "Scheduled habit: ${it.id}")
-                    }
-
-                    taskRepo.getTasks().forEach {
-                        scheduler.schedule(it)
-                        GritLogger.d("BootReceiver", "Scheduled task: ${it.id}")
-                    }
-
-                    taskRepo.getSubTasks().forEach {
-                        scheduler.schedule(it)
-                        GritLogger.d("BootReceiver", "Scheduled subtask: ${it.id}")
                     }
                 } catch (t: Exception) {
                     GritLogger.e("BootReceiver", "Failed to initiate alarms", t)

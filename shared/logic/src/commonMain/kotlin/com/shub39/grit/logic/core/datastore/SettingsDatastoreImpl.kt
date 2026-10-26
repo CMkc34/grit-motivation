@@ -22,7 +22,6 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.shub39.grit.core.interfaces.SettingsDatastore
-import com.shub39.grit.core.settings.Sections
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.DayOfWeek
@@ -33,11 +32,9 @@ class SettingsDatastoreImpl(private val datastore: DataStore<Preferences>) : Set
 
     companion object {
         private val startOfWeekKey = stringPreferencesKey("start_of_week")
-        private val startingSectionKey = stringPreferencesKey("starting_page")
         private val is24HrKey = booleanPreferencesKey("is_24Hr")
         private val notificationsKey = booleanPreferencesKey("notifications")
         private val biometricLockKey = booleanPreferencesKey("biometric")
-        private val taskReorderKey = booleanPreferencesKey("task_reorder")
         private val compactHabitView = booleanPreferencesKey("compact_habit_view")
     }
 
@@ -49,16 +46,6 @@ class SettingsDatastoreImpl(private val datastore: DataStore<Preferences>) : Set
 
     override suspend fun setStartOfWeek(day: DayOfWeek) {
         datastore.edit { prefs -> prefs[startOfWeekKey] = day.name }
-    }
-
-    override fun getStartingSectionPref(): Flow<Sections> =
-        datastore.data.map { pref ->
-            val page = pref[startingSectionKey] ?: Sections.Tasks.name
-            return@map Sections.valueOf(page)
-        }
-
-    override suspend fun setStartingPage(page: Sections) {
-        datastore.edit { prefs -> prefs[startingSectionKey] = page.name }
     }
 
     override fun getIs24Hr(): Flow<Boolean> =
@@ -80,13 +67,6 @@ class SettingsDatastoreImpl(private val datastore: DataStore<Preferences>) : Set
 
     override suspend fun setBiometricPref(pref: Boolean) {
         datastore.edit { prefs -> prefs[biometricLockKey] = pref }
-    }
-
-    override fun getTaskReorderPref(): Flow<Boolean> =
-        datastore.data.map { prefs -> prefs[taskReorderKey] ?: true }
-
-    override suspend fun setTaskReorderPref(pref: Boolean) {
-        datastore.edit { prefs -> prefs[taskReorderKey] = pref }
     }
 
     override fun getCompactViewPref(): Flow<Boolean> =

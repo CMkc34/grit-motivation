@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="tasks">Tareas</string>
     <string name="material_theme">Tema Material You</string>
     <string name="done">Hecho</string>
-    <string name="add_task">Agregar Tarea</string>
     <string name="add_habit">Agregar Nuevo Hábito</string>
     <string name="update_description">Editar Descripción</string>
     <string name="delete">Eliminar</string>
@@ -15,12 +13,7 @@
     <string name="best_streak">Mejor Racha</string>
     <string name="settings">Ajustes</string>
     <string name="too_long">Demasiado Largo</string>
-    <string name="edit_task">Editar Tarea</string>
-    <string name="delete_tasks">¿Estás seguro de que quieres eliminar todas las tareas completadas?</string>
     <string name="update_title">Editar Título</string>
-    <string name="edit_categories">Editar categorías de tareas</string>
-    <string name="delete_category">¿Estás seguro? Se eliminarán todas las tareas de esta categoría</string>
-    <string name="add_category">Agregar Categoría</string>
     <string name="add">Agregar Algo</string>
     <string name="habit_map">Mapa de Calor de Hábitos</string>
     <string name="look_and_feel">Apariencia</string>
@@ -37,8 +30,6 @@
     <string name="restore">Restaurar</string>
     <string name="restore_desc">Restaura tareas y hábitos desde el archivo seleccionado</string>
     <string name="material_theme_desc">Usa colores basados en el fondo de pantalla</string>
-    <string name="show_habits">Mostrar hábitos primero</string>
-    <string name="show_habits_desc">Mostrar la página de hábitos primero al iniciar la aplicación</string>
     <string name="use_24Hr">Usar reloj de 24 horas</string>
     <string name="use_24Hr_desc">Usa el reloj de 24 horas para establecer la hora</string>
     <string name="staring_day">Comenzar semanas en domingo</string>
@@ -51,7 +42,6 @@
     <string name="started_on">Iniciado el</string>
     <string name="weekly_graph">Comparación Semanal</string>
     <string name="not_enough_data">No hay suficientes datos</string>
-    <string name="items_completed">completado(s)</string>
     <string name="completed">Completado Hoy</string>
     <string name="title">Título</string>
     <string name="description">Descripción</string>
@@ -70,9 +60,6 @@
     <string name="foss">Estás usando la variante FOSS</string>
     <string name="foss_desc">Todas las funciones están desbloqueadas. Esta variante de la aplicación no admite compras integradas. Si esta aplicación ha aportado valor a tu vida, apóyame donando en</string>
     <string name="add_reminder">Agregar recordatorio</string>
-    <string name="invalid_date_time">La hora seleccionada es en el pasado</string>
-    <string name="reorder_tasks">Reordenar tareas</string>
-    <string name="reorder_tasks_desc">Reordenar tareas cuando se marquen como completadas</string>
     <string name="translate">Traducir</string>
     <string name="changelog">Registro de cambios</string>
     <string name="save">Guardar</string>

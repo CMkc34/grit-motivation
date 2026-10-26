@@ -3,7 +3,8 @@
 Privater Fork von [shub39/Grit](https://github.com/shub39/Grit) (GPL-3.0, Kotlin Multiplatform,
 Compose Material 3, Room). Ziel: kontextsensitives Motivations-/Sarkasmus-Pop-up beim Abhaken von
 Habits (Phase 1); danach Energie & Aktiv-Serie (Phase 2, Abschnitt 4), Statistiken (Phase 3, Abschnitt 6) und ein
-Avatar (Phase 4, Abschnitt 7; Roadmap in Abschnitt 5).
+Avatar (Phase 4, Abschnitt 7) und eine aufgeräumte Oberfläche mit Avatar-Reiter und farbigen
+Routinen (Phase 5, Abschnitt 8; Roadmap in Abschnitt 5).
 
 Basis-Stand: Upstream `master` @ `3e203449` (Release 6.2.2).
 
@@ -295,6 +296,7 @@ Belohnt wird die **Nutzung der App**, nicht die Serie einzelner Routinen.
 | 2 | Energie & Aktiv-Serie | Meilenstein „Phase 2“, Epic #14, Abschnitt 4 |
 | 3 | Statistiken | Meilenstein „Phase 3“, Epic #10, Abschnitt 6 |
 | 4 | Avatar (wachsende Pflanze) | Meilenstein „Phase 4“, Epic #15, Abschnitt 7 |
+| 5 | Avatar-Reiter, Routinen mit Farbe und Icon, Aufgaben entfernen | Epic #76, Abschnitt 8 |
 
 Reihenfolge und Abhängigkeiten:
 
@@ -455,7 +457,53 @@ ab Stufe 8 auf einer Wiese (Topffarbe dann als Farbe der Bank/des Schildes neben
 
 ---
 
-## 8. Offene Fragen
+## 8. Phase 5 – Avatar-Reiter, Routinen mit Farbe und Icon
+
+Abgestimmt am 2026-10-26. Epic #76, Label `phase-5`.
+
+### 8.1 Aufgaben entfernen (#77)
+- Die Aufgaben-Funktion (Seite, Listen, Unteraufgaben, Erinnerungen, Widget „Alle Aufgaben“,
+  Einstellungen „Startseite“ und „Aufgaben sortieren“) wird aus dem Code **gelöscht**, nicht nur
+  ausgeblendet. Die App startet immer bei den Routinen.
+- Die alte Datenbankdatei `task_database` wird beim App-Start gelöscht (`deleteDatabase`, danach
+  wirkungslos).
+- Backup: Export schreibt keine Aufgaben mehr. `tasks`, `categories`, `subTasks` und
+  `tasksSchemaVersion` bleiben als optionale Felder im `ExportSchema`, damit ältere Backups
+  importierbar bleiben; der Import überspringt sie und prüft nur noch `habitsSchemaVersion`.
+- Upstream-Syncs: Konflikte an gelöschten Aufgaben-Dateien („modify/delete“) werden mit „bleibt
+  gelöscht“ gelöst (siehe `docs/WORKFLOW.md`).
+
+### 8.2 Reiter „Avatar“ (#78)
+- Untere Leiste bzw. Seitenleiste: **Routinen | Avatar | Einstellungen**.
+- Avatar-Seite: Kontostand oben, darunter Pflanze mit Name und Fortschritt, darunter der Shop. Die
+  Energie-Seite zeigt danach nur noch Kontostand und Statistiken.
+
+### 8.3 Farbe und Icon pro Routine (#79, #80)
+- 24 Farben und 36 Icons, Standard **Grün + Blitz**. Gespeichert im Preferences-DataStore
+  (`routine_styles`, Einträge `habitId|colorKey|iconKey`), keine Änderung am Room-Schema.
+  Unbekannte Schlüssel fallen auf den Standard zurück.
+- Backup: optionales Feld `routineStyles` im `ExportSchema`.
+- Auswahl im Formular zum Anlegen/Bearbeiten einer Routine (Vorschau-Kachel neben dem Namen).
+
+### 8.4 Neue Routinen-Karte (#81)
+- Kopfzeile mit Name, Flamme mit Serie und Statistik-Knopf; links eine Kachel mit Icon in der Farbe
+  der Routine; rechts 2 × 5 Kästchen für die **letzten 10 Kalendertage** (oben links der älteste,
+  unten rechts heute), erfüllte Tage in der Farbe der Routine gefüllt.
+- Die Auswahl der Tage und ihr Zustand werden als reine Funktion in `core` berechnet und getestet.
+
+### 8.5 Issues
+| # | Inhalt |
+|---|---|
+| #77 | Aufgaben-Funktion vollständig entfernen |
+| #78 | Eigener Reiter „Avatar“ |
+| #79 | Domain + Speicher: Farbe und Icon pro Routine |
+| #80 | Auswahl von Farbe und Icon im Formular |
+| #81 | Neue Routinen-Karte |
+| #82 | Backlog: Deko für die Wiese (Teich, Tiere, Bank), erst nach eigenem Design-Gespräch |
+
+---
+
+## 9. Offene Fragen
 
 - ~~Soll das Pop-up per Einstellung abschaltbar sein?~~ Umgesetzt in #9 (siehe 3.3).
 - ~~Pop-up beim Abhaken eines vergangenen Tages ohne laufende Serie?~~ Entschieden: kein Pop-up bei

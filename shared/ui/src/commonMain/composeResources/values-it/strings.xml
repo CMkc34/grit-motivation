@@ -2,7 +2,6 @@
 <resources>
     <string name="material_theme">Tema Materiale You</string>
     <string name="done">Fatto</string>
-    <string name="add_task">Aggiungi Task</string>
     <string name="add_habit">Aggiungi Nuova Abitudine</string>
     <string name="update_description">Modifica Descrizione</string>
     <string name="delete">Elimina</string>
@@ -15,12 +14,7 @@
     <string name="settings">Impostazioni</string>
     <string name="too_long">Troppo Lungo</string>
     <string name="save">Salva</string>
-    <string name="edit_task">Modifica Task</string>
-    <string name="delete_tasks">Sei sicuro di voler eliminare tutte le task completate?</string>
     <string name="update_title">Modifica Tilolo</string>
-    <string name="edit_categories">Modifica Categorie</string>
-    <string name="delete_category">Sei sicuro? Tutte le task di questa categoria saranno eliminate</string>
-    <string name="add_category">Aggiungi Categoria</string>
     <string name="add">Aggiungi Qualcosa</string>
     <string name="habit_map">Mappa delle Abitudini</string>
     <string name="look_and_feel">Stile</string>
@@ -37,7 +31,6 @@
     <string name="restore">Reimposta</string>
     <string name="restore_desc">Reimposta task e abitudini da un file selezionato</string>
     <string name="material_theme_desc">Usa i colori dello sfondo</string>
-    <string name="show_habits">Mostra prima le abitudini</string>
     <string name="use_24Hr">Usa formato 24 ore</string>
     <string name="use_24Hr_desc">Usa formato a 24 ore per impostare il tempo</string>
     <string name="staring_day">Inizia le settimane da Domenica</string>
@@ -50,7 +43,6 @@
     <string name="started_on">Iniziato alle</string>
     <string name="weekly_graph">Confronto Settimanale</string>
     <string name="not_enough_data">Dati insufficienti</string>
-    <string name="items_completed">completato</string>
     <string name="completed">Completate Oggi</string>
     <string name="title">Titolo</string>
     <string name="description">Descrizione</string>
@@ -70,13 +62,8 @@
     <string name="foss_desc">Tutte le opzioni sono sbloccate. Questa variante dell\u0027apparato non supporta pagamaneti in App. Se questa app ha un valore per te supportami donando su</string>
     <string name="add_reminder">Aggiungi Promemoria</string>
     <string name="add_reminder_desc">Ricevi un promemoria i giorni selezionati</string>
-    <string name="invalid_date_time">L\u0027ora o il giorno selezionati sono nel passato…</string>
-    <string name="reorder_tasks">Riordina task</string>
-    <string name="reorder_tasks_desc">Riordina task quando vengono completate</string>
     <string name="translate">Traduci</string>
     <string name="changelog">Registro delle Modifiche</string>
     <string name="whats_changed">Cosa è cambiato</string>
     <string name="select_days">Seleziona Giorni</string>
-    <string name="tasks">Task</string>
-    <string name="show_habits_desc">Mostra abitudini quando si apre l\u0027app</string>
 </resources>

@@ -109,11 +109,6 @@ class MainViewModel(
                     .launchIn(this)
 
                 settingsDatastore
-                    .getStartingSectionPref()
-                    .onEach { pref -> _state.update { it.copy(startingSection = pref) } }
-                    .launchIn(this)
-
-                settingsDatastore
                     .getBiometricLockPref()
                     .onEach { pref -> _state.update { it.copy(isBiometricLockOn = pref) } }
                     .launchIn(this)

@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="tasks">Aktivnosti</string>
     <string name="material_theme">Material You tema</string>
     <string name="done">Gotovo</string>
-    <string name="add_task">Dodaj aktivnost</string>
     <string name="add_habit">Dodaj novu naviku</string>
     <string name="update_description">Izmeni opis</string>
     <string name="delete">Obriši</string>

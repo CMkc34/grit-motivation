@@ -30,10 +30,8 @@ import androidx.compose.ui.unit.dp
 import grit.shared.ui.generated.resources.Res
 import grit.shared.ui.generated.resources.Res.string
 import grit.shared.ui.generated.resources.alarm
-import grit.shared.ui.generated.resources.check_list
 import grit.shared.ui.generated.resources.habits
 import grit.shared.ui.generated.resources.settings
-import grit.shared.ui.generated.resources.tasks
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
@@ -43,7 +41,6 @@ private data class NavItem(val route: Routes, val title: StringResource, val ico
 
 private val NAV_ITEMS =
     listOf(
-        NavItem(Tasks, string.tasks, Res.drawable.check_list),
         NavItem(Habits, string.habits, Res.drawable.alarm),
         NavItem(Settings, string.settings, Res.drawable.settings),
     )
@@ -62,7 +59,6 @@ fun NavBar(modifier: Modifier = Modifier, currentRoute: Routes?, onNavigate: (Ro
                     if (selected) return@NavigationBarItem
 
                     when (item.route) {
-                        Tasks -> onNavigate(TaskList)
                         Habits -> onNavigate(HabitsList)
                         Settings -> onNavigate(SettingsHome)
                         else -> {}
@@ -91,7 +87,6 @@ fun NavRail(modifier: Modifier = Modifier, currentRoute: Routes?, onNavigate: (R
                     if (selected) return@NavigationRailItem
 
                     when (item.route) {
-                        Tasks -> onNavigate(TaskList)
                         Habits -> onNavigate(HabitsList)
                         Settings -> onNavigate(SettingsHome)
                         else -> {}

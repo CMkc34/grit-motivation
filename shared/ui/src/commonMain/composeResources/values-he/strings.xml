@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="tasks">משימות</string>
     <string name="material_theme">ערכת צבעים של Material You</string>
-    <string name="add_task">הוספת משימה</string>
     <string name="add_habit">הוספת הרגל חדש</string>
     <string name="update_description">עריכת תיאור</string>
     <string name="delete">מחיקה</string>
@@ -15,12 +13,7 @@
     <string name="settings">הגדרות</string>
     <string name="too_long">ארוך מדי</string>
     <string name="save">שמירה</string>
-    <string name="edit_task">עריכת משימה</string>
-    <string name="delete_tasks">למחוק את כל המשימות שהושלמו?</string>
     <string name="update_title">עריכת כותרת</string>
-    <string name="edit_categories">עריכת קטגוריות</string>
-    <string name="delete_category">להמשיך? כל המשימות בקטגוריה זו יימחקו</string>
-    <string name="add_category">הוספת קטגוריה</string>
     <string name="look_and_feel">מראה ותחושה</string>
     <string name="select_seed">בחירת צבע בסיס</string>
     <string name="select_seed_desc">בחירת צבע שממנו תיווצר ערכת הצבעים</string>
@@ -32,7 +25,6 @@
     <string name="restore">שחזור</string>
     <string name="restore_desc">שחזור המשימות וההרגלים מהקובץ הנבחר</string>
     <string name="material_theme_desc">שימוש בצבעים על סמך תמונת הרקע</string>
-    <string name="show_habits">קודם להציג הרגלים</string>
     <string name="use_24Hr">שימוש בשעון 24 שעות</string>
     <string name="staring_day">השבוע מתחיל ביום ראשון</string>
     <string name="system">מערכת</string>
@@ -42,7 +34,6 @@
     <string name="pause_notifications">השהיית התראות</string>
     <string name="pause_notifications_desc">השהיית כל ההתראות מהיישום</string>
     <string name="not_enough_data">אין מספיק נתונים</string>
-    <string name="items_completed">הושלם</string>
     <string name="title">כותרת</string>
     <string name="description">תיאור</string>
     <string name="edit_habit">עריכת הרגל</string>
@@ -58,8 +49,6 @@
     <string name="foss">נעשה שימוש במהדורת „תוכנה חופשית”</string>
     <string name="add_reminder">הוספת תזכורת</string>
     <string name="add_reminder_desc">קבלת התראת תזכורת בימים הנבחרים</string>
-    <string name="invalid_date_time">השעה שנבחרה כבר חלפה</string>
-    <string name="reorder_tasks">סידור מחדש של המשימות</string>
     <string name="translate">תרגום</string>
     <string name="changelog">יומן שינויים</string>
     <string name="whats_changed">מה השתנה</string>
@@ -69,7 +58,6 @@
     <string name="use_amoled">ערכת צבעים למסכי AMOLED</string>
     <string name="use_amoled_desc">לחוויה המיטבית במסכי AMOLED</string>
     <string name="export_desc">כל הנתונים יוצאו לתיקייה Downloads/Grit</string>
-    <string name="show_habits_desc">קודם להציג את עמוד ההרגלים בעת פתיחת היישום</string>
     <string name="use_24Hr_desc">שימוש בשעון 24 שעות לקביעת השעה</string>
     <string name="started_on">הותחל בתאריך</string>
     <string name="weekly_graph">השוואה שבועית</string>
@@ -77,6 +65,5 @@
     <string name="bmc">‏Buy me a coffee</string>
     <string name="grit_plus">מינוי „Grit Plus”</string>
     <string name="foss_desc">כל התכונות פתוחות. מהדורה זו של היישום אינה תומכת ברכישות בתוך היישום. אם היישום הזה הוסיף ערך לחייך, אפשר לתמוך בי בעזרת תרומה דרך</string>
-    <string name="reorder_tasks_desc">סידור מחדש של המשימות בעת סימונן ככאלה שהושלמו</string>
     <string name="habit_map">מפת להיטות להרגל</string>
 </resources>

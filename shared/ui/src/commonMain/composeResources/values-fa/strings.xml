@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="tasks">‌‎وظیفه‌ها</string>
     <string name="material_theme">پوستهٔ متریال‌یو</string>
     <string name="done">انجام شد</string>
-    <string name="add_task">افزودن وظیفه</string>
     <string name="add_habit">افزودن عادت جدید</string>
     <string name="update_description">ویرایش توضیحات</string>
     <string name="delete">حذف</string>
@@ -16,12 +14,7 @@
     <string name="settings">تنظیمات</string>
     <string name="too_long">بیش از حد طولانی</string>
     <string name="save">ذخیره</string>
-    <string name="edit_task">ویرایش وظیفه</string>
-    <string name="delete_tasks">آیا مطمئن هستید که می‌خواهید همهٔ وظیفه‌های انجام شده را حذف کنید؟</string>
     <string name="update_title">ویرایش عنوان</string>
-    <string name="edit_categories">ویرایش دسته‌بندی‌ها</string>
-    <string name="delete_category">آیا مطمئن هستید؟ همهٔ وظیفه‌های این دسته‌بندی حذف خواهند شد</string>
-    <string name="add_category">افزودن دسته‌بندی</string>
     <string name="add">چیزی اضافه کنید</string>
     <string name="habit_map">نقشهٔ حرارتی عادت‌ها</string>
     <string name="look_and_feel">ظاهر و نحوهٔ نمایش</string>
@@ -38,8 +31,6 @@
     <string name="restore">بازیابی</string>
     <string name="restore_desc">بازیابی وظیفه‌ها و عادت‌ها از فایل انتخاب‌شده</string>
     <string name="material_theme_desc">استفاده از رنگ‌های متناسب با تصویر زمینه</string>
-    <string name="show_habits">ابتدا نمایش عادت‌ها</string>
-    <string name="show_habits_desc">نمایش صفحهٔ عادت‌ها هنگام اجرای برنامه</string>
     <string name="use_24Hr">استفاده از ساعت ۲۴ ساعته</string>
     <string name="use_24Hr_desc">استفاده از ساعت ۲۴ ساعته برای تنظیم زمان</string>
     <string name="staring_day">شروع هفته‌ها از یکشنبه</string>
@@ -52,7 +43,6 @@
     <string name="started_on">شروع شده در</string>
     <string name="weekly_graph">مقایسهٔ هفتگی</string>
     <string name="not_enough_data">دادهٔ کافی وجود ندارد</string>
-    <string name="items_completed">انجام شده</string>
     <string name="completed">کارهای انجام شدهٔ امروز</string>
     <string name="title">عنوان</string>
     <string name="description">توضیحات</string>
@@ -73,9 +63,6 @@
     <string name="foss_desc">همه امکانات فعال هستند. این نسخه از برنامه از پرداخت درون‌برنامه‌ای پشتیبانی نمی‌کند. اگر این برنامه برایتان مفید بوده، می‌توانید با حمایت مالی به ما کمک کنید از طریق</string>
     <string name="add_reminder">افزودن یادآور</string>
     <string name="add_reminder_desc">دریافت یادآور در روزهای انتخاب‌شده</string>
-    <string name="invalid_date_time">زمان انتخاب‌شده در گذشته است</string>
-    <string name="reorder_tasks">تغییر ترتیب کارها</string>
-    <string name="reorder_tasks_desc">تغییر ترتیب کارها پس از انجام</string>
     <string name="translate">ترجمه</string>
     <string name="translate_desc">ترجمه گریت به زبان شما</string>
     <string name="changelog">گزارش تغییرات</string>

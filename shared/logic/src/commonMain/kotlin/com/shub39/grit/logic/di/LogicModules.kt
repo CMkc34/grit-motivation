@@ -23,11 +23,6 @@ import com.shub39.grit.logic.habits.database.HabitDatabase
 import com.shub39.grit.logic.habits.database.HabitDbFactory
 import com.shub39.grit.logic.habits.database.HabitStatusDao
 import com.shub39.grit.logic.habits.database.HabitsDao
-import com.shub39.grit.logic.tasks.database.CategoryDao
-import com.shub39.grit.logic.tasks.database.SubTaskDao
-import com.shub39.grit.logic.tasks.database.TaskDatabase
-import com.shub39.grit.logic.tasks.database.TaskDbFactory
-import com.shub39.grit.logic.tasks.database.TasksDao
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
@@ -39,15 +34,7 @@ class LogicModules {
     fun getDatastorePreferences(factory: DatastoreFactory): DataStore<Preferences> =
         factory.getPreferencesDataStore()
 
-    @Single fun getTaskDatabase(factory: TaskDbFactory): TaskDatabase = factory.create().build()
-
     @Single fun getHabitDatabase(factory: HabitDbFactory): HabitDatabase = factory.create().build()
-
-    @Single fun getTasksDao(db: TaskDatabase): TasksDao = db.taskDao()
-
-    @Single fun getCategoryDao(db: TaskDatabase): CategoryDao = db.categoryDao()
-
-    @Single fun getSubTasksDao(db: TaskDatabase): SubTaskDao = db.subTaskDao()
 
     @Single fun getHabitsDao(db: HabitDatabase): HabitsDao = db.habitDao()
 

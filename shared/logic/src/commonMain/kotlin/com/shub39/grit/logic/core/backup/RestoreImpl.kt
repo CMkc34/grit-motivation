@@ -25,17 +25,13 @@ import com.shub39.grit.core.interfaces.AlarmScheduler
 import com.shub39.grit.core.settings.backup.RestoreRepo
 import com.shub39.grit.core.settings.backup.RestoreResult
 import com.shub39.grit.core.settings.backup.SchemaMismatchException
-import com.shub39.grit.core.tasks.TaskRepo
 import com.shub39.grit.logic.habits.database.HabitDatabase
-import com.shub39.grit.logic.tasks.database.TaskDatabase
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.dialogs.FileKitMode
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.openFilePicker
 import io.github.vinceglb.filekit.readString
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
@@ -44,7 +40,6 @@ import org.koin.core.annotation.Single
 
 @Single(binds = [RestoreRepo::class])
 class RestoreImpl(
-    private val taskRepo: TaskRepo,
     private val habitRepo: HabitRepo,
     private val alarmScheduler: AlarmScheduler,
     private val activityStore: ActivityStore,
@@ -60,10 +55,8 @@ class RestoreImpl(
 
             val jsonDeserialized = json.decodeFromString<ExportSchema>(file.readString())
 
-            if (
-                jsonDeserialized.tasksSchemaVersion != TaskDatabase.SCHEMA_VERSION ||
-                    jsonDeserialized.habitsSchemaVersion != HabitDatabase.SCHEMA_VERSION
-            ) {
+            // fork: tasks were removed, so task data and its schema version are ignored
+            if (jsonDeserialized.habitsSchemaVersion != HabitDatabase.SCHEMA_VERSION) {
                 throw SchemaMismatchException()
             }
 
@@ -71,44 +64,18 @@ class RestoreImpl(
             val activityBefore = activityStore.getActivity().first()
 
             withContext(Dispatchers.IO) {
-                awaitAll(
-                    async {
-                        habitRepo.getHabits().forEach { alarmScheduler.cancel(it) }
+                habitRepo.getHabits().forEach { alarmScheduler.cancel(it) }
 
-                        jsonDeserialized.habits
-                            .map { it.toHabit() }
-                            .forEach {
-                                habitRepo.upsertHabit(it)
-                                alarmScheduler.schedule(it)
-                            }
+                jsonDeserialized.habits
+                    .map { it.toHabit() }
+                    .forEach {
+                        habitRepo.upsertHabit(it)
+                        alarmScheduler.schedule(it)
+                    }
 
-                        jsonDeserialized.habitStatus
-                            .map { it.toHabitStatus() }
-                            .forEach { habitRepo.insertHabitStatus(it) }
-                    },
-                    async {
-                        taskRepo.getTasks().forEach { alarmScheduler.cancel(it) }
-                        taskRepo.getSubTasks().forEach { alarmScheduler.cancel(it) }
-
-                        jsonDeserialized.categories
-                            .map { it.toCategory() }
-                            .forEach { taskRepo.upsertCategory(it) }
-
-                        jsonDeserialized.tasks
-                            .map { it.toTask() }
-                            .forEach {
-                                taskRepo.upsertTask(it)
-                                alarmScheduler.schedule(it)
-                            }
-
-                        jsonDeserialized.subTasks
-                            .map { it.toSubTask() }
-                            .forEach {
-                                taskRepo.upsertSubTask(it)
-                                alarmScheduler.schedule(it)
-                            }
-                    },
-                )
+                jsonDeserialized.habitStatus
+                    .map { it.toHabitStatus() }
+                    .forEach { habitRepo.insertHabitStatus(it) }
             }
 
             activityStore.replaceAll(

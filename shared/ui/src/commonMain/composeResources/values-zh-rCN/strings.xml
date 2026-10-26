@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="tasks">任务</string>
     <string name="material_theme">Material You 主题</string>
     <string name="done">完成</string>
-    <string name="add_task">添加任务</string>
     <string name="add_habit">新建习惯</string>
     <string name="update_description">编辑描述</string>
     <string name="delete">删除</string>
@@ -15,12 +13,7 @@
     <string name="best_streak">最佳连续天数</string>
     <string name="settings">设置</string>
     <string name="too_long">过长</string>
-    <string name="edit_task">编辑任务</string>
-    <string name="delete_tasks">确定删除所有已完成任务？</string>
     <string name="update_title">编辑标题</string>
-    <string name="edit_categories">编辑分类</string>
-    <string name="delete_category">确认删除？该分类下所有任务将被删除</string>
-    <string name="add_category">添加分类</string>
     <string name="add">添加内容</string>
     <string name="habit_map">习惯热力图</string>
     <string name="look_and_feel">外观与风格</string>
@@ -37,8 +30,6 @@
     <string name="restore">恢复数据</string>
     <string name="restore_desc">从选定文件恢复任务和习惯</string>
     <string name="material_theme_desc">基于壁纸生成配色方案</string>
-    <string name="show_habits">优先显示习惯</string>
-    <string name="show_habits_desc">启动时默认显示习惯页面</string>
     <string name="use_24Hr">24小时制</string>
     <string name="use_24Hr_desc">使用24小时制设置时间</string>
     <string name="staring_day">周起始日为周日</string>
@@ -52,7 +43,6 @@
     <string name="weekly_graph">周度对比</string>
     <string name="not_enough_data">数据不足</string>
     <string name="biometric_lock">生物识别锁</string>
-    <string name="items_completed">已完成</string>
     <string name="completed">今天已完成</string>
     <string name="title">标题</string>
     <string name="description">描述</string>
@@ -68,14 +58,11 @@
     <string name="week_breakdown">每日明细</string>
     <string name="foss">您正在使用 FOSS 版本</string>
     <string name="foss_desc">所有功能均已解锁。此版本不支持应用内购买。如果这个应用对你有所帮助，欢迎通过以下方式支持我</string>
-    <string name="reorder_tasks">重新排序</string>
-    <string name="reorder_tasks_desc">完成后重新排序任务</string>
     <string name="translate">翻译</string>
     <string name="changelog">更新日志</string>
     <string name="add_reminder">添加提醒</string>
     <string name="save">保存</string>
     <string name="add_reminder_desc">在选定的日期内通过通知提醒</string>
-    <string name="invalid_date_time">选择的是过去的时间</string>
     <string name="select_days">选择日期</string>
     <string name="whats_changed">更新内容</string>
     <string name="bmc_desc">捐助我以示支持</string>
