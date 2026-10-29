@@ -46,6 +46,7 @@ import com.shub39.grit.core.avatar.AvatarState
 import com.shub39.grit.core.avatar.PlantMood
 import com.shub39.grit.core.avatar.PlantStage
 import com.shub39.grit.core.avatar.PlantState
+import com.shub39.grit.core.avatar.Weather
 import com.shub39.grit.shared.ui.GritPreviewWrapper
 import com.shub39.grit.shared.ui.components.GritDialog
 import com.shub39.grit.shared.ui.theme.flexFontEmphasis
@@ -130,6 +131,7 @@ fun AvatarCard(avatar: AvatarState, onRenameClick: () -> Unit, modifier: Modifie
                 potColor = avatar.data.potColor,
                 accessories = avatar.data.accessories,
                 decorations = avatar.data.decorations,
+                weather = plant.weather,
                 modifier = Modifier.widthIn(max = 480.dp).fillMaxWidth(),
             )
 
@@ -270,7 +272,7 @@ private fun TiredAvatarCardPreview() {
     AvatarCard(
         avatar =
             previewAvatar.copy(
-                plant = PlantState(400, PlantStage.MIGHTY_TREE, PlantMood.TIRED),
+                plant = PlantState(400, PlantStage.MIGHTY_TREE, PlantMood.TIRED, Weather.OVERCAST),
                 data = AvatarData(name = "Fridolin"),
             ),
         onRenameClick = {},
