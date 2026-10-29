@@ -105,8 +105,8 @@ fun plantName(data: AvatarData): String =
     data.name.ifBlank { stringResource(Res.string.avatar_default_name) }
 
 /**
- * The plant at the top of the energy page with its name, stage and progress. Tapping the name opens
- * [onRenameClick].
+ * The plant on its meadow at the top of the Avatar tab with its name, stage and progress. Tapping
+ * the name opens [onRenameClick].
  */
 @Composable
 fun AvatarCard(avatar: AvatarState, onRenameClick: () -> Unit, modifier: Modifier = Modifier) {
@@ -119,16 +119,18 @@ fun AvatarCard(avatar: AvatarState, onRenameClick: () -> Unit, modifier: Modifie
         shape = MaterialTheme.shapes.extraLarge,
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(24.dp),
+            // the wide meadow reaches closer to the card's edges than the text
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            PlantAvatar(
+            MeadowScene(
                 stage = plant.stage,
                 mood = plant.mood,
                 potColor = avatar.data.potColor,
                 accessories = avatar.data.accessories,
-                modifier = Modifier.widthIn(max = 240.dp).fillMaxWidth(),
+                decorations = avatar.data.decorations,
+                modifier = Modifier.widthIn(max = 480.dp).fillMaxWidth(),
             )
 
             Text(
@@ -246,7 +248,12 @@ private val previewAvatar =
     AvatarState(
         plant = PlantState(activeDays = 25, stage = PlantStage.PLANTLET, mood = PlantMood.HAPPY),
         energy = 12,
-        data = AvatarData(potColor = "pot_blue", accessories = setOf("acc_ladybug")),
+        data =
+            AvatarData(
+                potColor = "pot_blue",
+                accessories = setOf("acc_ladybug"),
+                decorations = setOf("deco_mushrooms", "deco_rabbit"),
+            ),
     )
 
 @PreviewWrapper(GritPreviewWrapper::class)
