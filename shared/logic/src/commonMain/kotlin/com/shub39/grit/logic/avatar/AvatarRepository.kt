@@ -67,6 +67,7 @@ class AvatarRepository(private val activityRepo: ActivityRepo, private val store
         when (item.kind) {
             ShopItemKind.POT_COLOR -> if (worn) store.setPotColor(item.id)
             ShopItemKind.ACCESSORY -> store.setAccessory(item.id, worn)
+            ShopItemKind.DECORATION -> store.setDecoration(item.id, worn)
         }
     }
 

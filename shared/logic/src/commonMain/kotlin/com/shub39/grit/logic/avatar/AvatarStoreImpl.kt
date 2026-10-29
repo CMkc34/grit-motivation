@@ -40,6 +40,7 @@ class AvatarStoreImpl(private val datastore: DataStore<Preferences>) : AvatarSto
         private val purchasesKey = stringSetPreferencesKey("avatar_purchases")
         private val potColorKey = stringPreferencesKey("avatar_pot_color")
         private val accessoriesKey = stringSetPreferencesKey("avatar_accessories")
+        private val decorationsKey = stringSetPreferencesKey("avatar_decorations")
         private val seenStageKey = intPreferencesKey("avatar_seen_stage")
 
         private const val SEPARATOR = "|"
@@ -64,6 +65,7 @@ class AvatarStoreImpl(private val datastore: DataStore<Preferences>) : AvatarSto
                     prefs[purchasesKey].orEmpty().mapNotNull(::decodePurchase).sortedBy { it.date },
                 potColor = prefs[potColorKey] ?: ShopCatalog.DEFAULT_POT_COLOR,
                 accessories = prefs[accessoriesKey].orEmpty(),
+                decorations = prefs[decorationsKey].orEmpty(),
                 seenStage = prefs[seenStageKey] ?: 0,
             )
         }
@@ -87,6 +89,13 @@ class AvatarStoreImpl(private val datastore: DataStore<Preferences>) : AvatarSto
         }
     }
 
+    override suspend fun setDecoration(itemId: String, shown: Boolean) {
+        datastore.edit {
+            val decorations = it[decorationsKey].orEmpty()
+            it[decorationsKey] = if (shown) decorations + itemId else decorations - itemId
+        }
+    }
+
     override suspend fun markStageSeen(stage: Int) {
         datastore.edit { it[seenStageKey] = maxOf(it[seenStageKey] ?: 0, stage) }
     }
@@ -98,6 +107,7 @@ class AvatarStoreImpl(private val datastore: DataStore<Preferences>) : AvatarSto
                 data.purchases.mapTo(mutableSetOf()) { purchase -> purchase.encode() }
             it[potColorKey] = data.potColor
             it[accessoriesKey] = data.accessories
+            it[decorationsKey] = data.decorations
             it[seenStageKey] = data.seenStage
         }
     }

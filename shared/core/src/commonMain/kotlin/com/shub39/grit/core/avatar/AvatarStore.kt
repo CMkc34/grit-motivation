@@ -24,6 +24,8 @@ data class AvatarData(
     val purchases: List<Purchase> = emptyList(),
     val potColor: String = ShopCatalog.DEFAULT_POT_COLOR,
     val accessories: Set<String> = emptySet(),
+    /** Bought decorations that are shown on the meadow. */
+    val decorations: Set<String> = emptySet(),
     /** Highest stage the user has been told about, so a new stage is announced once. */
     val seenStage: Int = 0,
 ) {
@@ -41,6 +43,7 @@ data class AvatarData(
                     .sortedBy { it.date },
             potColor = if (potColor == ShopCatalog.DEFAULT_POT_COLOR) backup.potColor else potColor,
             accessories = accessories.ifEmpty { backup.accessories },
+            decorations = decorations.ifEmpty { backup.decorations },
             seenStage = maxOf(seenStage, backup.seenStage),
         )
 }
@@ -55,6 +58,8 @@ interface AvatarStore {
     suspend fun setPotColor(itemId: String)
 
     suspend fun setAccessory(itemId: String, worn: Boolean)
+
+    suspend fun setDecoration(itemId: String, shown: Boolean)
 
     suspend fun markStageSeen(stage: Int)
 

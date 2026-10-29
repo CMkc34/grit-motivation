@@ -23,6 +23,8 @@ enum class ShopItemKind {
     POT_COLOR,
     /** Any number can be worn. */
     ACCESSORY,
+    /** Stands on its own fixed spot on the meadow; any number can be shown. */
+    DECORATION,
 }
 
 data class ShopItem(
@@ -56,6 +58,14 @@ object ShopCatalog {
             ShopItem("acc_fruits", ShopItemKind.ACCESSORY, 60, PlantStage.BIG_TREE),
             ShopItem("acc_fairy_lights", ShopItemKind.ACCESSORY, 70, PlantStage.BIG_TREE),
             ShopItem("acc_swing", ShopItemKind.ACCESSORY, 80, PlantStage.BLOSSOMING_TREE),
+            ShopItem("deco_mushrooms", ShopItemKind.DECORATION, 10, PlantStage.SEED),
+            ShopItem("deco_fence", ShopItemKind.DECORATION, 15, PlantStage.GERM),
+            ShopItem("deco_snail", ShopItemKind.DECORATION, 15, PlantStage.SEEDLING),
+            ShopItem("deco_hedgehog", ShopItemKind.DECORATION, 25, PlantStage.PLANTLET),
+            ShopItem("deco_rabbit", ShopItemKind.DECORATION, 30, PlantStage.YOUNG_PLANT),
+            ShopItem("deco_bench", ShopItemKind.DECORATION, 40, PlantStage.YOUNG_TREE),
+            ShopItem("deco_pond", ShopItemKind.DECORATION, 50, PlantStage.TREE),
+            ShopItem("deco_lantern", ShopItemKind.DECORATION, 45, PlantStage.BIG_TREE),
         )
 
     fun byId(id: String): ShopItem? = items.firstOrNull { it.id == id }

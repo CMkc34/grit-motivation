@@ -41,16 +41,29 @@ class AvatarSchemaTest {
                     listOf(
                         Purchase("pot_blue", LocalDate(2026, 10, 20), 10),
                         Purchase("acc_ladybug", LocalDate(2026, 10, 22), 15),
+                        Purchase("deco_pond", LocalDate(2026, 10, 29), 50),
                     ),
                 potColor = "pot_blue",
                 accessories = setOf("acc_ladybug"),
                 seenStage = 5,
+                decorations = setOf("deco_pond"),
             )
 
         val exported = Json.encodeToString(schema(data.toAvatarSchema()))
         val imported = json.decodeFromString<ExportSchema>(exported)
 
         assertEquals(data, imported.avatar?.toAvatarData())
+    }
+
+    @Test
+    fun `backup from before decorations can still be read`() {
+        val old =
+            """{"habits":[],"habitStatus":[],"avatar":{"name":"Fern","accessories":["acc_bird"]}}"""
+
+        val avatar = json.decodeFromString<ExportSchema>(old).avatar?.toAvatarData()
+
+        assertEquals(setOf("acc_bird"), avatar?.accessories)
+        assertEquals(emptySet(), avatar?.decorations)
     }
 
     @Test
