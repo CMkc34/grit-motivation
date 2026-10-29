@@ -63,22 +63,22 @@ import kotlin.math.sign
 import kotlin.math.sin
 
 // fixed palette, the plant looks the same in light and dark theme
-private val outline = Color(0xFF2B3A2C)
+internal val outline = Color(0xFF2B3A2C)
 private val leafGreen = Color(0xFF6CCB5F)
 private val leafLight = Color(0xFF93DB78)
 private val stemGreen = Color(0xFF3FA34D)
 private val trunkBrown = Color(0xFFA0704C)
 private val soilBrown = Color(0xFF6B4A3A)
 private val seedBrown = Color(0xFFD2A26E)
-private val meadowGreen = Color(0xFF9BD770)
+internal val meadowGreen = Color(0xFF9BD770)
 private val flowerYellow = Color(0xFFFFD45C)
 private val fruitRed = Color(0xFFF25C54)
 private val blush = Color(0xFFFF8FA0)
 private val lightYellow = Color(0xFFFFEB3B)
-private val tiredGray = Color(0xFFA3A79F)
+internal val tiredGray = Color(0xFFA3A79F)
 
 /** Outline width in units of the avatar's size. */
-private const val OUTLINE = 0.013f
+internal const val OUTLINE = 0.013f
 
 /** Color of a pot color item; unknown ids fall back to terracotta. */
 fun potColorOf(itemId: String): Color =
@@ -110,23 +110,34 @@ fun PlantAvatar(
     val sway = if (animate) rememberSway() else 0f
 
     Canvas(modifier = modifier.aspectRatio(1f)) {
-        val plant =
-            PlantPainter(
-                stage = stage,
-                tired = mood == PlantMood.TIRED,
-                potColor = potColorOf(potColor),
-                accessories = accessories,
-            )
         // everything below is drawn in a 1 x 1 square
         scale(scaleX = size.width, scaleY = size.height, pivot = Offset.Zero) {
-            with(plant) { draw(swayDegrees = sway * plant.maxSway) }
+            drawPlantAvatar(stage, mood, potColor, accessories, sway)
         }
     }
 }
 
+/** Draws the plant into the 1 x 1 square at the origin; [sway] is -1..1 from [rememberSway]. */
+internal fun DrawScope.drawPlantAvatar(
+    stage: PlantStage,
+    mood: PlantMood,
+    potColor: String,
+    accessories: Set<String>,
+    sway: Float,
+) {
+    val plant =
+        PlantPainter(
+            stage = stage,
+            tired = mood == PlantMood.TIRED,
+            potColor = potColorOf(potColor),
+            accessories = accessories,
+        )
+    with(plant) { draw(swayDegrees = sway * plant.maxSway) }
+}
+
 /** -1..1, back and forth every few seconds. */
 @Composable
-private fun rememberSway(): Float {
+internal fun rememberSway(): Float {
     val transition = rememberInfiniteTransition(label = "plant sway")
     val sway by
         transition.animateFloat(
