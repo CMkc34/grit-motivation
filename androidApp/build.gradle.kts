@@ -26,7 +26,7 @@ plugins {
     alias(libs.plugins.koin.compiler)
 }
 
-val appName = "Grit"
+val appName = "Sprout"
 val appVersionCode = 6220
 val appVersionName = "6.2.2"
 

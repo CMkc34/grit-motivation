@@ -4,7 +4,7 @@
   The fork's own file, the upstream strings.xml stays untouched.
 -->
 <resources>
-    <string name="avatar_default_name">Grit</string>
+    <string name="avatar_default_name">Sprout</string>
     <string name="avatar_stage_label">Stage %1$d of 12 · %2$s</string>
     <plurals name="avatar_days_to_next">
         <item quantity="one">%1$d more active day to the next stage</item>
@@ -15,7 +15,7 @@
 
     <!-- Rename -->
     <string name="avatar_rename_title">Rename your plant</string>
-    <string name="avatar_rename_hint">Leave empty to use “Grit”</string>
+    <string name="avatar_rename_hint">Leave empty to use “Sprout”</string>
     <string name="avatar_save">Save</string>
     <string name="avatar_cancel">Cancel</string>
 
