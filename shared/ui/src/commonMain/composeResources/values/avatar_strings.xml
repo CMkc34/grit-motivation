@@ -68,6 +68,17 @@
     <string name="shop_item_acc_fruits">Fruits</string>
     <string name="shop_item_acc_fairy_lights">Fairy lights</string>
     <string name="shop_item_acc_swing">Swing</string>
+    <string name="shop_decorations">Decorations</string>
+    <string name="shop_set_up">Set up</string>
+    <string name="shop_put_away">Put away</string>
+    <string name="shop_item_deco_mushrooms">Mushrooms</string>
+    <string name="shop_item_deco_fence">Garden fence</string>
+    <string name="shop_item_deco_snail">Snail</string>
+    <string name="shop_item_deco_hedgehog">Hedgehog</string>
+    <string name="shop_item_deco_rabbit">Rabbit</string>
+    <string name="shop_item_deco_bench">Park bench</string>
+    <string name="shop_item_deco_pond">Pond</string>
+    <string name="shop_item_deco_lantern">Lantern</string>
 
     <!-- Avatar tab (Phase 5) -->
     <string name="avatar_tab">Avatar</string>

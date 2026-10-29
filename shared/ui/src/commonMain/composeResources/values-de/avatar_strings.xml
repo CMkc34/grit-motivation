@@ -68,6 +68,17 @@
     <string name="shop_item_acc_fruits">Früchte</string>
     <string name="shop_item_acc_fairy_lights">Lichterkette</string>
     <string name="shop_item_acc_swing">Schaukel</string>
+    <string name="shop_decorations">Deko</string>
+    <string name="shop_set_up">Aufstellen</string>
+    <string name="shop_put_away">Wegnehmen</string>
+    <string name="shop_item_deco_mushrooms">Pilze</string>
+    <string name="shop_item_deco_fence">Gartenzaun</string>
+    <string name="shop_item_deco_snail">Schnecke</string>
+    <string name="shop_item_deco_hedgehog">Igel</string>
+    <string name="shop_item_deco_rabbit">Hase</string>
+    <string name="shop_item_deco_bench">Parkbank</string>
+    <string name="shop_item_deco_pond">Teich</string>
+    <string name="shop_item_deco_lantern">Laterne</string>
 
     <!-- Reiter Avatar (Phase 5) -->
     <string name="avatar_tab">Avatar</string>

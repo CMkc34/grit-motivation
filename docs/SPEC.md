@@ -491,7 +491,20 @@ Abgestimmt am 2026-10-26. Epic #76, Label `phase-5`.
   unten rechts heute), erfüllte Tage in der Farbe der Routine gefüllt.
 - Die Auswahl der Tage und ihr Zustand werden als reine Funktion in `core` berechnet und getestet.
 
-### 8.5 Issues
+### 8.5 Deko für die Wiese (#82: #101, #103, #104)
+Abgestimmt am 2026-10-29 (Entwurf: https://claude.ai/artifact/Mw37mjDy9J1AbhEHHJL8C5).
+- Die Pflanzen-Karte zeigt eine **breite Wiese (2 : 1)**, schon ab Stufe 1; die Pflanze bleibt in
+  der Mitte, der Topf steht im Gras. Gezeichnet in `MeadowScene` (Compose, Sticker-Stil).
+- 8 Deko-Teile mit **festem Platz**, auf der abfallenden Wiesenkante stehend (Preis ⚡ / ab Stufe):
+  Pilze 10/1, Gartenzaun 15/2, Schnecke 15/3, Igel 25/5, Hase 30/6, Parkbank 40/8, Teich 50/9,
+  Laterne 45/10.
+- Kauf im Shop (Kategorie „Deko“, `ShopItemKind.DECORATION`); gekaufte Teile lassen sich aufstellen
+  und wegnehmen. Eingeblendete Teile im DataStore unter `avatar_decorations`, im Backup als
+  optionales Feld `decorations` im Avatar.
+- Bei gerissener Serie schlafen die Tiere mit. Dezente Bewegung (Hase, Schnecke, Igel, Teich,
+  Laterne) folgt der Animations-Einstellung.
+
+### 8.6 Issues
 | # | Inhalt |
 |---|---|
 | #77 | Aufgaben-Funktion vollständig entfernen |
@@ -499,7 +512,10 @@ Abgestimmt am 2026-10-26. Epic #76, Label `phase-5`.
 | #79 | Domain + Speicher: Farbe und Icon pro Routine |
 | #80 | Auswahl von Farbe und Icon im Formular |
 | #81 | Neue Routinen-Karte |
-| #82 | Backlog: Deko für die Wiese (Teich, Tiere, Bank), erst nach eigenem Design-Gespräch |
+| #82 | Deko für die Wiese (Teich, Tiere, Bank), aufgeteilt in #101, #103, #104 |
+| #101 | Deko: Katalog, Kauf, Ein-/Ausblenden, Speicherung und Backup |
+| #103 | Deko: breite Wiese mit gezeichneten Deko-Teilen |
+| #104 | Deko: Shop-Kategorie „Deko“ |
 
 ---
 
