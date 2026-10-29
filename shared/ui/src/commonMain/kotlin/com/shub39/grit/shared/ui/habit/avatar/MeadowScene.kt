@@ -26,9 +26,11 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -77,11 +79,14 @@ private val water = Color(0xFF6EC6E8)
 private val waterLight = Color(0xFFA7DFF2)
 private val pink = Color(0xFFFF8FA0)
 private val pinkLight = Color(0xFFFFB3C1)
+private val sky = Color(0xFF90D5FF)
+private val cloudShade = Color(0xFFDDF1FF)
 
 /**
- * The plant in the middle of a wide meadow with the decorations the user shows. Every decoration
- * has its own fixed spot left or right of the plant, chosen so that even the mighty tree with its
- * arms never covers one. Animals sleep with the plant when it is tired; the small movements follow
+ * The plant in the middle of a wide meadow under a light blue sky with a few clouds, together with
+ * the decorations the user shows. Every decoration has its own fixed spot left or right of the
+ * plant, chosen so that even the mighty tree with its arms never covers one. Animals sleep with the
+ * plant when it is tired and the sky turns dull; the small movements and the drifting clouds follow
  * the system's animation setting like the plant's sway.
  */
 @Composable
@@ -99,11 +104,14 @@ fun MeadowScene(
     val tired = mood == PlantMood.TIRED
     val shown = decorationsInOrder.filter { it.id in decorations }
 
-    Canvas(modifier = modifier.aspectRatio(MEADOW_ASPECT_RATIO)) {
+    Canvas(modifier = modifier.aspectRatio(MEADOW_ASPECT_RATIO).clip(RoundedCornerShape(20.dp))) {
         // everything below is drawn in a 2 x 1 rectangle
         scale(scale = size.height, pivot = Offset.Zero) {
             val painter = DecorationPainter(tired = tired, time = time, moving = animate && !tired)
-            with(painter) { drawGround() }
+            with(painter) {
+                drawSky()
+                drawGround()
+            }
             shown.filter { !it.inFront }.forEach { it.draw(this, painter) }
             translate(left = 0.5f) { drawPlantAvatar(stage, mood, potColor, accessories, sway) }
             shown.filter { it.inFront }.forEach { it.draw(this, painter) }
@@ -202,6 +210,36 @@ private class DecorationPainter(val tired: Boolean, val time: Float, val moving:
                 center = Offset(center.x + r * 0.35f, center.y - r * 0.35f),
             )
         }
+    }
+
+    fun DrawScope.drawSky() {
+        drawRect(sky.mood(), topLeft = Offset.Zero, size = Size(MEADOW_ASPECT_RATIO, 1f))
+        // the clouds drift a little to and fro; the big ones stay clear of the plant's crown
+        val drift = 0.03f * wave(LOOP_SECONDS)
+        cloud(Offset(0.24f + drift, 0.2f), 0.11f)
+        cloud(Offset(1.0f - drift * 0.6f, 0.08f), 0.06f)
+        cloud(Offset(1.74f - drift, 0.27f), 0.09f)
+        cloud(Offset(0.5f + drift * 0.6f, 0.5f), 0.05f)
+    }
+
+    /** A puffy cloud of [width] times 2.6 around [center], with a soft shade along its bottom. */
+    private fun DrawScope.cloud(center: Offset, width: Float) {
+        val puffs =
+            listOf(
+                Triple(-0.85f, 0.15f, 0.45f),
+                Triple(-0.35f, -0.2f, 0.6f),
+                Triple(0.3f, -0.3f, 0.7f),
+                Triple(0.9f, 0.1f, 0.45f),
+                Triple(0.05f, 0.25f, 0.5f),
+            )
+        val path =
+            Path().apply {
+                puffs.forEach { (dx, dy, r) ->
+                    addOval(Rect(Offset(center.x + dx * width, center.y + dy * width), r * width))
+                }
+            }
+        drawPath(path, cloudShade.mood())
+        translate(top = -0.1f * width) { drawPath(path, Color.White.mood()) }
     }
 
     fun DrawScope.drawGround() {

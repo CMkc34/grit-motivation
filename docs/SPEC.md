@@ -503,6 +503,8 @@ Abgestimmt am 2026-10-29 (Entwurf: https://claude.ai/artifact/Mw37mjDy9J1AbhEHHJ
   optionales Feld `decorations` im Avatar.
 - Bei gerissener Serie schlafen die Tiere mit. Dezente Bewegung (Hase, Schnecke, Igel, Teich,
   Laterne) folgt der Animations-Einstellung.
+- Hintergrund (#107): hellblauer Himmel (#90D5FF) mit Wolken statt des Karten-Hintergrunds; die
+  Wolken treiben langsam, bei gerissener Serie wird der Himmel matter.
 
 ### 8.6 Issues
 | # | Inhalt |
@@ -516,6 +518,7 @@ Abgestimmt am 2026-10-29 (Entwurf: https://claude.ai/artifact/Mw37mjDy9J1AbhEHHJ
 | #101 | Deko: Katalog, Kauf, Ein-/Ausblenden, Speicherung und Backup |
 | #103 | Deko: breite Wiese mit gezeichneten Deko-Teilen |
 | #104 | Deko: Shop-Kategorie „Deko“ |
+| #107 | Wiese: hellblauer Himmel mit Wolken |
 
 ---
 
