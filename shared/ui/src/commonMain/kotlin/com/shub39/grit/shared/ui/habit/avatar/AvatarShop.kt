@@ -64,6 +64,7 @@ import grit.shared.ui.generated.resources.shop_choose
 import grit.shared.ui.generated.resources.shop_chosen
 import grit.shared.ui.generated.resources.shop_confirm_text
 import grit.shared.ui.generated.resources.shop_confirm_title
+import grit.shared.ui.generated.resources.shop_decorations
 import grit.shared.ui.generated.resources.shop_from_stage
 import grit.shared.ui.generated.resources.shop_item_acc_bird
 import grit.shared.ui.generated.resources.shop_item_acc_birdhouse
@@ -74,6 +75,14 @@ import grit.shared.ui.generated.resources.shop_item_acc_fruits
 import grit.shared.ui.generated.resources.shop_item_acc_ladybug
 import grit.shared.ui.generated.resources.shop_item_acc_swing
 import grit.shared.ui.generated.resources.shop_item_acc_watering_can
+import grit.shared.ui.generated.resources.shop_item_deco_bench
+import grit.shared.ui.generated.resources.shop_item_deco_fence
+import grit.shared.ui.generated.resources.shop_item_deco_hedgehog
+import grit.shared.ui.generated.resources.shop_item_deco_lantern
+import grit.shared.ui.generated.resources.shop_item_deco_mushrooms
+import grit.shared.ui.generated.resources.shop_item_deco_pond
+import grit.shared.ui.generated.resources.shop_item_deco_rabbit
+import grit.shared.ui.generated.resources.shop_item_deco_snail
 import grit.shared.ui.generated.resources.shop_item_pot_blue
 import grit.shared.ui.generated.resources.shop_item_pot_gold
 import grit.shared.ui.generated.resources.shop_item_pot_green
@@ -82,7 +91,9 @@ import grit.shared.ui.generated.resources.shop_item_pot_terracotta
 import grit.shared.ui.generated.resources.shop_item_pot_yellow
 import grit.shared.ui.generated.resources.shop_low_energy
 import grit.shared.ui.generated.resources.shop_pot_colors
+import grit.shared.ui.generated.resources.shop_put_away
 import grit.shared.ui.generated.resources.shop_put_on
+import grit.shared.ui.generated.resources.shop_set_up
 import grit.shared.ui.generated.resources.shop_take_off
 import grit.shared.ui.generated.resources.shop_title
 import kotlinx.datetime.LocalDate
@@ -106,6 +117,14 @@ private fun ShopItem.nameRes(): StringResource? =
         "acc_fruits" -> Res.string.shop_item_acc_fruits
         "acc_fairy_lights" -> Res.string.shop_item_acc_fairy_lights
         "acc_swing" -> Res.string.shop_item_acc_swing
+        "deco_mushrooms" -> Res.string.shop_item_deco_mushrooms
+        "deco_fence" -> Res.string.shop_item_deco_fence
+        "deco_snail" -> Res.string.shop_item_deco_snail
+        "deco_hedgehog" -> Res.string.shop_item_deco_hedgehog
+        "deco_rabbit" -> Res.string.shop_item_deco_rabbit
+        "deco_bench" -> Res.string.shop_item_deco_bench
+        "deco_pond" -> Res.string.shop_item_deco_pond
+        "deco_lantern" -> Res.string.shop_item_deco_lantern
         else -> null
     }
 
@@ -123,12 +142,20 @@ private fun ShopItem.emoji(): String =
         "acc_fruits" -> "🍎"
         "acc_fairy_lights" -> "✨"
         "acc_swing" -> "🪢"
+        "deco_mushrooms" -> "🍄"
+        "deco_fence" -> "🪵"
+        "deco_snail" -> "🐌"
+        "deco_hedgehog" -> "🦔"
+        "deco_rabbit" -> "🐇"
+        "deco_bench" -> "🪑"
+        "deco_pond" -> "🪷"
+        "deco_lantern" -> "🏮"
         else -> "🎁"
     }
 
 /**
- * Pot colors and accessories bought with energy. [onBuyClick] opens the confirmation, [onWear] puts
- * an owned item on or takes it off.
+ * Pot colors, accessories and meadow decorations bought with energy. [onBuyClick] opens the
+ * confirmation, [onWear] puts an owned item on or takes it off.
  */
 @Composable
 fun AvatarShop(
@@ -182,6 +209,7 @@ fun AvatarShop(
 private enum class ShopKind(val kind: ShopItemKind, val title: StringResource) {
     POTS(ShopItemKind.POT_COLOR, Res.string.shop_pot_colors),
     ACCESSORIES(ShopItemKind.ACCESSORY, Res.string.shop_accessories),
+    DECORATIONS(ShopItemKind.DECORATION, Res.string.shop_decorations),
 }
 
 @Composable
@@ -214,6 +242,14 @@ private fun ShopRow(
                     item.kind == ShopItemKind.POT_COLOR ->
                         FilledTonalButton(onClick = { onWear(true) }) {
                             Text(stringResource(Res.string.shop_choose))
+                        }
+                    item.kind == ShopItemKind.DECORATION && worn ->
+                        OutlinedButton(onClick = { onWear(false) }) {
+                            Text(stringResource(Res.string.shop_put_away))
+                        }
+                    item.kind == ShopItemKind.DECORATION ->
+                        FilledTonalButton(onClick = { onWear(true) }) {
+                            Text(stringResource(Res.string.shop_set_up))
                         }
                     worn ->
                         OutlinedButton(onClick = { onWear(false) }) {
@@ -273,13 +309,25 @@ fun BuyItemDialog(
     val preview = avatar.tryOn(item)
 
     GritDialog(onDismissRequest = onDismiss) {
-        PlantAvatar(
-            stage = avatar.plant.stage,
-            mood = avatar.plant.mood,
-            potColor = preview.potColor,
-            accessories = preview.accessories,
-            modifier = Modifier.widthIn(max = 180.dp).fillMaxWidth(),
-        )
+        if (item.kind == ShopItemKind.DECORATION) {
+            // a decoration is shown where it will stand on the meadow
+            MeadowScene(
+                stage = avatar.plant.stage,
+                mood = avatar.plant.mood,
+                potColor = preview.potColor,
+                accessories = preview.accessories,
+                decorations = preview.decorations,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        } else {
+            PlantAvatar(
+                stage = avatar.plant.stage,
+                mood = avatar.plant.mood,
+                potColor = preview.potColor,
+                accessories = preview.accessories,
+                modifier = Modifier.widthIn(max = 180.dp).fillMaxWidth(),
+            )
+        }
         Text(
             text = stringResource(Res.string.shop_confirm_title, itemName(item)),
             style = MaterialTheme.typography.titleLarge,
