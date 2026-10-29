@@ -487,7 +487,7 @@ Abgestimmt am 2026-10-26. Epic #76, Label `phase-5`.
 
 ### 8.4 Neue Routinen-Karte (#81)
 - Kopfzeile mit Name, Flamme mit Serie und Statistik-Knopf; links eine Kachel mit Icon in der Farbe
-  der Routine; rechts 2 × 5 Kästchen für die **letzten 10 Kalendertage** (oben links der älteste,
+  der Routine; rechts 2 × 7 Kästchen für die **letzten 14 Kalendertage** (oben links der älteste,
   unten rechts heute), erfüllte Tage in der Farbe der Routine gefüllt.
 - Die Auswahl der Tage und ihr Zustand werden als reine Funktion in `core` berechnet und getestet.
 
