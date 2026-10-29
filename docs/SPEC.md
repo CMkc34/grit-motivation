@@ -503,8 +503,12 @@ Abgestimmt am 2026-10-29 (Entwurf: https://claude.ai/artifact/Mw37mjDy9J1AbhEHHJ
   optionales Feld `decorations` im Avatar.
 - Bei gerissener Serie schlafen die Tiere mit. Dezente Bewegung (Hase, Schnecke, Igel, Teich,
   Laterne) folgt der Animations-Einstellung.
-- Hintergrund (#107): hellblauer Himmel (#90D5FF) mit Wolken statt des Karten-Hintergrunds; die
-  Wolken treiben langsam, bei gerissener Serie wird der Himmel matter.
+- Hintergrund (#107): hellblauer Himmel (#90D5FF) mit Wolken statt des Karten-Hintergrunds. Das
+  Wetter (`Weather`) hängt an der Serie: ab 7 Tagen große Sonne mit wenigen Wolken (SUNNY), ab
+  3 Tagen Sonne mit Wolken (FAIR), 1–2 Tage oder noch nichts getan: Sonne halb hinter einer Wolke
+  (HAZY). Nach gerissener Serie keine Sonne: 1–6 inaktive Tage bewölkt, Himmel etwas grauer
+  (CLOUDY); ab 7 inaktiven Tagen dicht bewölkt und grau (OVERCAST). Wolken treiben langsam, die
+  Sonnenstrahlen drehen sich (folgt der Animations-Einstellung).
 
 ### 8.6 Issues
 | # | Inhalt |
@@ -518,7 +522,7 @@ Abgestimmt am 2026-10-29 (Entwurf: https://claude.ai/artifact/Mw37mjDy9J1AbhEHHJ
 | #101 | Deko: Katalog, Kauf, Ein-/Ausblenden, Speicherung und Backup |
 | #103 | Deko: breite Wiese mit gezeichneten Deko-Teilen |
 | #104 | Deko: Shop-Kategorie „Deko“ |
-| #107 | Wiese: hellblauer Himmel mit Wolken |
+| #107 | Wiese: hellblauer Himmel mit Wolken und Sonne je nach Serie |
 
 ---
 

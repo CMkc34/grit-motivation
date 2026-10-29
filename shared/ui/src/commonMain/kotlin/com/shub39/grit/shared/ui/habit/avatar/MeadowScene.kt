@@ -55,6 +55,7 @@ import com.shub39.grit.core.avatar.PlantMood
 import com.shub39.grit.core.avatar.PlantStage
 import com.shub39.grit.core.avatar.ShopCatalog
 import com.shub39.grit.core.avatar.ShopItemKind
+import com.shub39.grit.core.avatar.Weather
 import com.shub39.grit.shared.ui.GritPreviewWrapper
 import kotlin.math.PI
 import kotlin.math.atan2
@@ -80,14 +81,18 @@ private val waterLight = Color(0xFFA7DFF2)
 private val pink = Color(0xFFFF8FA0)
 private val pinkLight = Color(0xFFFFB3C1)
 private val sky = Color(0xFF90D5FF)
-private val cloudShade = Color(0xFFDDF1FF)
+private val cloudShade = Color(0xFF9DB5C4)
+private val cloudGray = Color(0xFF8E979C)
+private val sunYellow = Color(0xFFFFD45C)
+private val sunRay = Color(0xFFFFB938)
 
 /**
- * The plant in the middle of a wide meadow under a light blue sky with a few clouds, together with
- * the decorations the user shows. Every decoration has its own fixed spot left or right of the
- * plant, chosen so that even the mighty tree with its arms never covers one. Animals sleep with the
- * plant when it is tired and the sky turns dull; the small movements and the drifting clouds follow
- * the system's animation setting like the plant's sway.
+ * The plant in the middle of a wide meadow under a light blue sky, together with the decorations
+ * the user shows. The [weather] decides how much sun and how many clouds there are. Every
+ * decoration has its own fixed spot left or right of the plant, chosen so that even the mighty tree
+ * with its arms never covers one. Animals sleep with the plant when it is tired; the small
+ * movements, the drifting clouds and the turning sun follow the system's animation setting like the
+ * plant's sway.
  */
 @Composable
 fun MeadowScene(
@@ -97,6 +102,7 @@ fun MeadowScene(
     potColor: String = ShopCatalog.DEFAULT_POT_COLOR,
     accessories: Set<String> = emptySet(),
     decorations: Set<String> = emptySet(),
+    weather: Weather = Weather.FAIR,
     animate: Boolean = true,
 ) {
     val sway = if (animate) rememberSway() else 0f
@@ -109,7 +115,7 @@ fun MeadowScene(
         scale(scale = size.height, pivot = Offset.Zero) {
             val painter = DecorationPainter(tired = tired, time = time, moving = animate && !tired)
             with(painter) {
-                drawSky()
+                drawSky(weather)
                 drawGround()
             }
             shown.filter { !it.inFront }.forEach { it.draw(this, painter) }
@@ -212,18 +218,98 @@ private class DecorationPainter(val tired: Boolean, val time: Float, val moving:
         }
     }
 
-    fun DrawScope.drawSky() {
-        drawRect(sky.mood(), topLeft = Offset.Zero, size = Size(MEADOW_ASPECT_RATIO, 1f))
+    fun DrawScope.drawSky(weather: Weather) {
+        // the sky and the clouds turn grey the longer the user stays away
+        val gray =
+            when (weather) {
+                Weather.CLOUDY -> 0.3f
+                Weather.OVERCAST -> 0.55f
+                else -> 0f
+            }
+        drawRect(
+            lerp(sky, tiredGray, gray),
+            topLeft = Offset.Zero,
+            size = Size(MEADOW_ASPECT_RATIO, 1f),
+        )
+        when (weather) {
+            Weather.SUNNY -> sun(Offset(1.72f, 0.22f), 0.1f, rays = true)
+            Weather.FAIR -> sun(Offset(1.72f, 0.22f), 0.085f, rays = true)
+            Weather.HAZY -> sun(Offset(1.76f, 0.2f), 0.075f, rays = false)
+            else -> Unit
+        }
         // the clouds drift a little to and fro; the big ones stay clear of the plant's crown
         val drift = 0.03f * wave(LOOP_SECONDS)
-        cloud(Offset(0.24f + drift, 0.2f), 0.11f)
-        cloud(Offset(1.0f - drift * 0.6f, 0.08f), 0.06f)
-        cloud(Offset(1.74f - drift, 0.27f), 0.09f)
-        cloud(Offset(0.5f + drift * 0.6f, 0.5f), 0.05f)
+        cloudsFor(weather).forEachIndexed { i, (x, y, width) ->
+            val direction = if (i % 2 == 0) 1f else -0.6f
+            cloud(Offset(x + drift * direction, y), width, lerp(Color.White, cloudGray, gray))
+        }
     }
 
-    /** A puffy cloud of [width] times 2.6 around [center], with a soft shade along its bottom. */
-    private fun DrawScope.cloud(center: Offset, width: Float) {
+    /** Clouds as (x, y, width); later ones are drawn in front of earlier ones and of the sun. */
+    private fun cloudsFor(weather: Weather): List<Triple<Float, Float, Float>> {
+        val few = listOf(Triple(0.24f, 0.2f, 0.11f), Triple(1.0f, 0.08f, 0.06f))
+        val some = few + listOf(Triple(0.5f, 0.5f, 0.05f), Triple(1.93f, 0.44f, 0.05f))
+        val many =
+            listOf(
+                Triple(0.24f, 0.2f, 0.12f),
+                Triple(0.62f, 0.1f, 0.09f),
+                Triple(1.0f, 0.07f, 0.08f),
+                Triple(1.38f, 0.12f, 0.09f),
+                Triple(1.74f, 0.24f, 0.12f),
+                Triple(0.5f, 0.5f, 0.06f),
+                Triple(1.92f, 0.46f, 0.07f),
+            )
+        return when (weather) {
+            Weather.SUNNY -> listOf(Triple(0.24f, 0.18f, 0.08f), Triple(1.0f, 0.08f, 0.05f))
+            Weather.FAIR -> some
+            // one cloud half in front of the sun
+            Weather.HAZY -> some + Triple(1.66f, 0.29f, 0.08f)
+            Weather.CLOUDY -> many
+            Weather.OVERCAST ->
+                listOf(
+                    Triple(0.06f, 0.08f, 0.13f),
+                    Triple(1.94f, 0.08f, 0.13f),
+                    Triple(0.85f, 0.22f, 0.1f),
+                    Triple(1.2f, 0.26f, 0.1f),
+                ) + many
+        }
+    }
+
+    /** A friendly sun in the plant's sticker look; its rays turn once a minute. */
+    private fun DrawScope.sun(center: Offset, r: Float, rays: Boolean) {
+        if (rays) {
+            val turn = if (moving) time * 360f / LOOP_SECONDS else 0f
+            rotate(degrees = turn, pivot = center) {
+                for (i in 0 until 10) {
+                    val a = i * 36f * PI.toFloat() / 180f
+                    val dir = Offset(cos(a), sin(a))
+                    stalk(center + dir * (r * 1.3f), center + dir * (r * 1.6f), r * 0.14f, sunRay)
+                }
+            }
+        }
+        sticker(ellipsePath(center, r, r), sunYellow)
+        eye(Offset(center.x - r * 0.33f, center.y - r * 0.1f), r * 0.11f)
+        eye(Offset(center.x + r * 0.33f, center.y - r * 0.1f), r * 0.11f)
+        drawArc(
+            color = outline,
+            startAngle = 20f,
+            sweepAngle = 140f,
+            useCenter = false,
+            topLeft = Offset(center.x - r * 0.3f, center.y - r * 0.15f),
+            size = Size(r * 0.6f, r * 0.5f),
+            style = Stroke(width = r * 0.09f, cap = StrokeCap.Round),
+        )
+        listOf(-1f, 1f).forEach { side ->
+            drawOval(
+                pink.copy(alpha = 0.5f),
+                topLeft = Offset(center.x + side * r * 0.55f - r * 0.12f, center.y + r * 0.1f),
+                size = Size(r * 0.24f, r * 0.14f),
+            )
+        }
+    }
+
+    /** A puffy cloud about [width] times 2.6 wide around [center], with a soft shade below. */
+    private fun DrawScope.cloud(center: Offset, width: Float, color: Color) {
         val puffs =
             listOf(
                 Triple(-0.85f, 0.15f, 0.45f),
@@ -238,8 +324,8 @@ private class DecorationPainter(val tired: Boolean, val time: Float, val moving:
                     addOval(Rect(Offset(center.x + dx * width, center.y + dy * width), r * width))
                 }
             }
-        drawPath(path, cloudShade.mood())
-        translate(top = -0.1f * width) { drawPath(path, Color.White.mood()) }
+        drawPath(path, lerp(color, cloudShade, 0.3f))
+        translate(top = -0.1f * width) { drawPath(path, color) }
     }
 
     fun DrawScope.drawGround() {
@@ -605,15 +691,16 @@ private fun MeadowScenePreview() {
     val all = ShopCatalog.items.filter { it.kind == ShopItemKind.DECORATION }.map { it.id }.toSet()
     Column {
         listOf(
-                PlantStage.SEEDLING to PlantMood.HAPPY,
-                PlantStage.TREE to PlantMood.HAPPY,
-                PlantStage.MIGHTY_TREE to PlantMood.TIRED,
+                Triple(PlantStage.SEEDLING, PlantMood.HAPPY, Weather.HAZY),
+                Triple(PlantStage.TREE, PlantMood.HAPPY, Weather.SUNNY),
+                Triple(PlantStage.MIGHTY_TREE, PlantMood.TIRED, Weather.CLOUDY),
             )
-            .forEach { (stage, mood) ->
+            .forEach { (stage, mood, weather) ->
                 MeadowScene(
                     stage = stage,
                     mood = mood,
                     decorations = all,
+                    weather = weather,
                     animate = false,
                     modifier = Modifier.width(400.dp),
                 )

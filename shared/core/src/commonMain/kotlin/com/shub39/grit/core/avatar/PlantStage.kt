@@ -54,7 +54,12 @@ enum class PlantMood {
 }
 
 /** Everything the avatar needs from the activity report. */
-data class PlantState(val activeDays: Int, val stage: PlantStage, val mood: PlantMood) {
+data class PlantState(
+    val activeDays: Int,
+    val stage: PlantStage,
+    val mood: PlantMood,
+    val weather: Weather = Weather.FAIR,
+) {
     /** Active days still missing for the next stage, `null` at the last stage. */
     val daysToNextStage: Int?
         get() = stage.next?.let { it.minActiveDays - activeDays }
@@ -66,6 +71,7 @@ data class PlantState(val activeDays: Int, val stage: PlantStage, val mood: Plan
                 activeDays = activeDays,
                 stage = PlantStage.forActiveDays(activeDays),
                 mood = if (report.currentStreak > 0) PlantMood.HAPPY else PlantMood.TIRED,
+                weather = Weather.of(report),
             )
         }
     }

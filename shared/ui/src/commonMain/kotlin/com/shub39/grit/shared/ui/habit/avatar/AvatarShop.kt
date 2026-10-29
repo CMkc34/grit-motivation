@@ -317,6 +317,7 @@ fun BuyItemDialog(
                 potColor = preview.potColor,
                 accessories = preview.accessories,
                 decorations = preview.decorations,
+                weather = avatar.plant.weather,
                 modifier = Modifier.fillMaxWidth(),
             )
         } else {
