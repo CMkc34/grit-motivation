@@ -22,7 +22,10 @@ import com.shub39.grit.core.avatar.ShopCatalog
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 
-/** The plant avatar in a backup (phase 4); dates are ISO strings (`2026-10-22`). */
+/**
+ * The plant avatar in a backup (phase 4, decorations since #82); dates are ISO strings
+ * (`2026-10-22`).
+ */
 @Serializable
 data class AvatarSchema(
     val name: String = "",
@@ -30,6 +33,7 @@ data class AvatarSchema(
     val potColor: String = ShopCatalog.DEFAULT_POT_COLOR,
     val accessories: List<String> = emptyList(),
     val seenStage: Int = 0,
+    val decorations: List<String> = emptyList(),
 )
 
 @Serializable data class PurchaseSchema(val itemId: String, val date: String, val price: Int)
@@ -41,6 +45,7 @@ fun AvatarData.toAvatarSchema(): AvatarSchema {
         potColor = potColor,
         accessories = accessories.sorted(),
         seenStage = seenStage,
+        decorations = decorations.sorted(),
     )
 }
 
@@ -51,5 +56,6 @@ fun AvatarSchema.toAvatarData(): AvatarData {
         potColor = potColor,
         accessories = accessories.toSet(),
         seenStage = seenStage,
+        decorations = decorations.toSet(),
     )
 }

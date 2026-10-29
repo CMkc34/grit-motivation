@@ -112,6 +112,32 @@ class AvatarRepositoryTest {
     }
 
     @Test
+    fun `a bought decoration is shown and can be hidden again`() = runTest {
+        val store = FakeAvatarStore()
+        val repository = repository(activeDays = 20, store = store)
+
+        assertEquals(PurchaseCheck.OK, repository.buy("deco_mushrooms"))
+        assertEquals(setOf("deco_mushrooms"), store.data.value.decorations)
+        assertEquals(emptySet(), store.data.value.accessories)
+
+        repository.wear("deco_mushrooms", worn = false)
+        assertEquals(emptySet(), store.data.value.decorations)
+        assertEquals(listOf("deco_mushrooms"), store.data.value.purchases.map { it.itemId })
+
+        repository.wear("deco_mushrooms", worn = true)
+        assertEquals(setOf("deco_mushrooms"), store.data.value.decorations)
+    }
+
+    @Test
+    fun `decorations that are not owned cannot be shown`() = runTest {
+        val store = FakeAvatarStore()
+
+        repository(activeDays = 400, store = store).wear("deco_pond", worn = true)
+
+        assertEquals(emptySet(), store.data.value.decorations)
+    }
+
+    @Test
     fun `the first look remembers the stage, later stages are new`() = runTest {
         val store = FakeAvatarStore()
         val repository = repository(activeDays = 8, store = store)
@@ -141,6 +167,7 @@ class AvatarRepositoryTest {
                 potColor = "pot_blue",
                 accessories = setOf("acc_ladybug"),
                 seenStage = 4,
+                decorations = setOf("deco_pond"),
             )
 
         val merged = local.mergedWith(backup)
@@ -153,5 +180,10 @@ class AvatarRepositoryTest {
         assertEquals("pot_blue", merged.potColor)
         assertEquals(setOf("acc_ladybug"), merged.accessories)
         assertEquals(4, merged.seenStage)
+        assertEquals(setOf("deco_pond"), merged.decorations)
+        assertEquals(
+            setOf("deco_fence"),
+            local.copy(decorations = setOf("deco_fence")).mergedWith(backup).decorations,
+        )
     }
 }

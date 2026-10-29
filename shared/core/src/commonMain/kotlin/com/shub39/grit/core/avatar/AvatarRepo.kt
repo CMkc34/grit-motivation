@@ -33,6 +33,7 @@ data class AvatarState(val plant: PlantState, val energy: Int, val data: AvatarD
         when (item.kind) {
             ShopItemKind.POT_COLOR -> data.potColor == item.id
             ShopItemKind.ACCESSORY -> item.id in data.accessories
+            ShopItemKind.DECORATION -> item.id in data.decorations
         }
 
     /** What the plant would look like with [item] on, for the preview before buying. */
@@ -40,6 +41,7 @@ data class AvatarState(val plant: PlantState, val energy: Int, val data: AvatarD
         when (item.kind) {
             ShopItemKind.POT_COLOR -> data.copy(potColor = item.id)
             ShopItemKind.ACCESSORY -> data.copy(accessories = data.accessories + item.id)
+            ShopItemKind.DECORATION -> data.copy(decorations = data.decorations + item.id)
         }
 }
 
@@ -51,7 +53,10 @@ interface AvatarRepo {
 
     suspend fun rename(name: String)
 
-    /** Puts an owned item on or takes it off; a pot color can only be replaced, not removed. */
+    /**
+     * Puts an owned item on or takes it off (a decoration is shown or hidden on the meadow); a pot
+     * color can only be replaced, not removed.
+     */
     suspend fun wear(itemId: String, worn: Boolean)
 
     suspend fun markStageSeen(stage: PlantStage)

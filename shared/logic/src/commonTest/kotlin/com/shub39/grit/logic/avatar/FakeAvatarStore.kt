@@ -46,6 +46,12 @@ class FakeAvatarStore(initial: AvatarData = AvatarData()) : AvatarStore {
         }
     }
 
+    override suspend fun setDecoration(itemId: String, shown: Boolean) {
+        data.update {
+            it.copy(decorations = if (shown) it.decorations + itemId else it.decorations - itemId)
+        }
+    }
+
     override suspend fun markStageSeen(stage: Int) {
         data.update { it.copy(seenStage = maxOf(it.seenStage, stage)) }
     }

@@ -54,5 +54,17 @@ class AvatarStateTest {
         assertTrue(state(PlantStage.TREE, 0, plain.tryOn(bird)).isWorn(bird))
     }
 
+    @Test
+    fun `decorations are shown on the meadow, not worn by the plant`() {
+        val pond = ShopCatalog.byId("deco_pond")!!
+        val plain = state(PlantStage.TREE, 0)
+
+        val preview = plain.tryOn(pond)
+        assertEquals(setOf("deco_pond"), preview.decorations)
+        assertEquals(emptySet(), preview.accessories)
+        assertFalse(plain.isWorn(pond))
+        assertTrue(state(PlantStage.TREE, 0, preview).isWorn(pond))
+    }
+
     private fun PlantStage.prev(): PlantStage = PlantStage.entries[ordinal - 1]
 }

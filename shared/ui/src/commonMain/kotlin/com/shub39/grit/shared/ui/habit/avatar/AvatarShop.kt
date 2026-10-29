@@ -251,7 +251,8 @@ private fun ItemIcon(item: ShopItem) {
                     modifier =
                         Modifier.size(24.dp).background(potColorOf(item.id), shape = CircleShape)
                 )
-            ShopItemKind.ACCESSORY ->
+            ShopItemKind.ACCESSORY,
+            ShopItemKind.DECORATION ->
                 Text(text = item.emoji(), style = MaterialTheme.typography.titleLarge)
         }
     }
