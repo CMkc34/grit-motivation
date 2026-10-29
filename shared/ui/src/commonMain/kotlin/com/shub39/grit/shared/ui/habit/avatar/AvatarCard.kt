@@ -99,7 +99,7 @@ private fun PlantStage.nameRes(): StringResource =
 
 @Composable fun stageName(stage: PlantStage): String = stringResource(stage.nameRes())
 
-/** The stored name, or "Grit" while the user has not named the plant. */
+/** The stored name, or "Sprout" while the user has not named the plant. */
 @Composable
 fun plantName(data: AvatarData): String =
     data.name.ifBlank { stringResource(Res.string.avatar_default_name) }

@@ -226,7 +226,7 @@ private fun LazyListScope.aboutApp(versionName: String, uriHandler: UriHandler) 
                         contentAlignment = Alignment.Center,
                     ) {
                         Icon(
-                            imageVector = vectorResource(Res.drawable.grit_icon),
+                            imageVector = vectorResource(Res.drawable.sprout_icon),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier.size(32.dp),
@@ -237,11 +237,15 @@ private fun LazyListScope.aboutApp(versionName: String, uriHandler: UriHandler) 
 
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Grit",
+                            text = "Sprout",
                             style =
                                 MaterialTheme.typography.headlineMedium.copy(
                                     fontFamily = flexFontRounded()
                                 ),
+                        )
+                        Text(
+                            text = stringResource(Res.string.about_based_on_grit),
+                            style = MaterialTheme.typography.bodyMedium,
                         )
                         Text(
                             text = versionName,
