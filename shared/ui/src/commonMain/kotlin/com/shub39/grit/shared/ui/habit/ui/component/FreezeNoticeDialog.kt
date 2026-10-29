@@ -16,23 +16,24 @@
  */
 package com.shub39.grit.shared.ui.habit.ui.component
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
-import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.unit.sp
 import com.shub39.grit.core.activity.FreezeNotice
 import com.shub39.grit.shared.ui.GritPreviewWrapper
-import com.shub39.grit.shared.ui.components.GritDialog
+import com.shub39.grit.shared.ui.habit.motivation.CelebrationStage
+import com.shub39.grit.shared.ui.habit.motivation.FreezeStageColors
+import com.shub39.grit.shared.ui.habit.motivation.rememberPopIn
 import com.shub39.grit.shared.ui.theme.flexFontEmphasis
 import grit.shared.ui.generated.resources.Res
-import grit.shared.ui.generated.resources.freeze_notice_button
 import grit.shared.ui.generated.resources.freeze_notice_days
 import grit.shared.ui.generated.resources.freeze_notice_text
 import grit.shared.ui.generated.resources.freeze_notice_title
@@ -41,23 +42,30 @@ import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 
 /**
- * Tells the user that freezes saved the activity streak. Like the motivation popup it closes via
- * the button or the back key only, so the notice is not lost by accident.
+ * Full screen notice that freezes saved the activity streak, in the style of the check-in
+ * celebration. Closes by tapping anywhere or the back key.
  */
 @Composable
 fun FreezeNoticeDialog(notice: FreezeNotice, onDismiss: () -> Unit, modifier: Modifier = Modifier) {
-    GritDialog(
-        onDismissRequest = onDismiss,
-        modifier = modifier,
-        properties = DialogProperties(dismissOnClickOutside = false),
-    ) {
+    CelebrationStage(colors = FreezeStageColors, onDismiss = onDismiss, modifier = modifier) {
+        val iconScale = rememberPopIn(delayMillis = 150)
+        Text(
+            text = "❄️",
+            fontSize = 88.sp,
+            modifier =
+                Modifier.graphicsLayer {
+                    scaleX = iconScale
+                    scaleY = iconScale
+                },
+        )
         Text(
             text = stringResource(Res.string.freeze_notice_title),
             style =
-                MaterialTheme.typography.headlineSmall.copy(
+                MaterialTheme.typography.headlineMedium.copy(
                     fontFamily = flexFontEmphasis(),
                     fontWeight = FontWeight.Bold,
                 ),
+            color = Color.White,
             textAlign = TextAlign.Center,
         )
         Text(
@@ -69,7 +77,8 @@ fun FreezeNoticeDialog(notice: FreezeNotice, onDismiss: () -> Unit, modifier: Mo
                     notice.energySpent,
                     notice.energyLeft,
                 ),
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.titleMedium,
+            color = Color.White,
             textAlign = TextAlign.Center,
         )
         Text(
@@ -79,13 +88,10 @@ fun FreezeNoticeDialog(notice: FreezeNotice, onDismiss: () -> Unit, modifier: Mo
                     notice.frozenDays.size,
                     notice.frozenDays.size,
                 ),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.bodyLarge,
+            color = Color.White.copy(alpha = 0.85f),
             textAlign = TextAlign.Center,
         )
-        Button(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) {
-            Text(text = stringResource(Res.string.freeze_notice_button))
-        }
     }
 }
 

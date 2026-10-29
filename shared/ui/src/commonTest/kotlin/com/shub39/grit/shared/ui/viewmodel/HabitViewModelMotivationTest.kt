@@ -17,6 +17,7 @@
 package com.shub39.grit.shared.ui.viewmodel
 
 import com.shub39.grit.core.activity.ActivityReport
+import com.shub39.grit.core.avatar.AvatarData
 import com.shub39.grit.core.habits.Habit
 import com.shub39.grit.core.habits.HabitStatus
 import com.shub39.grit.core.motivation.StreakTier
@@ -73,6 +74,7 @@ class HabitViewModelMotivationTest {
     private val activityRepo = FakeActivityRepo()
     private val repo = FakeHabitRepo(listOf(meditate, water), activityRepo)
     private val motivationSettings = FakeMotivationSettings()
+    private val avatarRepo = FakeAvatarRepo(activityRepo)
 
     @BeforeTest
     fun setUp() {
@@ -94,7 +96,7 @@ class HabitViewModelMotivationTest {
                 FakeAnalytics(),
                 motivationSettings,
                 activityRepo,
-                FakeAvatarRepo(activityRepo),
+                avatarRepo,
                 FakeRoutineStyleStore(),
             )
         backgroundScope.launch { viewModel.state.collect {} }
@@ -113,6 +115,19 @@ class HabitViewModelMotivationTest {
             assertEquals("Meditate", popup.habitTitle)
             assertEquals(5, popup.activeDays)
             assertEquals(StreakTier.ESTABLISHED, popup.quote.tier)
+        }
+
+    @Test
+    fun `popup shows the user's plant`() =
+        runTest(dispatcher) {
+            avatarRepo.data.value = AvatarData(potColor = "pot_blue")
+            val viewModel = viewModel()
+            repo.currentStreaks[meditate.id] = 5
+
+            viewModel.onAction(HabitsAction.InsertStatus(meditate, today))
+
+            val popup = assertNotNull(viewModel.state.value.motivationPopup)
+            assertEquals("pot_blue", assertNotNull(popup.avatar).data.potColor)
         }
 
     @Test

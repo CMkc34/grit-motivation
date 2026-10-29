@@ -9,10 +9,11 @@
     <!-- Dialog -->
     <string name="motivation_header_motivating">Nice one!</string>
     <string name="motivation_header_sarcastic">Well, look at that…</string>
-    <string name="motivation_button">Let’s go</string>
-    <plurals name="motivation_title">
-        <item quantity="one">%1$s • %2$d day active</item>
-        <item quantity="other">%1$s • %2$d days active</item>
+    <string name="motivation_tap_to_continue">Tap to continue</string>
+    <!-- below the streak number: %1$s = routine name -->
+    <plurals name="motivation_streak_unit">
+        <item quantity="one">day in a row · %1$s</item>
+        <item quantity="other">days in a row · %1$s</item>
     </plurals>
 
     <!-- Settings -->

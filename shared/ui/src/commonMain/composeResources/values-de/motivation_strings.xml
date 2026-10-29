@@ -8,10 +8,11 @@
     <!-- Dialog -->
     <string name="motivation_header_motivating">Starkes Ding!</string>
     <string name="motivation_header_sarcastic">Na sieh mal einer an…</string>
-    <string name="motivation_button">Weiter geht’s</string>
-    <plurals name="motivation_title">
-        <item quantity="one">%1$s • %2$d Tag aktiv</item>
-        <item quantity="other">%1$s • %2$d Tage aktiv</item>
+    <string name="motivation_tap_to_continue">Tippen zum Weitermachen</string>
+    <!-- unter der Serienzahl: %1$s = Routine-Name -->
+    <plurals name="motivation_streak_unit">
+        <item quantity="one">Tag am Stück · %1$s</item>
+        <item quantity="other">Tage am Stück · %1$s</item>
     </plurals>
 
     <!-- Einstellungen -->

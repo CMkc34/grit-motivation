@@ -16,37 +16,51 @@
  */
 package com.shub39.grit.shared.ui.habit.ui.component
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
-import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.shub39.grit.core.avatar.AvatarState
+import com.shub39.grit.core.avatar.PlantMood
+import com.shub39.grit.core.avatar.PlantStage
+import com.shub39.grit.core.avatar.ShopCatalog
 import com.shub39.grit.core.motivation.MotivationQuote
 import com.shub39.grit.core.motivation.QuoteTone
 import com.shub39.grit.core.motivation.StreakTier
 import com.shub39.grit.shared.ui.GritPreviewWrapper
-import com.shub39.grit.shared.ui.components.GritDialog
+import com.shub39.grit.shared.ui.habit.avatar.PlantAvatar
+import com.shub39.grit.shared.ui.habit.motivation.CelebrationStage
+import com.shub39.grit.shared.ui.habit.motivation.CheckInStageColors
+import com.shub39.grit.shared.ui.habit.motivation.StagePill
+import com.shub39.grit.shared.ui.habit.motivation.StageYellow
+import com.shub39.grit.shared.ui.habit.motivation.rememberCountUp
+import com.shub39.grit.shared.ui.habit.motivation.rememberPopIn
 import com.shub39.grit.shared.ui.habit.motivation.textResource
 import com.shub39.grit.shared.ui.theme.flexFontEmphasis
 import grit.shared.ui.generated.resources.Res
 import grit.shared.ui.generated.resources.energy_popup_line
-import grit.shared.ui.generated.resources.motivation_button
 import grit.shared.ui.generated.resources.motivation_header_motivating
 import grit.shared.ui.generated.resources.motivation_header_sarcastic
-import grit.shared.ui.generated.resources.motivation_title
+import grit.shared.ui.generated.resources.motivation_streak_unit
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 
 /**
- * Shown after a habit check-in. Closes via the button or the back key, not by tapping outside, so
- * the quote is not lost by accident. [activityStreak] adds the "+1 ⚡" line for the first check-in
- * of the day.
+ * Full screen celebration after a habit check-in: the user's plant, the streak counting up and the
+ * quote. Closes by tapping anywhere or the back key. [activityStreak] adds the "+1 ⚡" pill for the
+ * first check-in of the day. Without [avatar] a seed is shown.
  */
 @Composable
 fun HabitMotivationPopup(
@@ -54,55 +68,78 @@ fun HabitMotivationPopup(
     activeDays: Int,
     quote: MotivationQuote,
     activityStreak: Int?,
+    avatar: AvatarState?,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    GritDialog(
-        onDismissRequest = onDismiss,
-        modifier = modifier,
-        properties = DialogProperties(dismissOnClickOutside = false),
-    ) {
+    CelebrationStage(colors = CheckInStageColors, onDismiss = onDismiss, modifier = modifier) {
         Text(
             text =
                 stringResource(
-                    when (quote.tone) {
-                        QuoteTone.MOTIVATING -> Res.string.motivation_header_motivating
-                        QuoteTone.SARCASTIC -> Res.string.motivation_header_sarcastic
-                    }
+                        when (quote.tone) {
+                            QuoteTone.MOTIVATING -> Res.string.motivation_header_motivating
+                            QuoteTone.SARCASTIC -> Res.string.motivation_header_sarcastic
+                        }
+                    )
+                    .uppercase(),
+            style = MaterialTheme.typography.labelLarge.copy(letterSpacing = 3.sp),
+            color = StageYellow,
+            textAlign = TextAlign.Center,
+        )
+
+        val plantScale = rememberPopIn(delayMillis = 150)
+        PlantAvatar(
+            stage = avatar?.plant?.stage ?: PlantStage.SEED,
+            mood = PlantMood.HAPPY,
+            potColor = avatar?.data?.potColor ?: ShopCatalog.DEFAULT_POT_COLOR,
+            accessories = avatar?.data?.accessories.orEmpty(),
+            modifier =
+                Modifier.size(170.dp).graphicsLayer {
+                    scaleX = plantScale
+                    scaleY = plantScale
+                },
+        )
+
+        Text(
+            text = rememberCountUp(activeDays).toString(),
+            style =
+                MaterialTheme.typography.displayLarge.copy(
+                    fontFamily = flexFontEmphasis(),
+                    fontWeight = FontWeight.Black,
+                    fontSize = 96.sp,
+                    lineHeight = 96.sp,
+                    shadow = Shadow(Color(0x40000000), Offset(0f, 8f)),
                 ),
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.primary,
+            color = Color.White,
         )
         Text(
-            text =
-                pluralStringResource(
-                    Res.plurals.motivation_title,
-                    activeDays,
-                    habitTitle,
-                    activeDays,
-                ),
+            text = pluralStringResource(Res.plurals.motivation_streak_unit, activeDays, habitTitle),
+            style = MaterialTheme.typography.titleMedium,
+            color = Color.White.copy(alpha = 0.9f),
+            textAlign = TextAlign.Center,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+        )
+        Text(
+            text = stringResource(quote.textResource(), activeDays),
             style =
                 MaterialTheme.typography.headlineSmall.copy(
                     fontFamily = flexFontEmphasis(),
                     fontWeight = FontWeight.Bold,
                 ),
+            color = Color.White,
             textAlign = TextAlign.Center,
         )
         activityStreak?.let {
-            Text(
+            val pillScale = rememberPopIn(delayMillis = 1000)
+            StagePill(
                 text = pluralStringResource(Res.plurals.energy_popup_line, it, it),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.tertiary,
-                textAlign = TextAlign.Center,
+                modifier =
+                    Modifier.graphicsLayer {
+                        scaleX = pillScale
+                        scaleY = pillScale
+                    },
             )
-        }
-        Text(
-            text = stringResource(quote.textResource(), activeDays),
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center,
-        )
-        Button(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) {
-            Text(text = stringResource(Res.string.motivation_button))
         }
     }
 }
@@ -117,6 +154,7 @@ private fun MotivatingPreview() {
         quote =
             MotivationQuote("quote_starter_motivating_1", QuoteTone.MOTIVATING, StreakTier.STARTER),
         activityStreak = 13,
+        avatar = null,
         onDismiss = {},
     )
 }
@@ -135,6 +173,7 @@ private fun SarcasticPreview() {
                 StreakTier.ESTABLISHED,
             ),
         activityStreak = null,
+        avatar = null,
         onDismiss = {},
     )
 }

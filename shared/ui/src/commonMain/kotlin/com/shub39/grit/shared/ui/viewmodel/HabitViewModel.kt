@@ -421,9 +421,11 @@ class HabitViewModel(
         lastQuoteId = quote.id
         val activityStreak =
             if (firstOfDay) activityRepo.getActivityReport().first().currentStreak else null
+        val avatar = avatarRepo.getAvatarState().first()
         _state.update {
             it.copy(
-                motivationPopup = MotivationPopupState(habit.title, streak, quote, activityStreak)
+                motivationPopup =
+                    MotivationPopupState(habit.title, streak, quote, activityStreak, avatar)
             )
         }
     }

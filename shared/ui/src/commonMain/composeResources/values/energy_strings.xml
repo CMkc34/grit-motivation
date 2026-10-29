@@ -51,7 +51,6 @@
         <item quantity="one">A freeze bridged %1$d missed day.</item>
         <item quantity="other">Freezes bridged %1$d missed days.</item>
     </plurals>
-    <string name="freeze_notice_button">Keep going</string>
 
     <!-- Motivation popup, first check-in of the day: %1$d = activity streak -->
     <plurals name="energy_popup_line">
