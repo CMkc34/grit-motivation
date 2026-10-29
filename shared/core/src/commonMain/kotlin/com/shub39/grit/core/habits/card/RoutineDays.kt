@@ -58,8 +58,8 @@ data class RoutineDay(
 )
 
 object RoutineDays {
-    /** Days on the card: 2 rows × 5 boxes. */
-    const val COUNT = 10
+    /** Days on the card: 2 rows × 7 boxes (two weeks). */
+    const val COUNT = 14
 
     /**
      * The last [count] calendar days up to [today] for [habit], oldest first, so they read like

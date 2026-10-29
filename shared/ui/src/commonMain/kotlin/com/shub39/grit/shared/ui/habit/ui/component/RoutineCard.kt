@@ -87,13 +87,13 @@ import kotlinx.datetime.LocalTime
 import kotlinx.datetime.minus
 import org.jetbrains.compose.resources.vectorResource
 
-private const val DAYS_PER_ROW = 5
+private const val DAYS_PER_ROW = 7
 private const val TODAY_TINT = 0.18f
 
 /**
  * Routine card of the habits list (fork, #81): header with name, flame with the streak and the
- * statistics button (name in capitals); below a divider the icon tile on the left and the last 10
- * days as 2 × 5 boxes on the right (oldest top left, today bottom right). Tapping the card checks
+ * statistics button (name in capitals); below a divider the icon tile on the left and the last 14
+ * days as 2 × 7 boxes on the right (oldest top left, today bottom right). Tapping the card checks
  * off today, tapping a box that day. The compact view shows only the header with a small tile.
  */
 @Composable

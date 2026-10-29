@@ -53,11 +53,11 @@ class RoutineDaysTest {
         HabitStatus(habitId = 1, date = LocalDate(2026, 10, day), value = value)
 
     @Test
-    fun `ten days oldest first with today last`() {
+    fun `fourteen days oldest first with today last`() {
         val days = RoutineDays.lastDays(habit(), emptyList(), today)
 
-        assertEquals(10, days.size)
-        assertEquals(LocalDate(2026, 10, 17), days.first().date)
+        assertEquals(14, days.size)
+        assertEquals(LocalDate(2026, 10, 13), days.first().date)
         assertEquals(today, days.last().date)
         assertTrue(days.last().isToday)
         assertEquals(1, days.count { it.isToday })
@@ -67,10 +67,10 @@ class RoutineDaysTest {
     fun `done and open days`() {
         val days = RoutineDays.lastDays(habit(), listOf(status(25), status(26)), today)
 
-        assertEquals(RoutineDayState.DONE, days[9].state)
-        assertEquals(RoutineDayState.DONE, days[8].state)
-        assertEquals(RoutineDayState.OPEN, days[7].state)
-        assertEquals(1f, days[9].progress)
+        assertEquals(RoutineDayState.DONE, days[13].state)
+        assertEquals(RoutineDayState.DONE, days[12].state)
+        assertEquals(RoutineDayState.OPEN, days[11].state)
+        assertEquals(1f, days[13].progress)
         assertTrue(days.all { it.tappable })
     }
 
@@ -83,12 +83,12 @@ class RoutineDaysTest {
                 today,
             )
 
-        assertEquals(RoutineDayState.PARTIAL, days[7].state)
-        assertEquals(0.4f, days[7].progress)
-        assertEquals(4.0, days[7].value)
-        assertEquals(RoutineDayState.DONE, days[8].state)
-        assertEquals(RoutineDayState.DONE, days[9].state)
-        assertEquals(1f, days[9].progress)
+        assertEquals(RoutineDayState.PARTIAL, days[11].state)
+        assertEquals(0.4f, days[11].progress)
+        assertEquals(4.0, days[11].value)
+        assertEquals(RoutineDayState.DONE, days[12].state)
+        assertEquals(RoutineDayState.DONE, days[13].state)
+        assertEquals(1f, days[13].progress)
     }
 
     @Test
@@ -97,19 +97,31 @@ class RoutineDaysTest {
         val days = RoutineDays.lastDays(habit(days = weekdays), emptyList(), today)
 
         // 24 and 25 October 2026 are Saturday and Sunday
-        assertEquals(RoutineDayState.NOT_PLANNED, days[7].state)
-        assertEquals(RoutineDayState.NOT_PLANNED, days[8].state)
-        assertFalse(days[7].tappable)
-        assertEquals(RoutineDayState.OPEN, days[9].state)
+        assertEquals(RoutineDayState.NOT_PLANNED, days[11].state)
+        assertEquals(RoutineDayState.NOT_PLANNED, days[12].state)
+        assertFalse(days[11].tappable)
+        assertEquals(RoutineDayState.OPEN, days[13].state)
     }
 
     @Test
     fun `days before the routine was created`() {
         val days = RoutineDays.lastDays(habit(start = LocalDate(2026, 10, 23)), emptyList(), today)
 
-        assertEquals(6, days.count { it.state == RoutineDayState.BEFORE_START })
-        assertFalse(days[5].tappable)
-        assertEquals(RoutineDayState.OPEN, days[6].state)
-        assertTrue(days[6].tappable)
+        assertEquals(10, days.count { it.state == RoutineDayState.BEFORE_START })
+        assertFalse(days[9].tappable)
+        assertEquals(RoutineDayState.OPEN, days[10].state)
+        assertTrue(days[10].tappable)
+    }
+
+    @Test
+    fun `window moves on by one day each day`() {
+        val tomorrow = LocalDate(2026, 10, 27)
+        val days = RoutineDays.lastDays(habit(), listOf(status(26)), tomorrow)
+
+        assertEquals(LocalDate(2026, 10, 14), days.first().date)
+        assertEquals(tomorrow, days.last().date)
+        assertTrue(days.last().isToday)
+        assertTrue(days.last().tappable)
+        assertEquals(RoutineDayState.DONE, days[12].state)
     }
 }
