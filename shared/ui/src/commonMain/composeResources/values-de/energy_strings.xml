@@ -51,7 +51,6 @@
         <item quantity="one">Ein Freeze hat %1$d verpassten Tag überbrückt.</item>
         <item quantity="other">Freezes haben %1$d verpasste Tage überbrückt.</item>
     </plurals>
-    <string name="freeze_notice_button">Weiter so</string>
 
     <!-- Motivations-Pop-up, erster Eintrag des Tages: %1$d = Aktiv-Serie -->
     <plurals name="energy_popup_line">

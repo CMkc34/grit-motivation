@@ -17,6 +17,7 @@
 package com.shub39.grit.shared.ui.habit.motivation
 
 import androidx.compose.runtime.Immutable
+import com.shub39.grit.core.avatar.AvatarState
 import com.shub39.grit.core.motivation.MotivationQuote
 
 /**
@@ -24,6 +25,7 @@ import com.shub39.grit.core.motivation.MotivationQuote
  *
  * @property activityStreak Activity streak after the first check-in of the day, shown as "+1 ⚡"
  *   line; `null` for later check-ins that day, which earn no energy.
+ * @property avatar The user's plant shown on the popup, `null` if it could not be read.
  */
 @Immutable
 data class MotivationPopupState(
@@ -31,4 +33,5 @@ data class MotivationPopupState(
     val activeDays: Int,
     val quote: MotivationQuote,
     val activityStreak: Int? = null,
+    val avatar: AvatarState? = null,
 )
