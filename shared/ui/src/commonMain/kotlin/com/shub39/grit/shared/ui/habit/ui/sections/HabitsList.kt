@@ -41,10 +41,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -112,12 +110,6 @@ fun HabitsList(
 
             PageFill {
                 val lazyListState = rememberLazyListState()
-                val fabVisible by remember {
-                    derivedStateOf {
-                        lazyListState.firstVisibleItemIndex == 0 &&
-                            lazyListState.firstVisibleItemScrollOffset == 0
-                    }
-                }
 
                 HabitsListContent(
                     state = state,
@@ -131,7 +123,8 @@ fun HabitsList(
                 HabitListFABs(
                     onNavigateToOverallAnalytics = onNavigateToOverallAnalytics,
                     state = state,
-                    fabVisible = fabVisible && !state.editState,
+                    // fork (#91): always visible, the list leaves room below the last card
+                    fabVisible = !state.editState,
                     onAction = onAction,
                     onNavigateToPaywall = onNavigateToPaywall,
                     isUserSubscribed = isUserSubscribed,
@@ -245,7 +238,8 @@ private fun HabitsListContent(
     Column(modifier = modifier) {
         LazyColumn(
             state = lazyListState,
-            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 60.dp),
+            contentPadding =
+                PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 120.dp),
             verticalArrangement = Arrangement.spacedBy(2.dp),
             modifier = Modifier.fillMaxHeight(),
         ) {
