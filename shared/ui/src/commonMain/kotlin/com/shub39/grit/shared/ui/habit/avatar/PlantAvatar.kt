@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.scale
@@ -54,6 +55,7 @@ import com.shub39.grit.core.avatar.ShopCatalog
 import com.shub39.grit.core.avatar.ShopItemKind
 import com.shub39.grit.shared.ui.GritPreviewWrapper
 import kotlin.math.PI
+import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.hypot
@@ -96,7 +98,8 @@ fun potColorOf(itemId: String): Color =
  * outline, and the plant has a face, first on the seed, then on the pot, later on the trunk. It
  * grows through the 12 [PlantStage]s from a seed in a pot to a mighty tree on a meadow; from the
  * sapling on, branches grow out of the trunk and act as arms. A tired plant sleeps, droops its
- * leaves and arms and looks paler. The gentle sway follows the system's animation setting.
+ * leaves and arms and looks paler. The gentle sway and the small motions of the accessories (#117)
+ * follow the system's animation setting.
  */
 @Composable
 fun PlantAvatar(
@@ -108,29 +111,38 @@ fun PlantAvatar(
     animate: Boolean = true,
 ) {
     val sway = if (animate) rememberSway() else 0f
+    val time = if (animate) rememberMeadowTime() else 0f
 
     Canvas(modifier = modifier.aspectRatio(1f)) {
         // everything below is drawn in a 1 x 1 square
         scale(scaleX = size.width, scaleY = size.height, pivot = Offset.Zero) {
-            drawPlantAvatar(stage, mood, potColor, accessories, sway)
+            drawPlantAvatar(stage, mood, potColor, accessories, sway, time, moving = animate)
         }
     }
 }
 
-/** Draws the plant into the 1 x 1 square at the origin; [sway] is -1..1 from [rememberSway]. */
+/**
+ * Draws the plant into the 1 x 1 square at the origin; [sway] is -1..1 from [rememberSway], [time]
+ * the seconds from [rememberMeadowTime] that move the accessories while [moving].
+ */
 internal fun DrawScope.drawPlantAvatar(
     stage: PlantStage,
     mood: PlantMood,
     potColor: String,
     accessories: Set<String>,
     sway: Float,
+    time: Float = 0f,
+    moving: Boolean = false,
 ) {
+    val tired = mood == PlantMood.TIRED
     val plant =
         PlantPainter(
             stage = stage,
-            tired = mood == PlantMood.TIRED,
+            tired = tired,
             potColor = potColorOf(potColor),
             accessories = accessories,
+            time = time,
+            moving = moving && !tired,
         )
     with(plant) { draw(swayDegrees = sway * plant.maxSway) }
 }
@@ -245,6 +257,8 @@ private class PlantPainter(
     private val tired: Boolean,
     private val potColor: Color,
     private val accessories: Set<String>,
+    private val time: Float = 0f,
+    private val moving: Boolean = false,
 ) {
     private val inPot = stage <= PlantStage.SAPLING
     private val isTree = stage >= PlantStage.SAPLING
@@ -257,6 +271,18 @@ private class PlantPainter(
     val maxSway: Float = if (isTree) 1.2f else 3f
 
     private fun Color.mood(): Color = if (tired) lerp(this, tiredGray, 0.4f) else this
+
+    /** -1..1 with one full wave every [period] seconds; [period] divides the 60 second loop. */
+    private fun wave(period: Float, phase: Float = 0f): Float =
+        if (moving) sin(2 * PI.toFloat() * time / period + phase) else 0f
+
+    /** 0..1 within each [period], or `null` while not [moving]. */
+    private fun cycle(period: Float, offset: Float = 0f): Float? =
+        if (moving) ((time + offset) % period) / period else null
+
+    /** A bump from 0 to 1 and back during [from]..[to] of a [cycle] value, 0 elsewhere. */
+    private fun bump(k: Float?, from: Float, to: Float): Float =
+        if (k == null || k < from || k > to) 0f else sin(PI.toFloat() * (k - from) / (to - from))
 
     private val leaf = leafGreen.mood()
     private val leafHighlight = leafLight.mood()
@@ -685,14 +711,35 @@ private class PlantPainter(
         val radius = crownRadius()
 
         if ("acc_blossoms" in accessories) {
-            crownSpots(center, radius, count = 6, seed = 2).forEach {
+            val spots = crownSpots(center, radius, count = 6, seed = 2)
+            spots.forEach {
                 drawCircle(Color.White, radius = radius * 0.12f, center = it)
                 drawCircle(lightYellow, radius = radius * 0.05f, center = it)
             }
+            // now and then a petal sails down to the ground
+            listOf(spots[0] to 0f, spots[3] to 3f).forEach { (from, offset) ->
+                val k = cycle(period = 6f, offset = offset) ?: return@forEach
+                if (k > 0.8f) return@forEach
+                val q = k / 0.8f
+                val petal =
+                    Offset(
+                        from.x + 0.04f * sin(q * 3 * PI.toFloat()) - 0.03f * q,
+                        from.y + (base.y - from.y) * q,
+                    )
+                rotate(degrees = q * 360f, pivot = petal) {
+                    drawOval(
+                        Color.White.copy(alpha = 1f - 0.6f * q),
+                        topLeft = Offset(petal.x - radius * 0.09f, petal.y - radius * 0.05f),
+                        size = Size(radius * 0.18f, radius * 0.1f),
+                    )
+                }
+            }
         }
         if ("acc_fruits" in accessories) {
-            crownSpots(center, radius, count = 7, seed = 4).forEach {
-                drawCircle(fruitRed, radius = radius * 0.09f, center = it)
+            crownSpots(center, radius, count = 7, seed = 4).forEachIndexed { i, spot ->
+                // the fruits bob a little in the wind
+                val bob = radius * 0.025f * wave(period = 3f, phase = i * 1.3f)
+                drawCircle(fruitRed, radius = radius * 0.09f, center = spot.copy(y = spot.y + bob))
             }
         }
         if ("acc_fairy_lights" in accessories) {
@@ -703,11 +750,36 @@ private class PlantPainter(
                         center.x - radius * 0.9f + radius * 1.8f * t,
                         center.y + radius * 0.25f + radius * 0.25f * sin(PI * t).toFloat(),
                     )
-                drawCircle(lightYellow, radius = radius * 0.05f, center = light)
+                // the bulbs light up one after the other
+                val glow =
+                    if (moving) 0.35f + 0.65f * max(0f, wave(period = 3f, phase = -i * 0.9f))
+                    else 1f
+                if (moving) {
+                    drawCircle(
+                        lightYellow.copy(alpha = 0.4f * glow),
+                        radius = radius * 0.12f,
+                        center = light,
+                    )
+                }
+                drawCircle(
+                    lightYellow.copy(alpha = 0.5f + 0.5f * glow),
+                    radius = radius * 0.05f,
+                    center = light,
+                )
             }
         }
         if ("acc_ladybug" in accessories) {
-            val bug = Offset(center.x + radius * 0.45f, center.y - radius * 0.1f)
+            // crawls over the crown in a slow loop
+            val k = cycle(period = 15f)
+            val bug =
+                if (k == null) Offset(center.x + radius * 0.45f, center.y - radius * 0.1f)
+                else {
+                    val a = 2 * PI.toFloat() * k
+                    Offset(
+                        center.x + radius * (0.2f + 0.35f * sin(a)),
+                        center.y - radius * (0.05f + 0.25f * cos(a)),
+                    )
+                }
             drawCircle(fruitRed, radius = 0.022f, center = bug)
             drawCircle(Color.Black, radius = 0.008f, center = bug.copy(y = bug.y - 0.018f))
             drawCircle(Color.Black, radius = 0.005f, center = bug.copy(x = bug.x - 0.008f))
@@ -722,22 +794,36 @@ private class PlantPainter(
         if ("acc_swing" in accessories && isTree) {
             val branch = Offset(center.x + radius * 0.55f, center.y + radius * 0.35f)
             val seatY = base.y - 0.08f
-            drawLine(trunkBrown, branch, Offset(branch.x - 0.03f, seatY), 0.006f)
-            drawLine(
-                trunkBrown,
-                branch.copy(x = branch.x + 0.06f),
-                Offset(branch.x + 0.09f, seatY),
-                0.006f,
-            )
-            drawRoundRect(
-                color = trunkBrown,
-                topLeft = Offset(branch.x - 0.045f, seatY),
-                size = Size(0.15f, 0.02f),
-                cornerRadius = CornerRadius(0.006f),
-            )
+            // swings gently from its branch
+            rotate(degrees = 12f * wave(period = 3f), pivot = branch.copy(x = branch.x + 0.03f)) {
+                drawLine(trunkBrown, branch, Offset(branch.x - 0.03f, seatY), 0.006f)
+                drawLine(
+                    trunkBrown,
+                    branch.copy(x = branch.x + 0.06f),
+                    Offset(branch.x + 0.09f, seatY),
+                    0.006f,
+                )
+                drawRoundRect(
+                    color = trunkBrown,
+                    topLeft = Offset(branch.x - 0.045f, seatY),
+                    size = Size(0.15f, 0.02f),
+                    cornerRadius = CornerRadius(0.006f),
+                )
+            }
         }
         if ("acc_butterfly" in accessories) {
-            drawButterfly(Offset(center.x - radius - 0.08f, center.y - 0.04f))
+            val k = cycle(period = 10f)
+            val at =
+                if (k == null) Offset(center.x - radius - 0.08f, center.y - 0.04f)
+                else {
+                    // flutters in a loop around the crown
+                    val a = 2 * PI.toFloat() * k
+                    Offset(
+                        center.x + cos(a) * (radius + 0.1f),
+                        center.y - 0.02f + sin(2 * a) * min(0.12f, radius * 0.6f + 0.04f),
+                    )
+                }
+            drawButterfly(at)
         }
     }
 
@@ -745,28 +831,49 @@ private class PlantPainter(
         if ("acc_watering_can" in accessories) {
             val can = Offset(0.8f, if (inPot) 0.92f else 0.86f)
             val color = Color(0xFF78909C)
-            drawRoundRect(
-                color = color,
-                topLeft = Offset(can.x - 0.06f, can.y - 0.09f),
-                size = Size(0.12f, 0.09f),
-                cornerRadius = CornerRadius(0.015f),
-            )
-            drawLine(
-                color,
-                Offset(can.x - 0.05f, can.y - 0.06f),
-                Offset(can.x - 0.12f, can.y - 0.12f),
-                0.015f,
-                StrokeCap.Round,
-            )
-            drawArc(
-                color = color,
-                startAngle = 180f,
-                sweepAngle = 180f,
-                useCenter = false,
-                topLeft = Offset(can.x - 0.035f, can.y - 0.14f),
-                size = Size(0.07f, 0.08f),
-                style = Stroke(width = 0.01f),
-            )
+            // every ten seconds the can tips over to the plant and pours a few drops
+            val k = cycle(period = 10f)
+            val tilt = 25f * bump(k, 0f, 0.24f)
+            rotate(degrees = -tilt, pivot = can) {
+                drawRoundRect(
+                    color = color,
+                    topLeft = Offset(can.x - 0.06f, can.y - 0.09f),
+                    size = Size(0.12f, 0.09f),
+                    cornerRadius = CornerRadius(0.015f),
+                )
+                drawLine(
+                    color,
+                    Offset(can.x - 0.05f, can.y - 0.06f),
+                    Offset(can.x - 0.12f, can.y - 0.12f),
+                    0.015f,
+                    StrokeCap.Round,
+                )
+                drawArc(
+                    color = color,
+                    startAngle = 180f,
+                    sweepAngle = 180f,
+                    useCenter = false,
+                    topLeft = Offset(can.x - 0.035f, can.y - 0.14f),
+                    size = Size(0.07f, 0.08f),
+                    style = Stroke(width = 0.01f),
+                )
+            }
+            if (k != null && k > 0.05f && k < 0.2f) {
+                val a = tilt * PI.toFloat() / 180f
+                val spout =
+                    Offset(
+                        can.x - 0.12f * cos(a) - 0.12f * sin(a),
+                        can.y - 0.12f * cos(a) + 0.12f * sin(a),
+                    )
+                for (i in 0 until 4) {
+                    val q = (k * 20f + i * 0.25f) % 1f
+                    drawOval(
+                        Color(0xFF6EC6E8),
+                        topLeft = Offset(spout.x - 0.03f * q - 0.005f, spout.y + 0.1f * q),
+                        size = Size(0.01f, 0.016f),
+                    )
+                }
+            }
         }
         if ("acc_bird" in accessories && !isTree) {
             drawBird(Offset(0.24f, 0.62f))
@@ -776,21 +883,38 @@ private class PlantPainter(
         }
     }
 
-    private fun DrawScope.drawBird(at: Offset) {
+    /** Pecks all the time; every ten seconds it hops aside, flapping, and later hops back. */
+    private fun DrawScope.drawBird(home: Offset) {
+        val k = cycle(period = 10f)
+        val away = if (k == null) 0f else ((k - 0.3f) / 0.05f).coerceIn(0f, 1f)
+        val back = if (k == null) 0f else ((k - 0.65f) / 0.15f).coerceIn(0f, 1f)
+        val hop = 0.04f * bump(k, 0.3f, 0.35f) + 0.03f * bump(k, 0.65f, 0.8f)
+        val flapping = hop > 0f
+        val at = Offset(home.x + 0.06f * (away - back), home.y - hop)
+        val peck = if (flapping) 0f else 0.01f * bump(cycle(period = 2f), 0f, 0.12f)
+
         val body = Color(0xFF42A5F5)
         drawOval(body, topLeft = Offset(at.x - 0.035f, at.y - 0.025f), size = Size(0.07f, 0.05f))
-        drawCircle(body, radius = 0.02f, center = Offset(at.x + 0.03f, at.y - 0.025f))
-        drawCircle(Color.Black, radius = 0.004f, center = Offset(at.x + 0.035f, at.y - 0.03f))
+        val wingLift = if (flapping) 0.012f * sin(time * 40f) else 0f
+        drawOval(
+            Color(0xFF1E88E5),
+            topLeft = Offset(at.x - 0.03f, at.y - 0.018f - wingLift),
+            size = Size(0.04f, 0.022f),
+        )
+        val head = Offset(at.x + 0.03f + peck * 0.5f, at.y - 0.025f + peck)
+        drawCircle(body, radius = 0.02f, center = head)
+        drawCircle(Color.Black, radius = 0.004f, center = Offset(head.x + 0.005f, head.y - 0.005f))
         val beak =
             Path().apply {
-                moveTo(at.x + 0.048f, at.y - 0.03f)
-                lineTo(at.x + 0.065f, at.y - 0.022f)
-                lineTo(at.x + 0.048f, at.y - 0.018f)
+                moveTo(head.x + 0.018f, head.y - 0.005f)
+                lineTo(head.x + 0.035f, head.y + 0.003f)
+                lineTo(head.x + 0.018f, head.y + 0.007f)
                 close()
             }
         drawPath(beak, Color(0xFFFFA000))
     }
 
+    /** Now and then a small bird looks out of the hole. */
     private fun DrawScope.drawBirdhouse(at: Offset) {
         val woodColor = Color(0xFFA1887F)
         drawRect(woodColor, topLeft = Offset(at.x - 0.04f, at.y - 0.05f), size = Size(0.08f, 0.07f))
@@ -802,15 +926,42 @@ private class PlantPainter(
                 close()
             }
         drawPath(roof, Color(0xFFD84315))
-        drawCircle(soilBrown, radius = 0.013f, center = Offset(at.x, at.y - 0.02f))
+        val hole = Offset(at.x, at.y - 0.02f)
+        drawCircle(soilBrown, radius = 0.013f, center = hole)
+        val peek = bump(cycle(period = 7.5f, offset = 2f), 0f, 0.2f)
+        if (peek > 0f) {
+            val hidden = Path().apply { addOval(Rect(hole, 0.013f)) }
+            clipPath(hidden) {
+                val head = Offset(hole.x, hole.y + 0.022f * (1f - peek))
+                drawCircle(flowerYellow, radius = 0.011f, center = head)
+                drawCircle(
+                    outline,
+                    radius = 0.002f,
+                    center = Offset(head.x - 0.004f, head.y - 0.003f),
+                )
+                drawCircle(
+                    outline,
+                    radius = 0.002f,
+                    center = Offset(head.x + 0.004f, head.y - 0.003f),
+                )
+            }
+        }
     }
 
     private fun DrawScope.drawButterfly(at: Offset) {
         val wing = Color(0xFFFFB300)
-        drawOval(wing, topLeft = Offset(at.x - 0.035f, at.y - 0.03f), size = Size(0.035f, 0.035f))
-        drawOval(wing, topLeft = Offset(at.x, at.y - 0.03f), size = Size(0.035f, 0.035f))
-        drawOval(wing, topLeft = Offset(at.x - 0.025f, at.y), size = Size(0.025f, 0.025f))
-        drawOval(wing, topLeft = Offset(at.x, at.y), size = Size(0.025f, 0.025f))
+        // the wings beat while it flies
+        val beat = if (moving) 0.25f + 0.75f * abs(sin(time * 14f)) else 1f
+        scale(scaleX = beat, scaleY = 1f, pivot = at) {
+            drawOval(
+                wing,
+                topLeft = Offset(at.x - 0.035f, at.y - 0.03f),
+                size = Size(0.035f, 0.035f),
+            )
+            drawOval(wing, topLeft = Offset(at.x, at.y - 0.03f), size = Size(0.035f, 0.035f))
+            drawOval(wing, topLeft = Offset(at.x - 0.025f, at.y), size = Size(0.025f, 0.025f))
+            drawOval(wing, topLeft = Offset(at.x, at.y), size = Size(0.025f, 0.025f))
+        }
         drawLine(
             Color.Black,
             Offset(at.x, at.y - 0.03f),
