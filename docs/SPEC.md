@@ -512,6 +512,13 @@ Abgestimmt am 2026-10-29 (Entwurf: https://claude.ai/artifact/Mw37mjDy9J1AbhEHHJ
   (CLOUDY); ab 7 inaktiven Tagen dicht bewölkt und grau (OVERCAST). Wolken treiben langsam, die
   Sonnenstrahlen drehen sich (folgt der Animations-Einstellung).
 
+### 8.5a Vorschau vor dem Kauf (#121)
+- Jedes noch nicht gekaufte Teil hat im Shop einen Vorschau-Knopf (Auge); er öffnet das Kauffenster
+  auch bei zu wenig Wasser oder zu niedriger Stufe, Kaufen geht dann nicht (Hinweis warum).
+- Das Kauffenster zeigt die Wiese wie auf der Avatar-Karte mit Umschalter **Ohne / Mit** (Standard:
+  Mit). Gesperrte Teile werden an der Pflanze auf der benötigten Stufe gezeigt.
+- Berechnung als reine Funktion `AvatarState.preview` in `core.avatar` (`ShopPreview`).
+
 ### 8.6 Issues
 | # | Inhalt |
 |---|---|
@@ -525,6 +532,7 @@ Abgestimmt am 2026-10-29 (Entwurf: https://claude.ai/artifact/Mw37mjDy9J1AbhEHHJ
 | #103 | Deko: breite Wiese mit gezeichneten Deko-Teilen |
 | #104 | Deko: Shop-Kategorie „Deko“ |
 | #107 | Wiese: hellblauer Himmel mit Wolken und Sonne je nach Serie |
+| #121 | Shop: Vorschau vor dem Kauf für jedes Teil |
 
 ---
 
