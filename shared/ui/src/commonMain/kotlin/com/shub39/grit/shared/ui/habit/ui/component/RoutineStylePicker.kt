@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -58,9 +59,9 @@ import com.shub39.grit.core.habits.style.RoutineStyle
 import com.shub39.grit.core.theme.AppTheme
 import com.shub39.grit.core.theme.Theme
 import com.shub39.grit.shared.ui.components.GritDialog
+import com.shub39.grit.shared.ui.habit.style.RoutinePaperIcon
 import com.shub39.grit.shared.ui.habit.style.color
 import com.shub39.grit.shared.ui.habit.style.contentColor
-import com.shub39.grit.shared.ui.habit.style.drawable
 import com.shub39.grit.shared.ui.habit.style.label
 import com.shub39.grit.shared.ui.theme.GritTheme
 import com.shub39.grit.shared.ui.theme.flexFontEmphasis
@@ -78,8 +79,8 @@ import org.jetbrains.compose.resources.vectorResource
 private const val COLUMNS = 6
 
 /**
- * Square tile with rounded corners in the routine's colour and its icon on top, as on the routine
- * card. Clickable when [onClick] is set.
+ * The routine's paper icon on a light tile in the routine's colour, as on the routine card (#126).
+ * Clickable when [onClick] is set.
  */
 @Composable
 fun RoutineStyleTile(
@@ -94,17 +95,16 @@ fun RoutineStyleTile(
         modifier =
             modifier
                 .size(size)
-                .clip(RoundedCornerShape(size * 0.28f))
-                .background(style.color.color)
-                .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+                .then(
+                    if (onClick != null) {
+                        Modifier.clip(RoundedCornerShape(size * 0.28f)).clickable(onClick = onClick)
+                    } else {
+                        Modifier
+                    }
+                )
                 .semantics { contentDescription = description },
     ) {
-        Icon(
-            imageVector = vectorResource(style.icon.drawable()),
-            contentDescription = null,
-            tint = style.color.contentColor,
-            modifier = Modifier.size(size * 0.55f),
-        )
+        RoutinePaperIcon(style = style, modifier = Modifier.fillMaxSize())
     }
 }
 
@@ -233,15 +233,14 @@ private fun IconChoice(
                     }
                 )
                 .clip(shape)
-                .background(color.color.copy(alpha = if (selected) 1f else 0.35f))
+                .background(color.color.copy(alpha = if (selected) 0.45f else 0.18f))
                 .selectable(selected = selected, onClick = onClick, role = Role.RadioButton)
                 .semantics { contentDescription = label },
     ) {
-        Icon(
-            imageVector = vectorResource(icon.drawable()),
-            contentDescription = null,
-            tint = if (selected) color.contentColor else MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.size(22.dp),
+        RoutinePaperIcon(
+            style = RoutineStyle(color, icon),
+            withTile = false,
+            modifier = Modifier.size(34.dp),
         )
     }
 }

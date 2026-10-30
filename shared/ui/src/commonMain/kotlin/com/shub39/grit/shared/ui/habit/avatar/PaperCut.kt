@@ -59,12 +59,24 @@ internal fun DrawScope.paper(path: Path, color: Color, depth: Float = 1f) {
 internal fun DrawScope.paperStroke(path: Path, width: Float, color: Color, depth: Float = 1f) {
     val d = SHADOW * depth
     translate(left = d * 0.25f, top = d * 0.55f) {
-        drawPath(path, nearShadow, style = Stroke(width = width, cap = StrokeCap.Round))
+        drawPath(
+            path,
+            nearShadow,
+            style = Stroke(width = width, cap = StrokeCap.Round, join = StrokeJoin.Round),
+        )
     }
     translate(left = d * 0.45f, top = d) {
-        drawPath(path, farShadow, style = Stroke(width = width + d * 0.6f, cap = StrokeCap.Round))
+        drawPath(
+            path,
+            farShadow,
+            style = Stroke(width = width + d * 0.6f, cap = StrokeCap.Round, join = StrokeJoin.Round),
+        )
     }
-    drawPath(path, color, style = Stroke(width = width, cap = StrokeCap.Round))
+    drawPath(
+        path,
+        color,
+        style = Stroke(width = width, cap = StrokeCap.Round, join = StrokeJoin.Round),
+    )
 }
 
 /** A straight paper strip from [from] to [to], with its shadow. */
