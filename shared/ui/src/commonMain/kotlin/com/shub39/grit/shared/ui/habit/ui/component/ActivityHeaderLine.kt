@@ -35,7 +35,7 @@ import grit.shared.ui.generated.resources.energy_header_line
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 
-/** „🔥 12 Tage aktiv · ⚡ 14“ in the habits header; tapping it opens the energy page. */
+/** „🔥 12 Tage aktiv · 💧 14“ in the habits header; tapping it opens the energy page. */
 @Composable
 fun ActivityHeaderLine(
     activeDays: Int,

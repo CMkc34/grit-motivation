@@ -61,7 +61,7 @@ import org.jetbrains.compose.resources.stringResource
 
 /**
  * Full screen celebration after a habit check-in: the user's plant, the streak counting up and the
- * quote. Closes by tapping anywhere or the back key. [activityStreak] adds the "+1 ⚡" pill for the
+ * quote. Closes by tapping anywhere or the back key. [activityStreak] adds the "+1 💧" pill for the
  * first check-in of the day, [bonusEarned] the bonus pill for the check-in that earned the daily
  * bonus. Without [avatar] a seed is shown.
  */

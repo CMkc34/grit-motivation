@@ -234,7 +234,7 @@ fun rememberCountUp(target: Int): Int {
     return value.value.toInt()
 }
 
-/** Yellow pill, e.g. for the day's "+1 ⚡". */
+/** Yellow pill, e.g. for the day's "+1 💧". */
 @Composable
 fun StagePill(text: String, modifier: Modifier = Modifier) {
     Text(
