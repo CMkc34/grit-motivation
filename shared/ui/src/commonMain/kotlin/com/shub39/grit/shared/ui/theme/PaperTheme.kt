@@ -22,20 +22,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PointMode
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.unit.dp
-import kotlin.random.Random
 
-// Paper cut look for the whole app (#128): warm paper colours, a fine paper grain over every page,
+// Paper cut look for the whole app (#128): warm paper colours,
 // two pale paper hills at the bottom and cards that lie on the page like sheets of paper.
 
 /** [base] with the surfaces and neutral text colours swapped for warm paper. */
@@ -84,13 +80,9 @@ fun paperColorScheme(base: ColorScheme, isDark: Boolean): ColorScheme =
 
 private val shadowInk = Color(0xFF1B2A1C)
 
-// fibres of the paper as fractions of the page, the same on every page
-private val grain =
-    Random(23).let { random -> List(2400) { Offset(random.nextFloat(), random.nextFloat()) } }
-
 /**
- * The page background: the theme's background colour, two pale paper hills along the bottom behind
- * the content and a fine paper grain over everything.
+ * The page background: the theme's background colour and two pale paper hills along the bottom
+ * behind the content. No paper grain here, on whole pages it looked dirty (#130).
  */
 @Composable
 fun Modifier.paperBackground(): Modifier {
@@ -98,8 +90,6 @@ fun Modifier.paperBackground(): Modifier {
     val isDark = background.luminance() < 0.5f
     val back = if (isDark) Color(0xFF2C3A2A) else Color(0xFFDCEBCF)
     val front = if (isDark) Color(0xFF33452F) else Color(0xFFC9E2B4)
-    val darkFibre = if (isDark) Color.Black.copy(alpha = 0.18f) else Color(0x0D5A4A2A)
-    val lightFibre = Color.White.copy(alpha = if (isDark) 0.035f else 0.3f)
     return drawWithCache {
         val w = size.width
         val h = size.height
@@ -114,24 +104,13 @@ fun Modifier.paperBackground(): Modifier {
             }
         val backHill = hill(top = 140.dp.toPx(), dip = 10.dp.toPx(), rise = 50.dp.toPx())
         val frontHill = hill(top = 90.dp.toPx(), dip = 4.dp.toPx(), rise = 40.dp.toPx())
-        val points = grain.map { Offset(it.x * w, it.y * h) }
-        val dot = 1.4.dp.toPx()
         val drop = 2.4.dp.toPx()
-        onDrawWithContent {
+        onDrawBehind {
             drawRect(background)
             pageShadow(backHill, drop, isDark)
             drawPath(backHill, back)
             pageShadow(frontHill, drop, isDark)
             drawPath(frontHill, front)
-            drawContent()
-            drawPoints(points.subList(0, 1200), PointMode.Points, darkFibre, dot, StrokeCap.Round)
-            drawPoints(
-                points.subList(1200, 2400),
-                PointMode.Points,
-                lightFibre,
-                dot,
-                StrokeCap.Round,
-            )
         }
     }
 }
