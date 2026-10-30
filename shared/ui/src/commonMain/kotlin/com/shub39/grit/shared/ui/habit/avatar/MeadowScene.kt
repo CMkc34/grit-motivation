@@ -93,6 +93,9 @@ private val sunRay = Color(0xFFFFB938)
  * with its arms never covers one. Animals sleep with the plant when it is tired; the small
  * movements, the drifting clouds and the turning sun follow the system's animation setting like the
  * plant's sway.
+ *
+ * [plantScale] above 1 makes the plant that much bigger and the scene as much higher, with more sky
+ * on top; the width, the decorations, the sun and the clouds stay as they are.
  */
 @Composable
 fun MeadowScene(
@@ -104,23 +107,32 @@ fun MeadowScene(
     decorations: Set<String> = emptySet(),
     weather: Weather = Weather.FAIR,
     animate: Boolean = true,
+    plantScale: Float = 1f,
 ) {
     val sway = if (animate) rememberSway() else 0f
     val time = if (animate) rememberMeadowTime() else 0f
     val tired = mood == PlantMood.TIRED
     val shown = decorationsInOrder.filter { it.id in decorations }
 
-    Canvas(modifier = modifier.aspectRatio(MEADOW_ASPECT_RATIO).clip(RoundedCornerShape(20.dp))) {
-        // everything below is drawn in a 2 x 1 rectangle
-        scale(scale = size.height, pivot = Offset.Zero) {
+    Canvas(
+        modifier =
+            modifier.aspectRatio(MEADOW_ASPECT_RATIO / plantScale).clip(RoundedCornerShape(20.dp))
+    ) {
+        // everything below is drawn in a 2 x plantScale rectangle, the meadow in its lower 2 x 1
+        scale(scale = size.width / MEADOW_ASPECT_RATIO, pivot = Offset.Zero) {
             val painter = DecorationPainter(tired = tired, time = time, moving = animate && !tired)
-            with(painter) {
-                drawSky(weather)
-                drawGround()
+            with(painter) { drawSky(weather, height = plantScale) }
+            translate(top = plantScale - 1f) {
+                with(painter) { drawGround() }
+                shown.filter { !it.inFront }.forEach { it.draw(this, painter) }
+                // the plant grows from its foot on the hill
+                scale(scale = plantScale, pivot = Offset(1f, PLANT_FOOT_Y)) {
+                    translate(left = 0.5f) {
+                        drawPlantAvatar(stage, mood, potColor, accessories, sway)
+                    }
+                }
+                shown.filter { it.inFront }.forEach { it.draw(this, painter) }
             }
-            shown.filter { !it.inFront }.forEach { it.draw(this, painter) }
-            translate(left = 0.5f) { drawPlantAvatar(stage, mood, potColor, accessories, sway) }
-            shown.filter { it.inFront }.forEach { it.draw(this, painter) }
         }
     }
 }
@@ -142,6 +154,9 @@ private fun rememberMeadowTime(): Float {
         )
     return time
 }
+
+// where the plant's pot or trunk stands on the hill
+private const val PLANT_FOOT_Y = 0.86f
 
 // the meadow is the top of this ellipse, so it falls off towards both edges
 private const val GROUND_Y = 1.07f
@@ -218,7 +233,8 @@ private class DecorationPainter(val tired: Boolean, val time: Float, val moving:
         }
     }
 
-    fun DrawScope.drawSky(weather: Weather) {
+    /** The sky over a [height] high scene; the sun and the clouds stay at its top. */
+    fun DrawScope.drawSky(weather: Weather, height: Float = 1f) {
         // the sky and the clouds turn grey the longer the user stays away
         val gray =
             when (weather) {
@@ -229,7 +245,7 @@ private class DecorationPainter(val tired: Boolean, val time: Float, val moving:
         drawRect(
             lerp(sky, tiredGray, gray),
             topLeft = Offset.Zero,
-            size = Size(MEADOW_ASPECT_RATIO, 1f),
+            size = Size(MEADOW_ASPECT_RATIO, height),
         )
         when (weather) {
             Weather.SUNNY -> sun(Offset(1.72f, 0.22f), 0.1f, rays = true)
