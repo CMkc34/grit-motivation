@@ -3,6 +3,7 @@
   Aktiv-Serie und Energie (Phase 2): Zeile in der Kopfzeile der Routinen-Seite, Energie-Seite,
   Freeze-Hinweis und Energie-Zeile im Motivations-Pop-up.
   Sichtbar heißt die Energie seit #112 „Wasser“ (💧), die Schlüssel bleiben energy_*.
+  Seit #119 zeichnet WaterText jedes 💧 als Wassermünze; 💧 bleibt deshalb der Platzhalter.
   Eigene Datei des Forks, die strings.xml des Originals bleibt unberührt.
 -->
 <resources>

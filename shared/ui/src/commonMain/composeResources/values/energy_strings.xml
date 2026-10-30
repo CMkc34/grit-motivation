@@ -3,6 +3,7 @@
   Activity streak and energy (phase 2): header line on the habits page, the energy page, the
   freeze notice and the energy line in the motivation popup.
   Since #112 the energy is shown as "water" (💧); the keys stay energy_*.
+  Since #119 every 💧 is drawn as the water coin (WaterText), so keep it as the marker.
   Fork-specific, kept out of the upstream strings.xml. German texts in values-de.
 -->
 <resources>

@@ -60,6 +60,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.shub39.grit.shared.ui.habit.ui.component.WaterText
 import grit.shared.ui.generated.resources.Res
 import grit.shared.ui.generated.resources.motivation_tap_to_continue
 import kotlin.math.PI
@@ -237,7 +238,7 @@ fun rememberCountUp(target: Int): Int {
 /** Yellow pill, e.g. for the day's "+1 💧". */
 @Composable
 fun StagePill(text: String, modifier: Modifier = Modifier) {
-    Text(
+    WaterText(
         text = text,
         style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Black),
         color = StageInk,
