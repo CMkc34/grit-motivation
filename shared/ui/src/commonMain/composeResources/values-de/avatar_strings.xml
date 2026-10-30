@@ -40,18 +40,18 @@
 
     <!-- Shop -->
     <string name="shop_title">Shop</string>
-    <string name="shop_balance">Du hast %1$d ⚡</string>
+    <string name="shop_balance">Du hast %1$d 💧</string>
     <string name="shop_pot_colors">Topffarben</string>
     <string name="shop_accessories">Accessoires</string>
     <string name="shop_from_stage">ab Stufe %1$d</string>
-    <string name="shop_buy_for">%1$d ⚡</string>
+    <string name="shop_buy_for">%1$d 💧</string>
     <string name="shop_choose">Wählen</string>
     <string name="shop_chosen">Gewählt</string>
     <string name="shop_put_on">Anlegen</string>
     <string name="shop_take_off">Ablegen</string>
     <string name="shop_confirm_title">%1$s kaufen?</string>
-    <string name="shop_confirm_text">%1$d ⚡ ausgeben? Neuer Kontostand: %2$d ⚡</string>
-    <string name="shop_low_energy">Danach reicht die Energie nicht mehr für einen Freeze (%1$d ⚡).</string>
+    <string name="shop_confirm_text">%1$d 💧 ausgeben? Neuer Kontostand: %2$d 💧</string>
+    <string name="shop_low_energy">Danach reicht das Wasser nicht mehr für einen Freeze (%1$d 💧).</string>
     <string name="shop_buy">Kaufen</string>
     <string name="shop_item_pot_terracotta">Terrakotta</string>
     <string name="shop_item_pot_blue">Blau</string>

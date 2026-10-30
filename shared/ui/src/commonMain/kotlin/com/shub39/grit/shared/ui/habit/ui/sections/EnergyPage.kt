@@ -210,7 +210,7 @@ internal fun EnergyBalance(energy: Int, modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = "⚡ $energy",
+                text = "💧 $energy",
                 style =
                     MaterialTheme.typography.displayLarge.copy(
                         fontFamily = flexFontEmphasis(),
