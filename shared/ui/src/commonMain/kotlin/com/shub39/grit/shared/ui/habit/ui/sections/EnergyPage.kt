@@ -62,6 +62,8 @@ import com.shub39.grit.shared.ui.WindowSize.Companion.isExpanded
 import com.shub39.grit.shared.ui.habit.HabitsAction
 import com.shub39.grit.shared.ui.habit.activity.RecentDay
 import com.shub39.grit.shared.ui.habit.activity.recentDays
+import com.shub39.grit.shared.ui.habit.ui.component.WATER_MARK
+import com.shub39.grit.shared.ui.habit.ui.component.WaterText
 import com.shub39.grit.shared.ui.theme.flexFontEmphasis
 import com.shub39.grit.shared.ui.theme.flexFontRounded
 import grit.shared.ui.generated.resources.Res
@@ -209,8 +211,8 @@ internal fun EnergyBalance(energy: Int, modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxWidth().padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                text = "💧 $energy",
+            WaterText(
+                text = "$WATER_MARK $energy",
                 style =
                     MaterialTheme.typography.displayLarge.copy(
                         fontFamily = flexFontEmphasis(),
@@ -420,7 +422,7 @@ private fun RulesCard(modifier: Modifier = Modifier) {
             rules.forEach { rule ->
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(text = "•", style = MaterialTheme.typography.bodyMedium)
-                    Text(text = rule, style = MaterialTheme.typography.bodyMedium)
+                    WaterText(text = rule, style = MaterialTheme.typography.bodyMedium)
                 }
             }
         }

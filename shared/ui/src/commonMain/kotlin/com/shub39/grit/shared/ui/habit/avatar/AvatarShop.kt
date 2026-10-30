@@ -53,6 +53,7 @@ import com.shub39.grit.core.avatar.ShopItem
 import com.shub39.grit.core.avatar.ShopItemKind
 import com.shub39.grit.shared.ui.GritPreviewWrapper
 import com.shub39.grit.shared.ui.components.GritDialog
+import com.shub39.grit.shared.ui.habit.ui.component.WaterText
 import com.shub39.grit.shared.ui.theme.flexFontRounded
 import grit.shared.ui.generated.resources.Res
 import grit.shared.ui.generated.resources.avatar_cancel
@@ -177,7 +178,7 @@ fun AvatarShop(
                 fontFamily = flexFontRounded(),
                 style = MaterialTheme.typography.titleMedium,
             )
-            Text(
+            WaterText(
                 text = stringResource(Res.string.shop_balance, avatar.energy),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -268,11 +269,11 @@ private fun ShopRow(
                 )
             PurchaseCheck.NOT_ENOUGH_ENERGY ->
                 Button(onClick = {}, enabled = false) {
-                    Text(stringResource(Res.string.shop_buy_for, item.price))
+                    WaterText(stringResource(Res.string.shop_buy_for, item.price))
                 }
             PurchaseCheck.OK ->
                 Button(onClick = onBuyClick) {
-                    Text(stringResource(Res.string.shop_buy_for, item.price))
+                    WaterText(stringResource(Res.string.shop_buy_for, item.price))
                 }
         }
     }
@@ -334,13 +335,13 @@ fun BuyItemDialog(
             style = MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Center,
         )
-        Text(
+        WaterText(
             text = stringResource(Res.string.shop_confirm_text, item.price, balanceAfter),
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
         )
         if (balanceAfter < ActivityPlanner.FREEZE_COST) {
-            Text(
+            WaterText(
                 text = stringResource(Res.string.shop_low_energy, ActivityPlanner.FREEZE_COST),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.error,
