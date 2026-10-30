@@ -29,7 +29,8 @@ import org.koin.core.annotation.Single
 class MotivationSettingsImpl(private val datastore: DataStore<Preferences>) : MotivationSettings {
 
     companion object {
-        private val popupEnabledKey = booleanPreferencesKey("motivation_popup_enabled")
+        // a new key, so the popup is on once for everyone who had switched it off before (#109)
+        private val popupEnabledKey = booleanPreferencesKey("motivation_popup_on")
     }
 
     override fun getPopupEnabled(): Flow<Boolean> =
