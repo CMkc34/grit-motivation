@@ -18,6 +18,7 @@ package com.shub39.grit.logic.activity
 
 import com.shub39.grit.core.activity.ActivityData
 import com.shub39.grit.core.activity.ActivityStore
+import com.shub39.grit.core.activity.BonusDaySource
 import com.shub39.grit.core.avatar.AvatarData
 import com.shub39.grit.core.avatar.Purchase
 import com.shub39.grit.core.now
@@ -30,6 +31,7 @@ import kotlin.test.assertNull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.DateTimeUnit
@@ -69,6 +71,8 @@ class ActivityRepositoryTest {
 
     private fun daysAgo(n: Int) = today.minus(n, DateTimeUnit.DAY)
 
+    private val noBonus = BonusDaySource { flowOf(emptySet()) }
+
     @Test
     fun `report evaluates the stored active days`() = runTest {
         val store =
@@ -79,7 +83,8 @@ class ActivityRepositoryTest {
                 )
             )
 
-        val report = ActivityRepository(store, FakeAvatarStore()).getActivityReport().first()
+        val report =
+            ActivityRepository(store, FakeAvatarStore(), noBonus).getActivityReport().first()
 
         assertEquals(3, report.currentStreak)
         assertEquals(3, report.energy)
@@ -89,7 +94,7 @@ class ActivityRepositoryTest {
     fun `reading the report sets the start date on first use`() = runTest {
         val store = FakeActivityStore()
 
-        ActivityRepository(store, FakeAvatarStore()).getActivityReport().first()
+        ActivityRepository(store, FakeAvatarStore(), noBonus).getActivityReport().first()
 
         assertEquals(today, store.data.value.startDate)
     }
@@ -103,7 +108,7 @@ class ActivityRepositoryTest {
                     activeDays = (2..8).map(::daysAgo).toSet() + today,
                 )
             )
-        val repository = ActivityRepository(store, FakeAvatarStore())
+        val repository = ActivityRepository(store, FakeAvatarStore(), noBonus)
 
         val notice = assertNotNull(repository.getFreezeNotice().first())
         assertEquals(setOf(daysAgo(1)), notice.frozenDays)
@@ -122,7 +127,7 @@ class ActivityRepositoryTest {
         val avatarStore =
             FakeAvatarStore(AvatarData(purchases = listOf(Purchase("pot_blue", daysAgo(1), 3))))
 
-        val report = ActivityRepository(store, avatarStore).getActivityReport().first()
+        val report = ActivityRepository(store, avatarStore, noBonus).getActivityReport().first()
 
         assertEquals(2, report.energy)
     }
@@ -136,12 +141,29 @@ class ActivityRepositoryTest {
                     activeDays = (2..8).map(::daysAgo).toSet() + today,
                 )
             )
-        val repository = ActivityRepository(store, FakeAvatarStore())
+        val repository = ActivityRepository(store, FakeAvatarStore(), noBonus)
 
         repository.setAutoFreeze(false)
         val report = repository.getActivityReport().first()
 
         assertFalse(report.autoFreeze)
         assertEquals(setOf(daysAgo(1)), report.frozenDays)
+    }
+
+    @Test
+    fun `bonus days add energy only while they are there`() = runTest {
+        val store =
+            FakeActivityStore(
+                ActivityData(startDate = daysAgo(2), activeDays = (0..2).map(::daysAgo).toSet())
+            )
+        val bonus = MutableStateFlow(setOf(daysAgo(1), today))
+        val repository = ActivityRepository(store, FakeAvatarStore(), BonusDaySource { bonus })
+
+        assertEquals(5, repository.getActivityReport().first().energy)
+
+        // taking a check-in back drops today below two routines
+        bonus.value = setOf(daysAgo(1))
+
+        assertEquals(4, repository.getActivityReport().first().energy)
     }
 }

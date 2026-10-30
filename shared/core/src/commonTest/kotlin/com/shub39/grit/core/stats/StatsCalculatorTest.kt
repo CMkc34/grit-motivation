@@ -87,6 +87,21 @@ class StatsCalculatorTest {
         assertEquals(listOf(0, ActivityPlanner.FREEZE_COST), energy.map { it.spent })
     }
 
+    @Test
+    fun `bonus energy counts as earned in its month`() {
+        val report =
+            ActivityPlanner.plan(
+                activeDays = setOf(date(9, 30), date(10, 1)),
+                startDate = date(9, 30),
+                today = date(10, 1),
+                bonusDays = setOf(date(9, 30), date(10, 1)),
+            )
+
+        val energy = StatsCalculator.energyPerMonth(report, date(10, 1), months = 2)
+
+        assertEquals(listOf(2, 2), energy.map { it.earned })
+    }
+
     // month completion
 
     @Test

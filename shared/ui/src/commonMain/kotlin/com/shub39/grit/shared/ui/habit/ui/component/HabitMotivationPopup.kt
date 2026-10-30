@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.shub39.grit.core.activity.DailyBonus
 import com.shub39.grit.core.avatar.AvatarState
 import com.shub39.grit.core.avatar.PlantMood
 import com.shub39.grit.core.avatar.PlantStage
@@ -50,6 +51,7 @@ import com.shub39.grit.shared.ui.habit.motivation.rememberPopIn
 import com.shub39.grit.shared.ui.habit.motivation.textResource
 import com.shub39.grit.shared.ui.theme.flexFontEmphasis
 import grit.shared.ui.generated.resources.Res
+import grit.shared.ui.generated.resources.energy_popup_bonus
 import grit.shared.ui.generated.resources.energy_popup_line
 import grit.shared.ui.generated.resources.motivation_header_motivating
 import grit.shared.ui.generated.resources.motivation_header_sarcastic
@@ -60,7 +62,8 @@ import org.jetbrains.compose.resources.stringResource
 /**
  * Full screen celebration after a habit check-in: the user's plant, the streak counting up and the
  * quote. Closes by tapping anywhere or the back key. [activityStreak] adds the "+1 ⚡" pill for the
- * first check-in of the day. Without [avatar] a seed is shown.
+ * first check-in of the day, [bonusEarned] the bonus pill for the check-in that earned the daily
+ * bonus. Without [avatar] a seed is shown.
  */
 @Composable
 fun HabitMotivationPopup(
@@ -71,6 +74,7 @@ fun HabitMotivationPopup(
     avatar: AvatarState?,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
+    bonusEarned: Boolean = false,
 ) {
     CelebrationStage(colors = CheckInStageColors, onDismiss = onDismiss, modifier = modifier) {
         Text(
@@ -138,6 +142,22 @@ fun HabitMotivationPopup(
                     Modifier.graphicsLayer {
                         scaleX = pillScale
                         scaleY = pillScale
+                    },
+            )
+        }
+        if (bonusEarned) {
+            val bonusScale = rememberPopIn(delayMillis = 1200)
+            StagePill(
+                text =
+                    stringResource(
+                        Res.string.energy_popup_bonus,
+                        DailyBonus.ENERGY,
+                        DailyBonus.MIN_ROUTINES,
+                    ),
+                modifier =
+                    Modifier.graphicsLayer {
+                        scaleX = bonusScale
+                        scaleY = bonusScale
                     },
             )
         }

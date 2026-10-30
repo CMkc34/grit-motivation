@@ -32,6 +32,8 @@
     <string name="energy_rules_title">How it works</string>
     <string name="energy_rule_active">A day counts as active as soon as you check in anything – any routine, any date, also via widget or reminder.</string>
     <string name="energy_rule_energy">Every active day gives you +%1$d ⚡, with no upper limit.</string>
+    <!-- %1$d = bonus energy, %2$d = routines needed on one day -->
+    <string name="energy_rule_bonus">Check off %2$d or more routines on one day and you get +%1$d ⚡ bonus. Taking a check back below %2$d takes the bonus back too.</string>
     <string name="energy_rule_freeze">Missed a day? A freeze costs %1$d ⚡ per day and saves your streak automatically, for up to %2$d days in a row.</string>
     <string name="energy_rule_frozen_day">A frozen day keeps your streak alive but does not count towards it.</string>
     <string name="energy_rule_break">If your streak breaks anyway, you keep your energy.</string>
@@ -57,4 +59,7 @@
         <item quantity="one">+1 ⚡ · %1$d day active</item>
         <item quantity="other">+1 ⚡ · %1$d days active</item>
     </plurals>
+
+    <!-- Motivation popup, check-in that earns the daily bonus: %1$d = bonus energy, %2$d = routines needed -->
+    <string name="energy_popup_bonus">+%1$d ⚡ bonus for %2$d routines today</string>
 </resources>

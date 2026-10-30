@@ -21,6 +21,7 @@ import com.shub39.grit.core.activity.ActivityPlanner
 import com.shub39.grit.core.activity.ActivityRepo
 import com.shub39.grit.core.activity.ActivityReport
 import com.shub39.grit.core.activity.ActivityStore
+import com.shub39.grit.core.activity.BonusDaySource
 import com.shub39.grit.core.activity.FreezeNotice
 import com.shub39.grit.core.avatar.AvatarStore
 import com.shub39.grit.core.avatar.Purchase
@@ -34,15 +35,20 @@ import kotlinx.datetime.LocalDate
 import org.koin.core.annotation.Single
 
 @Single(binds = [ActivityRepo::class])
-class ActivityRepository(private val store: ActivityStore, private val avatarStore: AvatarStore) :
-    ActivityRepo {
+class ActivityRepository(
+    private val store: ActivityStore,
+    private val avatarStore: AvatarStore,
+    private val bonusDaySource: BonusDaySource,
+) : ActivityRepo {
 
     override fun getActivityReport(): Flow<ActivityReport> =
-        combine(activity(), purchases()) { data, purchases -> plan(data, purchases) }
+        combine(activity(), purchases(), bonusDaySource.getBonusDays()) { data, purchases, bonus ->
+            plan(data, purchases, bonus)
+        }
 
     override fun getFreezeNotice(): Flow<FreezeNotice?> =
-        combine(activity(), purchases()) { data, purchases ->
-            FreezeNotice.of(plan(data, purchases), data.seenFreezes)
+        combine(activity(), purchases(), bonusDaySource.getBonusDays()) { data, purchases, bonus ->
+            FreezeNotice.of(plan(data, purchases, bonus), data.seenFreezes)
         }
 
     override suspend fun markFreezesSeen(days: Set<LocalDate>) = store.markFreezesSeen(days)
@@ -60,7 +66,11 @@ class ActivityRepository(private val store: ActivityStore, private val avatarSto
     private fun purchases(): Flow<List<Purchase>> =
         avatarStore.getAvatar().map { it.purchases }.distinctUntilChanged()
 
-    private fun plan(data: ActivityData, purchases: List<Purchase>): ActivityReport {
+    private fun plan(
+        data: ActivityData,
+        purchases: List<Purchase>,
+        bonusDays: Set<LocalDate>,
+    ): ActivityReport {
         val today = LocalDate.now()
         return ActivityPlanner.plan(
             activeDays = data.activeDays,
@@ -68,6 +78,7 @@ class ActivityRepository(private val store: ActivityStore, private val avatarSto
             today = today,
             purchases = purchases,
             autoFreeze = data.autoFreeze,
+            bonusDays = bonusDays,
         )
     }
 }

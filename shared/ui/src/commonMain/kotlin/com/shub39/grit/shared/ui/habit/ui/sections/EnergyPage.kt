@@ -53,6 +53,7 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.grit.core.activity.ActivityPlanner
 import com.shub39.grit.core.activity.ActivityReport
+import com.shub39.grit.core.activity.DailyBonus
 import com.shub39.grit.core.activity.DayStatus
 import com.shub39.grit.core.stats.ForkStats
 import com.shub39.grit.shared.ui.GritPreviewWrapper
@@ -79,6 +80,7 @@ import grit.shared.ui.generated.resources.energy_legend_open
 import grit.shared.ui.generated.resources.energy_longest_streak
 import grit.shared.ui.generated.resources.energy_rule_active
 import grit.shared.ui.generated.resources.energy_rule_auto_freeze
+import grit.shared.ui.generated.resources.energy_rule_bonus
 import grit.shared.ui.generated.resources.energy_rule_break
 import grit.shared.ui.generated.resources.energy_rule_energy
 import grit.shared.ui.generated.resources.energy_rule_freeze
@@ -387,6 +389,11 @@ private fun RulesCard(modifier: Modifier = Modifier) {
         listOf(
             stringResource(Res.string.energy_rule_active),
             stringResource(Res.string.energy_rule_energy, ActivityPlanner.ENERGY_PER_ACTIVE_DAY),
+            stringResource(
+                Res.string.energy_rule_bonus,
+                DailyBonus.ENERGY,
+                DailyBonus.MIN_ROUTINES,
+            ),
             stringResource(
                 Res.string.energy_rule_freeze,
                 ActivityPlanner.FREEZE_COST,

@@ -38,6 +38,8 @@ data class ActivityReport(
     val days: Map<LocalDate, DayStatus>,
     /** Whether missed days are frozen automatically from today on. */
     val autoFreeze: Boolean = true,
+    /** Active days that earned the [DailyBonus] on top of the daily energy. */
+    val bonusDays: Set<LocalDate> = emptySet(),
 ) {
     val frozenDays: Set<LocalDate>
         get() = days.filterValues { it == DayStatus.FROZEN }.keys
@@ -53,7 +55,8 @@ object ActivityPlanner {
      * Replays every day from [startDate] to [today]. A gap of missed days is frozen only as a
      * whole: when it is at most [MAX_FROZEN_DAYS_IN_A_ROW] long and the energy covers all of it.
      * Otherwise the streak breaks and no energy is spent. [today] without activity does not break
-     * the streak.
+     * the streak. Every active day in [bonusDays] earns the [DailyBonus] as well; a bonus day the
+     * user was not active on earns nothing.
      *
      * Energy spent on [purchases] is taken on the day of the purchase, but only after a gap that is
      * open on that day has been decided, so a purchase never undoes a freeze that was shown before.
@@ -69,12 +72,14 @@ object ActivityPlanner {
         today: LocalDate,
         purchases: List<Purchase> = emptyList(),
         autoFreeze: AutoFreezeSwitches = AutoFreezeSwitches(),
+        bonusDays: Set<LocalDate> = emptySet(),
     ): ActivityReport {
         var streak = 0
         var longest = 0
         var energy = 0
         var pendingSpend = 0
         val days = linkedMapOf<LocalDate, DayStatus>()
+        val earnedBonus = mutableSetOf<LocalDate>()
         val gap = mutableListOf<LocalDate>()
         val spendByDay = purchases.groupBy({ it.date }, { it.price })
 
@@ -105,6 +110,10 @@ object ActivityPlanner {
                     streak++
                     longest = maxOf(longest, streak)
                     energy += ENERGY_PER_ACTIVE_DAY
+                    if (day in bonusDays) {
+                        energy += DailyBonus.ENERGY
+                        earnedBonus += day
+                    }
                     days[day] = DayStatus.ACTIVE
                 }
                 day < today -> {
@@ -132,6 +141,7 @@ object ActivityPlanner {
             energy = energy,
             days = days,
             autoFreeze = autoFreeze.isOn(today),
+            bonusDays = earnedBonus,
         )
     }
 }

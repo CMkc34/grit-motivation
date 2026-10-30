@@ -32,6 +32,8 @@
     <string name="energy_rules_title">So funktioniert’s</string>
     <string name="energy_rule_active">Ein Tag ist aktiv, sobald du irgendetwas einträgst – egal welche Routine, egal für welches Datum, auch über Widget oder Erinnerung.</string>
     <string name="energy_rule_energy">Jeder aktive Tag bringt dir +%1$d ⚡, ohne Obergrenze.</string>
+    <!-- %1$d = Bonus-Energie, %2$d = nötige Routinen an einem Tag -->
+    <string name="energy_rule_bonus">Hakst du an einem Tag %2$d oder mehr Routinen ab, bekommst du +%1$d ⚡ Bonus. Nimmst du einen Haken zurück und es sind weniger als %2$d, wird der Bonus wieder abgezogen.</string>
     <string name="energy_rule_freeze">Einen Tag verpasst? Ein Freeze kostet %1$d ⚡ pro Tag und rettet deine Serie automatisch, bis zu %2$d Tage am Stück.</string>
     <string name="energy_rule_frozen_day">Ein gefrorener Tag hält deine Serie, zählt aber nicht mit.</string>
     <string name="energy_rule_break">Reißt die Serie trotzdem, bleibt deine Energie erhalten.</string>
@@ -57,4 +59,7 @@
         <item quantity="one">+1 ⚡ · %1$d Tag aktiv</item>
         <item quantity="other">+1 ⚡ · %1$d Tage aktiv</item>
     </plurals>
+
+    <!-- Motivations-Pop-up, Eintrag der den Tagesbonus bringt: %1$d = Bonus-Energie, %2$d = nötige Routinen -->
+    <string name="energy_popup_bonus">+%1$d ⚡ Bonus für %2$d Routinen heute</string>
 </resources>
