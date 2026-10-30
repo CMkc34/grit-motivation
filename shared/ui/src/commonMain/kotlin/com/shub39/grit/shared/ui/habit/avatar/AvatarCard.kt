@@ -82,6 +82,9 @@ import org.jetbrains.compose.resources.stringResource
 // the longest name that still fits under the plant
 private const val MAX_NAME_LENGTH = 24
 
+// the plant on the Avatar tab is shown bigger than in the shop's preview (#110)
+private const val CARD_PLANT_SCALE = 1.3f
+
 private fun PlantStage.nameRes(): StringResource =
     when (this) {
         PlantStage.SEED -> Res.string.avatar_stage_1
@@ -132,6 +135,7 @@ fun AvatarCard(avatar: AvatarState, onRenameClick: () -> Unit, modifier: Modifie
                 accessories = avatar.data.accessories,
                 decorations = avatar.data.decorations,
                 weather = plant.weather,
+                plantScale = CARD_PLANT_SCALE,
                 modifier = Modifier.widthIn(max = 480.dp).fillMaxWidth(),
             )
 
