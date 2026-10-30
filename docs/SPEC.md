@@ -208,6 +208,7 @@ Belohnt wird die **Nutzung der App**, nicht die Serie einzelner Routinen.
 
 ### 4.2 Energie und Freezes
 - **+1 ⚡** pro aktivem Tag, **keine Obergrenze** (Energie wird in Phase 4 für den Avatar ausgegeben).
+- **Tagesbonus (#111):** +1 ⚡ zusätzlich an einem aktiven Tag, an dem mindestens 2 verschiedene Routinen für dieses Datum erledigt sind (messbare ab Zielwert). Höchstens 1 Bonus pro Tag. Wird wie die Tagesenergie aus den Einträgen berechnet (`DailyBonus`, `BonusDaySource`): Haken zurücknehmen nimmt den Bonus zurück, Backups bringen ihn mit.
 - **Freeze = 7 ⚡**, überbrückt einen verpassten Tag der Aktiv-Serie, **max. 2 Tage am Stück**.
 - Freezes werden **automatisch** eingesetzt, sobald genug Energie da ist (Abschalten: Backlog #30).
 - Heute noch kein Eintrag → die Serie gilt bis Tagesende als nicht gerissen.

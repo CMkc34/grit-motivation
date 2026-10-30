@@ -18,6 +18,7 @@ package com.shub39.grit.core.stats
 
 import com.shub39.grit.core.activity.ActivityPlanner
 import com.shub39.grit.core.activity.ActivityReport
+import com.shub39.grit.core.activity.DailyBonus
 import com.shub39.grit.core.activity.DayStatus
 import com.shub39.grit.core.habits.Habit
 import com.shub39.grit.core.habits.HabitStatus
@@ -84,7 +85,9 @@ object StatsCalculator {
             MonthlyEnergy(
                 month = month,
                 earned =
-                    report.countIn(month, DayStatus.ACTIVE) * ActivityPlanner.ENERGY_PER_ACTIVE_DAY,
+                    report.countIn(month, DayStatus.ACTIVE) *
+                        ActivityPlanner.ENERGY_PER_ACTIVE_DAY +
+                        report.bonusDays.count { it.yearMonth == month } * DailyBonus.ENERGY,
                 spent = report.countIn(month, DayStatus.FROZEN) * ActivityPlanner.FREEZE_COST,
                 beforeStart = startDate == null || month.lastDay < startDate,
             )

@@ -26,6 +26,7 @@ import com.shub39.grit.core.motivation.MotivationQuote
  * @property activityStreak Activity streak after the first check-in of the day, shown as "+1 ⚡"
  *   line; `null` for later check-ins that day, which earn no energy.
  * @property avatar The user's plant shown on the popup, `null` if it could not be read.
+ * @property bonusEarned Whether this check-in earned the day's bonus for a second routine.
  */
 @Immutable
 data class MotivationPopupState(
@@ -34,4 +35,5 @@ data class MotivationPopupState(
     val quote: MotivationQuote,
     val activityStreak: Int? = null,
     val avatar: AvatarState? = null,
+    val bonusEarned: Boolean = false,
 )

@@ -376,8 +376,9 @@ class HabitViewModel(
         } else {
             analytics.trackEvent(AnalyticsEvent.HABIT_COMPLETED, emptyMap())
             val firstOfDay = !isTodayActive()
+            val hadBonus = hasBonus(date)
             repo.insertHabitStatus(HabitStatus(habitId = habit.id, date = date))
-            showMotivationPopup(habit, date, firstOfDay)
+            showMotivationPopup(habit, date, firstOfDay, bonusEarned = !hadBonus && hasBonus(date))
         }
     }
 
@@ -395,10 +396,16 @@ class HabitViewModel(
         }
         analytics.trackEvent(AnalyticsEvent.HABIT_COMPLETED, emptyMap())
         val firstOfDay = !isTodayActive()
+        val hadBonus = hasBonus(date)
         repo.insertHabitStatus(HabitStatus(habitId = habit.id, date = date, value = value))
+        val bonusEarned = !hadBonus && hasBonus(date)
         // only the first value of a day is a check-in, corrections stay silent
-        if (!isStatusAdded) showMotivationPopup(habit, date, firstOfDay)
+        if (!isStatusAdded) showMotivationPopup(habit, date, firstOfDay, bonusEarned)
     }
+
+    /** Whether [date] currently earns the daily bonus for two or more routines. */
+    private suspend fun hasBonus(date: LocalDate): Boolean =
+        date in activityRepo.getActivityReport().first().bonusDays
 
     /** Whether today already has a check-in, read before saving the next one. */
     private suspend fun isTodayActive(): Boolean =
@@ -409,9 +416,15 @@ class HabitViewModel(
      * Only check-ins for today or yesterday are celebrated; catching up on older days stays silent,
      * as does a check-in that does not extend an active streak (streak 0), and every check-in while
      * the popup is turned off in the settings. The first check-in of the day ([firstOfDay]) also
-     * shows the activity streak that it extended, as it earns the day's energy.
+     * shows the activity streak that it extended, as it earns the day's energy; [bonusEarned] marks
+     * the check-in that earned the daily bonus.
      */
-    private suspend fun showMotivationPopup(habit: Habit, date: LocalDate, firstOfDay: Boolean) {
+    private suspend fun showMotivationPopup(
+        habit: Habit,
+        date: LocalDate,
+        firstOfDay: Boolean,
+        bonusEarned: Boolean = false,
+    ) {
         if (!motivationSettings.getPopupEnabled().first()) return
         if (date < LocalDate.now().minus(1, DateTimeUnit.DAY)) return
         val streak =
@@ -425,7 +438,14 @@ class HabitViewModel(
         _state.update {
             it.copy(
                 motivationPopup =
-                    MotivationPopupState(habit.title, streak, quote, activityStreak, avatar)
+                    MotivationPopupState(
+                        habit.title,
+                        streak,
+                        quote,
+                        activityStreak,
+                        avatar,
+                        bonusEarned,
+                    )
             )
         }
     }

@@ -139,4 +139,32 @@ class ActivityPlannerTest {
         assertEquals(DayStatus.OPEN, report.days.getValue(day(12)))
         assertEquals(13, report.days.size)
     }
+
+    @Test
+    fun `a bonus day earns one more energy`() {
+        val report =
+            ActivityPlanner.plan(
+                activeDays = (0..2).map(::day).toSet(),
+                startDate = start,
+                today = day(2),
+                bonusDays = setOf(day(1)),
+            )
+
+        assertEquals(4, report.energy)
+        assertEquals(setOf(day(1)), report.bonusDays)
+    }
+
+    @Test
+    fun `a bonus day without activity earns nothing`() {
+        val report =
+            ActivityPlanner.plan(
+                activeDays = setOf(day(0), day(2)),
+                startDate = start,
+                today = day(2),
+                bonusDays = setOf(day(1)),
+            )
+
+        assertEquals(2, report.energy)
+        assertEquals(emptySet(), report.bonusDays)
+    }
 }
