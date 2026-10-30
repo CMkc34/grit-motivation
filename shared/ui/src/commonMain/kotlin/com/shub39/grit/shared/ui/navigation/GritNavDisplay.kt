@@ -49,6 +49,7 @@ import com.shub39.grit.shared.ui.setting.ui.section.Changelog
 import com.shub39.grit.shared.ui.setting.ui.section.LookAndFeelPage
 import com.shub39.grit.shared.ui.setting.ui.section.RootPage
 import com.shub39.grit.shared.ui.theme.GritTheme
+import com.shub39.grit.shared.ui.theme.paperBackground
 import com.shub39.grit.shared.ui.viewmodel.HabitViewModel
 import com.shub39.grit.shared.ui.viewmodel.MainViewModel
 import com.shub39.grit.shared.ui.viewmodel.SettingsViewModel
@@ -144,7 +145,7 @@ private fun EntryProviderScope<Routes>.habitsScreens(
             onNavigateToOverallAnalytics = { topLevelBackStack.add(OverallAnalytics) },
             onNavigateToEnergy = { topLevelBackStack.add(Energy) },
             isUserSubscribed = globalState.isUserSubscribed,
-            modifier = Modifier.background(colorScheme.background),
+            modifier = Modifier.paperBackground(),
         )
     }
 
@@ -162,7 +163,7 @@ private fun EntryProviderScope<Routes>.habitsScreens(
             onNavigateToPaywall = { topLevelBackStack.add(Paywall) },
             onNavigateToCalendar = { topLevelBackStack.add(Calendar) },
             isUserSubscribed = globalState.isUserSubscribed,
-            modifier = Modifier.background(colorScheme.background),
+            modifier = Modifier.paperBackground(),
         )
     }
 
@@ -180,7 +181,7 @@ private fun EntryProviderScope<Routes>.habitsScreens(
                     viewModel.onAction(HabitsAction.InsertStatus(habit, date))
                 }
             },
-            modifier = Modifier.background(colorScheme.background),
+            modifier = Modifier.paperBackground(),
         )
     }
 
@@ -199,7 +200,7 @@ private fun EntryProviderScope<Routes>.habitsScreens(
             onNavigateToPaywall = { topLevelBackStack.add(Paywall) },
             isUserSubscribed = globalState.isUserSubscribed,
             onNavigateToCalendarHeatMap = { topLevelBackStack.add(CalendarHeatMap) },
-            modifier = Modifier.background(colorScheme.background),
+            modifier = Modifier.paperBackground(),
         )
     }
 
@@ -215,7 +216,7 @@ private fun EntryProviderScope<Routes>.habitsScreens(
             stats = state.stats,
             onAction = viewModel::onAction,
             onNavigateBack = { topLevelBackStack.removeLast() },
-            modifier = Modifier.background(colorScheme.background),
+            modifier = Modifier.paperBackground(),
         )
     }
 
@@ -226,7 +227,7 @@ private fun EntryProviderScope<Routes>.habitsScreens(
         AvatarPage(
             avatar = state.avatar,
             onAction = viewModel::onAction,
-            modifier = Modifier.background(colorScheme.background),
+            modifier = Modifier.paperBackground(),
         )
     }
 
@@ -240,7 +241,7 @@ private fun EntryProviderScope<Routes>.habitsScreens(
             onChangeSelectedDay = {
                 viewModel.onAction(HabitsAction.FetchCompletedHabitsForDate(it))
             },
-            modifier = Modifier.background(colorScheme.background),
+            modifier = Modifier.paperBackground(),
         )
     }
 }
@@ -256,7 +257,7 @@ private fun EntryProviderScope<Routes>.settingsScreens(
         LaunchedEffect(Unit) { viewModel.onAction(OnSettingsOpened) }
 
         RootPage(
-            modifier = Modifier.background(colorScheme.background),
+            modifier = Modifier.paperBackground(),
             state = state,
             onAction = viewModel::onAction,
             onNavigateToLookAndFeel = { topLevelBackStack.add(LookAndFeel) },
@@ -277,7 +278,7 @@ private fun EntryProviderScope<Routes>.settingsScreens(
             isUserSubscribed = globalState.isUserSubscribed,
             onNavigateToPaywall = { topLevelBackStack.add(Paywall) },
             onNavigateBack = { topLevelBackStack.removeLast() },
-            modifier = Modifier.background(colorScheme.background),
+            modifier = Modifier.paperBackground(),
         )
     }
 
@@ -286,7 +287,7 @@ private fun EntryProviderScope<Routes>.settingsScreens(
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         BackupPage(
-            modifier = Modifier.background(colorScheme.background),
+            modifier = Modifier.paperBackground(),
             state = state,
             onAction = viewModel::onAction,
             onNavigateBack = { topLevelBackStack.removeLast() },
@@ -300,7 +301,7 @@ private fun EntryProviderScope<Routes>.settingsScreens(
         LaunchedEffect(Unit) { viewModel.onAction(OnAboutViewed) }
 
         About(
-            modifier = Modifier.background(colorScheme.background),
+            modifier = Modifier.paperBackground(),
             versionName = state.currentVersion ?: "1.0.00-Demo",
             onNavigateBack = { topLevelBackStack.removeLast() },
         )
@@ -313,7 +314,7 @@ private fun EntryProviderScope<Routes>.settingsScreens(
         LaunchedEffect(Unit) { viewModel.onAction(OnChangelogViewed) }
 
         Changelog(
-            modifier = Modifier.background(colorScheme.background),
+            modifier = Modifier.paperBackground(),
             changelog = state.changelog,
             onNavigateBack = { topLevelBackStack.removeLast() },
         )
