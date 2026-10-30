@@ -38,7 +38,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
@@ -64,7 +63,7 @@ import kotlin.math.min
 import kotlin.math.sign
 import kotlin.math.sin
 
-// fixed palette, the plant looks the same in light and dark theme
+// fixed palette, the plant looks the same in light and dark theme; outline is the ink of the faces
 internal val outline = Color(0xFF2B3A2C)
 private val leafGreen = Color(0xFF6CCB5F)
 private val leafLight = Color(0xFF93DB78)
@@ -79,9 +78,6 @@ private val blush = Color(0xFFFF8FA0)
 private val lightYellow = Color(0xFFFFEB3B)
 internal val tiredGray = Color(0xFFA3A79F)
 
-/** Outline width in units of the avatar's size. */
-internal const val OUTLINE = 0.013f
-
 /** Color of a pot color item; unknown ids fall back to terracotta. */
 fun potColorOf(itemId: String): Color =
     when (itemId) {
@@ -94,12 +90,12 @@ fun potColorOf(itemId: String): Color =
     }
 
 /**
- * The plant avatar, drawn in code (no image assets) in a sticker look: every shape has a dark
- * outline, and the plant has a face, first on the seed, then on the pot, later on the trunk. It
- * grows through the 12 [PlantStage]s from a seed in a pot to a mighty tree on a meadow; from the
- * sapling on, branches grow out of the trunk and act as arms. A tired plant sleeps, droops its
- * leaves and arms and looks paler. The gentle sway and the small motions of the accessories (#117)
- * follow the system's animation setting.
+ * The plant avatar, drawn in code (no image assets) in a paper cut look: every shape casts a soft
+ * shadow on the ones below (#123), and the plant has a face, first on the seed, then on the pot,
+ * later on the trunk. It grows through the 12 [PlantStage]s from a seed in a pot to a mighty tree
+ * on a meadow; from the sapling on, branches grow out of the trunk and act as arms. A tired plant
+ * sleeps, droops its leaves and arms and looks paler. The gentle sway and the small motions of the
+ * accessories (#117) follow the system's animation setting.
  */
 @Composable
 fun PlantAvatar(
@@ -301,13 +297,6 @@ private class PlantPainter(
         drawGroundAccessories()
     }
 
-    // sticker look: a dark outline under every shape
-
-    private fun DrawScope.sticker(path: Path, color: Color) {
-        drawPath(path, outline, style = Stroke(width = OUTLINE * 2, join = StrokeJoin.Round))
-        drawPath(path, color)
-    }
-
     private fun DrawScope.face(center: Offset, size: Float) {
         val (x, y) = center
         if (tired) {
@@ -373,7 +362,7 @@ private class PlantPainter(
                 quadraticTo(0.36f, 0.955f, 0.355f, 0.92f)
                 close()
             }
-        sticker(pot, potColor)
+        paper(pot, potColor)
         // seed and germ wear the face themselves
         if (stage >= PlantStage.SEEDLING) face(Offset(0.5f, 0.83f), size = 0.14f)
     }
@@ -388,7 +377,7 @@ private class PlantPainter(
                     )
                 )
             }
-        sticker(rim, lerp(potColor, Color.Black, 0.08f))
+        paper(rim, lerp(potColor, Color.Black, 0.08f))
         drawOval(soilBrown, topLeft = Offset(0.31f, 0.659f), size = Size(0.38f, 0.032f))
     }
 
@@ -396,7 +385,7 @@ private class PlantPainter(
         // the hill is cut at the bottom edge so it never covers the name below the plant
         clipRect(left = 0f, top = 0f, right = 1f, bottom = 1f) {
             val hill = Path().apply { addOval(Rect(Offset(-0.14f, 0.83f), Size(1.28f, 0.34f))) }
-            sticker(hill, meadowGreen.mood())
+            paper(hill, meadowGreen.mood())
             if (stage >= PlantStage.TREE) {
                 listOf(Offset(0.84f, 0.91f), Offset(0.3f, 0.95f), Offset(0.64f, 0.97f)).forEach {
                     for (a in 0 until 5) {
@@ -411,14 +400,7 @@ private class PlantPainter(
             }
         }
         // the pot color lives on as a little sign next to the tree
-        drawLine(
-            outline,
-            Offset(0.16f, 0.88f),
-            Offset(0.16f, 0.77f),
-            0.015f + OUTLINE * 2,
-            StrokeCap.Round,
-        )
-        drawLine(wood, Offset(0.16f, 0.88f), Offset(0.16f, 0.77f), 0.015f, StrokeCap.Round)
+        paperLine(Offset(0.16f, 0.88f), Offset(0.16f, 0.77f), 0.015f, wood)
         val sign =
             Path().apply {
                 addRoundRect(
@@ -428,7 +410,7 @@ private class PlantPainter(
                     )
                 )
             }
-        sticker(sign, potColor)
+        paper(sign, potColor)
     }
 
     // plant
@@ -442,12 +424,7 @@ private class PlantPainter(
                         moveTo(0.5f, 0.51f)
                         quadraticTo(0.49f, 0.46f, 0.53f, 0.435f)
                     }
-                drawPath(
-                    sprout,
-                    outline,
-                    style = Stroke(width = 0.018f + OUTLINE * 2, cap = StrokeCap.Round),
-                )
-                drawPath(sprout, stem, style = Stroke(width = 0.018f, cap = StrokeCap.Round))
+                paperStroke(sprout, 0.018f, stem)
                 drawLeaf(Offset(0.53f, 0.44f), degrees = 55f, length = 0.07f)
                 drawSeed(Offset(0.5f, 0.6f), 0.085f)
             }
@@ -491,7 +468,7 @@ private class PlantPainter(
                 cubicTo(x - r * 1.05f, y + r * 0.85f, x - r * 1.1f, y - r * 1.05f, x, y - r * 1.1f)
                 close()
             }
-        sticker(seed, seedBrown.mood())
+        paper(seed, seedBrown.mood())
         face(Offset(x, y - r * 0.02f), size = r * 1.12f)
     }
 
@@ -508,8 +485,7 @@ private class PlantPainter(
                     top.y + sag,
                 )
             }
-        drawPath(path, outline, style = Stroke(width = width + OUTLINE * 2, cap = StrokeCap.Round))
-        drawPath(path, stem, style = Stroke(width = width, cap = StrokeCap.Round))
+        paperStroke(path, width, stem)
     }
 
     private fun DrawScope.drawLeaf(
@@ -519,7 +495,7 @@ private class PlantPainter(
         color: Color = leaf,
     ) {
         val droop = if (tired) 28f * (if (degrees == 0f) 1f else sign(degrees)) else 0f
-        sticker(leafPath(from, degrees + droop, length), color)
+        paper(leafPath(from, degrees + droop, length), color)
     }
 
     private fun DrawScope.drawLeafPair(
@@ -534,10 +510,16 @@ private class PlantPainter(
     }
 
     private fun DrawScope.drawFlower(center: Offset, size: Float) {
-        for (a in 0 until 5) {
-            sticker(circlePath(turned(center, a * 72f, 0f, -size), size * 0.62f), Color.White)
-        }
-        sticker(circlePath(center, size * 0.55f), flowerYellow)
+        val petals =
+            Path().apply {
+                for (a in 0 until 5) {
+                    addOval(
+                        Rect(center = turned(center, a * 72f, 0f, -size), radius = size * 0.62f)
+                    )
+                }
+            }
+        paper(petals, Color.White, depth = 0.5f)
+        paper(circlePath(center, size * 0.55f), flowerYellow, depth = 0.3f)
     }
 
     private fun DrawScope.drawStar(center: Offset, size: Float) {
@@ -550,7 +532,7 @@ private class PlantPainter(
                 }
                 close()
             }
-        sticker(star, flowerYellow)
+        paper(star, flowerYellow, depth = 0.6f)
     }
 
     private fun trunkPath(shape: TreeShape): Path {
@@ -616,12 +598,10 @@ private class PlantPainter(
     }
 
     private fun DrawScope.drawTree(shape: TreeShape) {
-        // trunk and arms are one piece of wood: all outlines first, then all fills
+        // trunk and arms are one piece of wood: all shadows first, then all fills
         val (armWood, armLeaves) = arms(shape)
         val pieces = listOf(trunkPath(shape)) + armWood
-        pieces.forEach {
-            drawPath(it, outline, style = Stroke(width = OUTLINE * 2, join = StrokeJoin.Round))
-        }
+        pieces.forEach { paperShadow(it) }
         pieces.forEach { drawPath(it, wood) }
 
         val center = crownCenter
@@ -635,7 +615,7 @@ private class PlantPainter(
         }
         if (stage == PlantStage.MIGHTY_TREE) {
             crownSpots(center, radius, count = 6, seed = 4).forEach {
-                sticker(circlePath(it, radius * 0.075f), fruitRed.mood())
+                paper(circlePath(it, radius * 0.075f), fruitRed.mood(), depth = 0.5f)
             }
             if (!tired) {
                 drawStar(Offset(center.x - radius * 1.05f, center.y - radius * 0.55f), 0.03f)
@@ -647,7 +627,7 @@ private class PlantPainter(
         if (!inPot) face(Offset(base.x, base.y - shape.height * 0.28f), size = shape.trunk * 1.54f)
     }
 
-    /** A cloud of overlapping circles with one shared outline and a few highlights on top. */
+    /** A cloud of overlapping circles with one shared shadow and a few highlights on top. */
     private fun DrawScope.drawCrown(center: Offset, radius: Float, lobes: Int) {
         val parts = buildList {
             add(center to radius * 0.66f)
@@ -661,10 +641,10 @@ private class PlantPainter(
                 )
             }
         }
-        parts.forEach { (c, r) ->
-            drawCircle(outline, radius = r, center = c, style = Stroke(width = OUTLINE * 2))
-        }
-        parts.forEach { (c, r) -> drawCircle(leaf, radius = r, center = c) }
+        paper(
+            Path().apply { parts.forEach { (c, r) -> addOval(Rect(center = c, radius = r)) } },
+            leaf,
+        )
         parts.drop(1).forEach { (c, r) ->
             if (c.y < center.y) {
                 drawCircle(

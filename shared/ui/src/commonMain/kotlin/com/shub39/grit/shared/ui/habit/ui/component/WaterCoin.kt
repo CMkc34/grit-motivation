@@ -64,12 +64,21 @@ val WaterCoinIcon: ImageVector by lazy {
             viewportHeight = 48f,
         )
         .apply {
-            // coin with outline
-            path(
-                fill = SolidColor(CoinBlue),
-                stroke = SolidColor(CoinInk),
-                strokeLineWidth = 2.8f,
-            ) {
+            // paper cut look (#123): a soft shadow under the coin instead of an outline
+            path(fill = SolidColor(CoinInk), fillAlpha = 0.16f) {
+                moveTo(45.5f, 26.5f)
+                arcTo(20f, 20f, 0f, isMoreThanHalf = true, isPositiveArc = true, 5.5f, 26.5f)
+                arcTo(20f, 20f, 0f, isMoreThanHalf = true, isPositiveArc = true, 45.5f, 26.5f)
+                close()
+            }
+            path(fill = SolidColor(CoinInk), fillAlpha = 0.14f) {
+                moveTo(44.8f, 25.3f)
+                arcTo(20f, 20f, 0f, isMoreThanHalf = true, isPositiveArc = true, 4.8f, 25.3f)
+                arcTo(20f, 20f, 0f, isMoreThanHalf = true, isPositiveArc = true, 44.8f, 25.3f)
+                close()
+            }
+            // coin
+            path(fill = SolidColor(CoinBlue)) {
                 moveTo(44f, 24f)
                 arcTo(20f, 20f, 0f, isMoreThanHalf = true, isPositiveArc = true, 4f, 24f)
                 arcTo(20f, 20f, 0f, isMoreThanHalf = true, isPositiveArc = true, 44f, 24f)

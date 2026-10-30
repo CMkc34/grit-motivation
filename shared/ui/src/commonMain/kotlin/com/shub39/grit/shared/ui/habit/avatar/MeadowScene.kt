@@ -144,6 +144,7 @@ fun MeadowScene(
                 }
                 shown.filter { it.inFront }.forEach { it.draw(this, painter) }
             }
+            drawPaperGrain()
         }
     }
 }
@@ -225,7 +226,7 @@ private class DecorationPainter(val tired: Boolean, val time: Float, val moving:
                     lineTo(at.x - 0.036f, at.y + 0.012f)
                     close()
                 }
-            sticker(fish, fishOrange)
+            paper(fish, fishOrange)
             drawCircle(outline, radius = 0.003f, center = Offset(at.x + 0.01f, at.y - 0.003f))
         }
         // a splash where it dives back in
@@ -237,21 +238,6 @@ private class DecorationPainter(val tired: Boolean, val time: Float, val moving:
                 style = Stroke(width = 0.004f),
             )
         }
-    }
-
-    // sticker look like the plant: a dark outline under every shape
-    fun DrawScope.sticker(path: Path, color: Color) {
-        drawPath(
-            path,
-            outline,
-            style = Stroke(width = OUTLINE * 2, join = StrokeJoin.Round, cap = StrokeCap.Round),
-        )
-        drawPath(path, color)
-    }
-
-    fun DrawScope.stalk(from: Offset, to: Offset, width: Float, color: Color) {
-        drawLine(outline, from, to, width + OUTLINE * 2, StrokeCap.Round)
-        drawLine(color, from, to, width, StrokeCap.Round)
     }
 
     fun DrawScope.eye(center: Offset, r: Float) {
@@ -333,19 +319,24 @@ private class DecorationPainter(val tired: Boolean, val time: Float, val moving:
         }
     }
 
-    /** A friendly sun in the plant's sticker look; its rays turn once a minute. */
+    /** A friendly sun in the plant's paper look; its rays turn once a minute. */
     private fun DrawScope.sun(center: Offset, r: Float, rays: Boolean) {
         if (rays) {
+            // turned by hand, so every ray's shadow still falls down to the right
             val turn = if (moving) time * 360f / LOOP_SECONDS else 0f
-            rotate(degrees = turn, pivot = center) {
-                for (i in 0 until 10) {
-                    val a = i * 36f * PI.toFloat() / 180f
-                    val dir = Offset(cos(a), sin(a))
-                    stalk(center + dir * (r * 1.3f), center + dir * (r * 1.6f), r * 0.14f, sunRay)
-                }
+            for (i in 0 until 10) {
+                val a = (i * 36f + turn) * PI.toFloat() / 180f
+                val dir = Offset(cos(a), sin(a))
+                paperLine(
+                    center + dir * (r * 1.3f),
+                    center + dir * (r * 1.6f),
+                    r * 0.14f,
+                    sunRay,
+                    depth = 0.5f,
+                )
             }
         }
-        sticker(ellipsePath(center, r, r), sunYellow)
+        paper(ellipsePath(center, r, r), sunYellow)
         eye(Offset(center.x - r * 0.33f, center.y - r * 0.1f), r * 0.11f)
         eye(Offset(center.x + r * 0.33f, center.y - r * 0.1f), r * 0.11f)
         drawArc(
@@ -388,7 +379,11 @@ private class DecorationPainter(val tired: Boolean, val time: Float, val moving:
 
     fun DrawScope.drawGround() {
         clipRect(left = 0f, top = 0f, right = MEADOW_ASPECT_RATIO, bottom = 1f) {
-            sticker(ellipsePath(Offset(1f, GROUND_Y), GROUND_RX, GROUND_RY), meadowGreen.mood())
+            // two paler hills further back give the paper scene depth
+            val far = lerp(meadowGreen, sky, 0.35f).mood()
+            paper(ellipsePath(Offset(1.72f, 1.0f), 0.62f, 0.25f), far)
+            paper(ellipsePath(Offset(0.3f, 1.0f), 0.66f, 0.27f), far)
+            paper(ellipsePath(Offset(1f, GROUND_Y), GROUND_RX, GROUND_RY), meadowGreen.mood())
             // a few tufts so the wide meadow does not look empty
             listOf(
                     Offset(0.05f, 0.96f),
@@ -439,7 +434,7 @@ private fun DrawScope.fence(p: DecorationPainter) {
                     lineTo(start, groundY(start) + above + 0.018f)
                     close()
                 }
-            sticker(rail, wood)
+            paper(rail, wood)
         }
         for (i in 0 until 5) {
             val x = 0.045f + i * 0.07f
@@ -454,7 +449,7 @@ private fun DrawScope.fence(p: DecorationPainter) {
                     lineTo(x + 0.032f, foot)
                     close()
                 }
-            sticker(picket, wood)
+            paper(picket, wood)
         }
     }
 }
@@ -467,7 +462,7 @@ private fun DrawScope.mushrooms(p: DecorationPainter) {
             // they bob as if they were breathing
             val bob = wave(2.5f, phase = i * 1.7f)
             scale(scaleX = 1f - 0.04f * bob, scaleY = 1f + 0.06f * bob, pivot = Offset(x, y)) {
-                sticker(
+                paper(
                     roundRectPath(x - s * 0.35f, y - s * 1.1f, s * 0.7f, s * 1.15f, s * 0.25f),
                     Color(0xFFF3E3C3),
                 )
@@ -479,7 +474,7 @@ private fun DrawScope.mushrooms(p: DecorationPainter) {
                         quadraticTo(x, y - s * 1.15f, x - s, y - s * 0.95f)
                         close()
                     }
-                sticker(cap, Color(0xFFE5533D).mood())
+                paper(cap, Color(0xFFE5533D).mood())
                 listOf(
                         Triple(-0.45f, -1.35f, 0.17f),
                         Triple(0.2f, -1.7f, 0.14f),
@@ -513,7 +508,7 @@ private fun DrawScope.snail(p: DecorationPainter) {
                         Offset(0.047f, -0.038f) to Offset(0.055f - wiggle, -0.064f),
                     )
                     .forEach { (from, to) ->
-                        stalk(from, to, 0.004f, skin)
+                        paperLine(from, to, 0.004f, skin)
                         drawCircle(outline, radius = 0.006f, center = to)
                     }
                 val body =
@@ -525,8 +520,8 @@ private fun DrawScope.snail(p: DecorationPainter) {
                         quadraticTo(0.06f, -0.005f, 0.04f, 0f)
                         close()
                     }
-                sticker(body, skin)
-                sticker(ellipsePath(Offset(-0.005f, -0.04f), 0.03f, 0.028f), shell)
+                paper(body, skin)
+                paper(ellipsePath(Offset(-0.005f, -0.04f), 0.03f, 0.028f), shell)
                 val spiral =
                     Path().apply {
                         var a = 0f
@@ -560,7 +555,7 @@ private fun DrawScope.hedgehog(p: DecorationPainter) {
                 }
                 close()
             }
-        sticker(spikes, Color(0xFF7A5C4A).mood())
+        paper(spikes, Color(0xFF7A5C4A).mood())
         val skin = Color(0xFFE8C9A0).mood()
         val face =
             Path().apply {
@@ -569,11 +564,11 @@ private fun DrawScope.hedgehog(p: DecorationPainter) {
                 quadraticTo(x + 0.06f, y + 0.004f, x + 0.02f, y)
                 close()
             }
-        sticker(face, skin)
+        paper(face, skin)
         drawCircle(outline, radius = 0.007f, center = Offset(x + 0.077f + sniff, y - 0.009f))
         eye(Offset(x + 0.045f, y - 0.018f), 0.0055f)
         listOf(-0.03f to step, 0f to -step).forEach { (dx, lift) ->
-            sticker(roundRectPath(x + dx, y - 0.006f - abs(lift), 0.012f, 0.012f, 0.005f), skin)
+            paper(roundRectPath(x + dx, y - 0.006f - abs(lift), 0.012f, 0.012f, 0.005f), skin)
         }
     }
 }
@@ -593,15 +588,15 @@ private fun DrawScope.rabbit(p: DecorationPainter) {
                 size = Size(0.09f - hop, 0.016f),
             )
         }
-        sticker(ellipsePath(Offset(x - 0.048f, y - 0.028f), 0.012f, 0.012f), Color.White)
-        sticker(ellipsePath(Offset(x, y - 0.025f), 0.045f, 0.032f), fur)
+        paper(ellipsePath(Offset(x - 0.048f, y - 0.028f), 0.012f, 0.012f), Color.White)
+        paper(ellipsePath(Offset(x, y - 0.025f), 0.045f, 0.032f), fur)
         // the ears stand up and twitch, asleep they lie back
         listOf(-1f to 0f, 1f to twitch).forEach { (side, wiggle) ->
             val base = Offset(x + 0.035f + side * 0.009f, y - 0.072f)
             val degrees = if (tired) -100f - side * 8f else side * 10f - wiggle
             rotate(degrees = degrees, pivot = base) {
                 val center = Offset(base.x, base.y - 0.036f)
-                sticker(ellipsePath(center, 0.012f, 0.036f), fur)
+                paper(ellipsePath(center, 0.012f, 0.036f), fur)
                 drawOval(
                     pinkLight,
                     topLeft = Offset(center.x - 0.005f, center.y - 0.024f),
@@ -609,7 +604,7 @@ private fun DrawScope.rabbit(p: DecorationPainter) {
                 )
             }
         }
-        sticker(ellipsePath(Offset(x + 0.038f, y - 0.058f), 0.028f, 0.025f), fur)
+        paper(ellipsePath(Offset(x + 0.038f, y - 0.058f), 0.028f, 0.025f), fur)
         eye(Offset(x + 0.05f, y - 0.062f), 0.005f)
         drawCircle(pink, radius = 0.005f, center = Offset(x + 0.064f, y - 0.052f))
         drawOval(
@@ -656,13 +651,13 @@ private fun DrawScope.bench(p: DecorationPainter) {
                 // drawn with its feet at y = 0.875
                 translate(left = -left, top = -0.875f) {
                     listOf(x + 0.025f, x + 0.235f).forEach {
-                        sticker(roundRectPath(it, 0.71f, 0.016f, 0.165f, 0.006f), metal)
+                        paper(roundRectPath(it, 0.71f, 0.016f, 0.165f, 0.006f), metal)
                     }
-                    sticker(roundRectPath(x, 0.72f, 0.275f, 0.024f, 0.008f), wood)
-                    sticker(roundRectPath(x, 0.752f, 0.275f, 0.024f, 0.008f), wood)
-                    sticker(roundRectPath(x - 0.01f, 0.8f, 0.295f, 0.024f, 0.008f), wood)
+                    paper(roundRectPath(x, 0.72f, 0.275f, 0.024f, 0.008f), wood)
+                    paper(roundRectPath(x, 0.752f, 0.275f, 0.024f, 0.008f), wood)
+                    paper(roundRectPath(x - 0.01f, 0.8f, 0.295f, 0.024f, 0.008f), wood)
                     listOf(x + 0.02f, x + 0.24f).forEach {
-                        sticker(roundRectPath(it, 0.815f, 0.016f, 0.06f, 0.006f), metal)
+                        paper(roundRectPath(it, 0.815f, 0.016f, 0.06f, 0.006f), metal)
                     }
                 }
             }
@@ -677,13 +672,18 @@ private fun DrawScope.pond(p: DecorationPainter) {
             i,
             (x, y, h) ->
             val sway = 0.008f * wave(4f, phase = i.toFloat())
-            stalk(Offset(x, y), Offset(x + 0.004f + sway, y - h), 0.006f, Color(0xFF3FA34D).mood())
-            sticker(
+            paperLine(
+                Offset(x, y),
+                Offset(x + 0.004f + sway, y - h),
+                0.006f,
+                Color(0xFF3FA34D).mood(),
+            )
+            paper(
                 roundRectPath(x - 0.006f + sway, y - h - 0.005f, 0.016f, 0.04f, 0.008f),
                 Color(0xFF8A5A3B).mood(),
             )
         }
-        sticker(ellipsePath(Offset(0.3f, 0.945f), 0.2f, 0.048f), water.mood())
+        paper(ellipsePath(Offset(0.3f, 0.945f), 0.2f, 0.048f), water.mood())
         drawOval(waterLight.mood(), topLeft = Offset(0.14f, 0.915f), size = Size(0.24f, 0.044f))
         if (moving) {
             // a ripple that grows and fades every three seconds
@@ -703,7 +703,7 @@ private fun DrawScope.pond(p: DecorationPainter) {
                 close()
             }
         scale(scaleX = 1f, scaleY = 0.45f, pivot = Offset(0.22f, 0.95f)) {
-            sticker(pad, Color(0xFF58B368).mood())
+            paper(pad, Color(0xFF58B368).mood())
         }
         val flower = Offset(0.226f, 0.943f)
         for (i in 0 until 5) {
@@ -737,8 +737,8 @@ private fun DrawScope.lantern(p: DecorationPainter) {
                 radius = 0.09f,
                 center = Offset(x, 0.555f),
             )
-            sticker(roundRectPath(x - 0.008f, 0.58f, 0.016f, 0.3f, 0.006f), lanternGreen)
-            sticker(roundRectPath(x - 0.022f, 0.875f, 0.044f, 0.016f, 0.006f), lanternGreen)
+            paper(roundRectPath(x - 0.008f, 0.58f, 0.016f, 0.3f, 0.006f), lanternGreen)
+            paper(roundRectPath(x - 0.022f, 0.875f, 0.044f, 0.016f, 0.006f), lanternGreen)
             val head =
                 Path().apply {
                     moveTo(x - 0.026f, 0.585f)
@@ -747,7 +747,7 @@ private fun DrawScope.lantern(p: DecorationPainter) {
                     lineTo(x + 0.026f, 0.585f)
                     close()
                 }
-            sticker(head, lanternLight)
+            paper(head, lanternLight)
             val roof =
                 Path().apply {
                     moveTo(x - 0.045f, 0.532f)
@@ -755,7 +755,7 @@ private fun DrawScope.lantern(p: DecorationPainter) {
                     lineTo(x + 0.045f, 0.532f)
                     close()
                 }
-            sticker(roof, lanternGreen)
+            paper(roof, lanternGreen)
             drawLine(lanternGreen, Offset(x, 0.53f), Offset(x, 0.585f), 0.004f)
             if (moving) {
                 // a moth circles the light
@@ -766,8 +766,7 @@ private fun DrawScope.lantern(p: DecorationPainter) {
                     listOf(-1f, 1f).forEach { side ->
                         val wing =
                             ellipsePath(Offset(moth.x + side * 0.008f, moth.y), 0.008f, 0.006f)
-                        drawPath(wing, mothWing)
-                        drawPath(wing, outline, style = Stroke(width = 0.002f))
+                        paper(wing, mothWing, depth = 0.3f)
                     }
                 }
             }
