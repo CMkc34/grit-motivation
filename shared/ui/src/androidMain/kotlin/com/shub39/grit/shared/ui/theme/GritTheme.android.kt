@@ -54,7 +54,9 @@ actual fun GritTheme(theme: Theme, content: @Composable (() -> Unit)) {
                 if (isDark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
             }
 
-            else -> dynamicColorScheme
+            theme.isAmoled -> dynamicColorScheme
+            // warm paper instead of the seed colour's neutral surfaces (#128)
+            else -> paperColorScheme(dynamicColorScheme, isDark)
         }
 
     MaterialExpressiveTheme(

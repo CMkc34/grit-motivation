@@ -75,6 +75,7 @@ import com.shub39.grit.core.toFormattedString
 import com.shub39.grit.shared.ui.habit.style.color
 import com.shub39.grit.shared.ui.habit.style.contentColor
 import com.shub39.grit.shared.ui.theme.GritTheme
+import com.shub39.grit.shared.ui.theme.paperShadow
 import grit.shared.ui.generated.resources.Res
 import grit.shared.ui.generated.resources.analytics
 import grit.shared.ui.generated.resources.check
@@ -149,9 +150,10 @@ fun RoutineCard(
         },
         shape = shape,
         modifier =
-            modifier.animateContentSize(
-                animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
-            ),
+            modifier
+                // a card that can be ticked lies on the page like a sheet of paper (#128)
+                .then(if (cardBackground.alpha > 0.99f) Modifier.paperShadow(shape) else Modifier)
+                .animateContentSize(animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()),
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
