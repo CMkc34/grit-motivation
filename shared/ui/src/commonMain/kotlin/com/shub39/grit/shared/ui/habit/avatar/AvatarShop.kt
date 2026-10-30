@@ -29,11 +29,18 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -51,6 +58,7 @@ import com.shub39.grit.core.avatar.PurchaseCheck
 import com.shub39.grit.core.avatar.ShopCatalog
 import com.shub39.grit.core.avatar.ShopItem
 import com.shub39.grit.core.avatar.ShopItemKind
+import com.shub39.grit.core.avatar.preview
 import com.shub39.grit.shared.ui.GritPreviewWrapper
 import com.shub39.grit.shared.ui.components.GritDialog
 import com.shub39.grit.shared.ui.habit.ui.component.WaterText
@@ -63,6 +71,7 @@ import grit.shared.ui.generated.resources.shop_buy
 import grit.shared.ui.generated.resources.shop_buy_for
 import grit.shared.ui.generated.resources.shop_choose
 import grit.shared.ui.generated.resources.shop_chosen
+import grit.shared.ui.generated.resources.shop_close
 import grit.shared.ui.generated.resources.shop_confirm_text
 import grit.shared.ui.generated.resources.shop_confirm_title
 import grit.shared.ui.generated.resources.shop_decorations
@@ -92,13 +101,21 @@ import grit.shared.ui.generated.resources.shop_item_pot_terracotta
 import grit.shared.ui.generated.resources.shop_item_pot_yellow
 import grit.shared.ui.generated.resources.shop_low_energy
 import grit.shared.ui.generated.resources.shop_pot_colors
+import grit.shared.ui.generated.resources.shop_preview
+import grit.shared.ui.generated.resources.shop_preview_missing
+import grit.shared.ui.generated.resources.shop_preview_stage
+import grit.shared.ui.generated.resources.shop_preview_title
+import grit.shared.ui.generated.resources.shop_preview_with
+import grit.shared.ui.generated.resources.shop_preview_without
 import grit.shared.ui.generated.resources.shop_put_away
 import grit.shared.ui.generated.resources.shop_put_on
 import grit.shared.ui.generated.resources.shop_set_up
 import grit.shared.ui.generated.resources.shop_take_off
 import grit.shared.ui.generated.resources.shop_title
+import grit.shared.ui.generated.resources.visibility
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 private fun ShopItem.nameRes(): StringResource? =
@@ -155,8 +172,9 @@ private fun ShopItem.emoji(): String =
     }
 
 /**
- * Pot colors, accessories and meadow decorations bought with energy. [onBuyClick] opens the
- * confirmation, [onWear] puts an owned item on or takes it off.
+ * Pot colors, accessories and meadow decorations bought with energy. [onBuyClick] opens the buy
+ * dialog with its preview (also from the eye button of items that cannot be bought yet), [onWear]
+ * puts an owned item on or takes it off.
  */
 @Composable
 fun AvatarShop(
@@ -232,6 +250,15 @@ private fun ShopRow(
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.weight(1f),
         )
+        if (check != PurchaseCheck.ALREADY_OWNED) {
+            IconButton(onClick = onBuyClick) {
+                Icon(
+                    painter = painterResource(Res.drawable.visibility),
+                    contentDescription = stringResource(Res.string.shop_preview),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
 
         when (check) {
             PurchaseCheck.ALREADY_OWNED ->
@@ -296,8 +323,9 @@ private fun ItemIcon(item: ShopItem) {
 }
 
 /**
- * Confirms a purchase and shows the plant with [item] on. Warns when less than one freeze worth of
- * energy would be left.
+ * Shows the meadow without and with [item] before buying it. Items that cannot be bought yet are
+ * previewed too: a locked item on the plant grown to its stage, with a hint why buying is not
+ * possible. Warns when less than one freeze worth of energy would be left.
  */
 @Composable
 fun BuyItemDialog(
@@ -306,51 +334,86 @@ fun BuyItemDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
+    val preview = avatar.preview(item)
     val balanceAfter = avatar.energy - item.price
-    val preview = avatar.tryOn(item)
+    var showWith by remember(item) { mutableStateOf(true) }
+    val shown = if (showWith) preview.with else preview.without
 
     GritDialog(onDismissRequest = onDismiss) {
-        if (item.kind == ShopItemKind.DECORATION) {
-            // a decoration is shown where it will stand on the meadow
-            MeadowScene(
-                stage = avatar.plant.stage,
-                mood = avatar.plant.mood,
-                potColor = preview.potColor,
-                accessories = preview.accessories,
-                decorations = preview.decorations,
-                weather = avatar.plant.weather,
-                modifier = Modifier.fillMaxWidth(),
+        MeadowScene(
+            stage = preview.stage,
+            mood = avatar.plant.mood,
+            potColor = shown.potColor,
+            accessories = shown.accessories,
+            decorations = shown.decorations,
+            weather = avatar.plant.weather,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FilterChip(
+                selected = !showWith,
+                onClick = { showWith = false },
+                label = { Text(stringResource(Res.string.shop_preview_without)) },
             )
-        } else {
-            PlantAvatar(
-                stage = avatar.plant.stage,
-                mood = avatar.plant.mood,
-                potColor = preview.potColor,
-                accessories = preview.accessories,
-                modifier = Modifier.widthIn(max = 180.dp).fillMaxWidth(),
+            FilterChip(
+                selected = showWith,
+                onClick = { showWith = true },
+                label = { Text(stringResource(Res.string.shop_preview_with)) },
             )
         }
         Text(
-            text = stringResource(Res.string.shop_confirm_title, itemName(item)),
+            text =
+                if (preview.canBuy) stringResource(Res.string.shop_confirm_title, itemName(item))
+                else stringResource(Res.string.shop_preview_title, itemName(item)),
             style = MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Center,
         )
-        WaterText(
-            text = stringResource(Res.string.shop_confirm_text, item.price, balanceAfter),
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center,
-        )
-        if (balanceAfter < ActivityPlanner.FREEZE_COST) {
-            WaterText(
-                text = stringResource(Res.string.shop_low_energy, ActivityPlanner.FREEZE_COST),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.error,
-                textAlign = TextAlign.Center,
-            )
+        when (preview.check) {
+            PurchaseCheck.OK -> {
+                WaterText(
+                    text = stringResource(Res.string.shop_confirm_text, item.price, balanceAfter),
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center,
+                )
+                if (balanceAfter < ActivityPlanner.FREEZE_COST) {
+                    WaterText(
+                        text =
+                            stringResource(Res.string.shop_low_energy, ActivityPlanner.FREEZE_COST),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
+            PurchaseCheck.STAGE_TOO_LOW ->
+                Text(
+                    text =
+                        "🔒 " +
+                            stringResource(
+                                Res.string.shop_preview_stage,
+                                preview.stage.number,
+                                avatar.plant.stage.number,
+                            ),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                )
+            PurchaseCheck.NOT_ENOUGH_ENERGY ->
+                WaterText(
+                    text = stringResource(Res.string.shop_preview_missing, preview.missingEnergy),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                )
+            PurchaseCheck.ALREADY_OWNED -> Unit
         }
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-            TextButton(onClick = onDismiss) { Text(stringResource(Res.string.avatar_cancel)) }
-            TextButton(onClick = onConfirm) { Text(stringResource(Res.string.shop_buy)) }
+            if (preview.canBuy) {
+                TextButton(onClick = onDismiss) { Text(stringResource(Res.string.avatar_cancel)) }
+                TextButton(onClick = onConfirm) { Text(stringResource(Res.string.shop_buy)) }
+            } else {
+                TextButton(onClick = onDismiss) { Text(stringResource(Res.string.shop_close)) }
+            }
         }
     }
 }
@@ -385,6 +448,18 @@ private fun BuyItemDialogPreview() {
     BuyItemDialog(
         avatar = previewAvatar,
         item = ShopCatalog.byId("acc_blossoms")!!,
+        onConfirm = {},
+        onDismiss = {},
+    )
+}
+
+@PreviewWrapper(GritPreviewWrapper::class)
+@Preview
+@Composable
+private fun LockedItemPreviewDialogPreview() {
+    BuyItemDialog(
+        avatar = previewAvatar,
+        item = ShopCatalog.byId("deco_pond")!!,
         onConfirm = {},
         onDismiss = {},
     )

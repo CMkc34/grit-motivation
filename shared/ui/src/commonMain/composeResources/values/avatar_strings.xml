@@ -79,6 +79,13 @@
     <string name="shop_item_deco_bench">Park bench</string>
     <string name="shop_item_deco_pond">Pond</string>
     <string name="shop_item_deco_lantern">Lantern</string>
+    <string name="shop_preview">Preview</string>
+    <string name="shop_preview_title">Preview: %1$s</string>
+    <string name="shop_preview_without">Without</string>
+    <string name="shop_preview_with">With</string>
+    <string name="shop_preview_stage">This is how it looks from stage %1$d. Your plant is at stage %2$d.</string>
+    <string name="shop_preview_missing">You still need %1$d 💧.</string>
+    <string name="shop_close">Close</string>
 
     <!-- Avatar tab (Phase 5) -->
     <string name="avatar_tab">Avatar</string>

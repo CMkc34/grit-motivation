@@ -79,6 +79,13 @@
     <string name="shop_item_deco_bench">Parkbank</string>
     <string name="shop_item_deco_pond">Teich</string>
     <string name="shop_item_deco_lantern">Laterne</string>
+    <string name="shop_preview">Vorschau</string>
+    <string name="shop_preview_title">Vorschau: %1$s</string>
+    <string name="shop_preview_without">Ohne</string>
+    <string name="shop_preview_with">Mit</string>
+    <string name="shop_preview_stage">So sieht es ab Stufe %1$d aus. Deine Pflanze ist auf Stufe %2$d.</string>
+    <string name="shop_preview_missing">Dir fehlen noch %1$d 💧.</string>
+    <string name="shop_close">Schließen</string>
 
     <!-- Reiter Avatar (Phase 5) -->
     <string name="avatar_tab">Avatar</string>
