@@ -58,6 +58,7 @@ import com.shub39.grit.core.avatar.ShopItemKind
 import com.shub39.grit.core.avatar.Weather
 import com.shub39.grit.shared.ui.GritPreviewWrapper
 import kotlin.math.PI
+import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.max
@@ -85,6 +86,8 @@ private val cloudShade = Color(0xFF9DB5C4)
 private val cloudGray = Color(0xFF8E979C)
 private val sunYellow = Color(0xFFFFD45C)
 private val sunRay = Color(0xFFFFB938)
+private val fishOrange = Color(0xFFFF9F43)
+private val mothWing = Color(0xFFE8DCC8)
 
 /**
  * The plant in the middle of a wide meadow under a light blue sky, together with the decorations
@@ -128,7 +131,15 @@ fun MeadowScene(
                 // the plant grows from its foot on the hill
                 scale(scale = plantScale, pivot = Offset(1f, PLANT_FOOT_Y)) {
                     translate(left = 0.5f) {
-                        drawPlantAvatar(stage, mood, potColor, accessories, sway)
+                        drawPlantAvatar(
+                            stage,
+                            mood,
+                            potColor,
+                            accessories,
+                            sway,
+                            time,
+                            moving = animate,
+                        )
                     }
                 }
                 shown.filter { it.inFront }.forEach { it.draw(this, painter) }
@@ -139,7 +150,7 @@ fun MeadowScene(
 
 /** Seconds from 0 to [LOOP_SECONDS], then again. */
 @Composable
-private fun rememberMeadowTime(): Float {
+internal fun rememberMeadowTime(): Float {
     val transition = rememberInfiniteTransition(label = "meadow")
     val time by
         transition.animateFloat(
@@ -195,7 +206,38 @@ private class DecorationPainter(val tired: Boolean, val time: Float, val moving:
     }
 
     /** -1..1 with one full wave every [period] seconds; [period] divides [LOOP_SECONDS]. */
-    fun wave(period: Float): Float = if (moving) sin(2 * PI.toFloat() * time / period) else 0f
+    fun wave(period: Float, phase: Float = 0f): Float =
+        if (moving) sin(2 * PI.toFloat() * time / period + phase) else 0f
+
+    /** Every 7.5 seconds a fish leaps out of the pond in an arc and dives back in. */
+    fun DrawScope.jumpingFish() {
+        if (!moving) return
+        val k = (time % 7.5f) - 4f
+        if (k < 0f || k > 1.1f) return
+        val q = k / 1.1f
+        val at = Offset(0.24f + 0.12f * q, 0.94f - 0.09f * sin(PI.toFloat() * q))
+        rotate(degrees = -60f + 120f * q, pivot = at) {
+            val fish =
+                Path().apply {
+                    addOval(Rect(at.x - 0.022f, at.y - 0.011f, at.x + 0.022f, at.y + 0.011f))
+                    moveTo(at.x - 0.018f, at.y)
+                    lineTo(at.x - 0.036f, at.y - 0.012f)
+                    lineTo(at.x - 0.036f, at.y + 0.012f)
+                    close()
+                }
+            sticker(fish, fishOrange)
+            drawCircle(outline, radius = 0.003f, center = Offset(at.x + 0.01f, at.y - 0.003f))
+        }
+        // a splash where it dives back in
+        if (q > 0.85f) {
+            drawOval(
+                Color.White.copy(alpha = 0.8f),
+                topLeft = Offset(0.34f, 0.934f),
+                size = Size(0.04f, 0.012f),
+                style = Stroke(width = 0.004f),
+            )
+        }
+    }
 
     // sticker look like the plant: a dark outline under every shape
     fun DrawScope.sticker(path: Path, color: Color) {
@@ -419,28 +461,38 @@ private fun DrawScope.fence(p: DecorationPainter) {
 
 private fun DrawScope.mushrooms(p: DecorationPainter) {
     with(p) {
-        listOf(Triple(0.585f, 0.972f, 0.03f), Triple(0.64f, 0.982f, 0.022f)).forEach { (x, y, s) ->
-            sticker(
-                roundRectPath(x - s * 0.35f, y - s * 1.1f, s * 0.7f, s * 1.15f, s * 0.25f),
-                Color(0xFFF3E3C3),
-            )
-            val cap =
-                Path().apply {
-                    moveTo(x - s, y - s * 0.95f)
-                    quadraticTo(x - s, y - s * 2.1f, x, y - s * 2.1f)
-                    quadraticTo(x + s, y - s * 2.1f, x + s, y - s * 0.95f)
-                    quadraticTo(x, y - s * 1.15f, x - s, y - s * 0.95f)
-                    close()
-                }
-            sticker(cap, Color(0xFFE5533D).mood())
-            listOf(
-                    Triple(-0.45f, -1.35f, 0.17f),
-                    Triple(0.2f, -1.7f, 0.14f),
-                    Triple(0.5f, -1.2f, 0.12f),
+        listOf(Triple(0.585f, 0.972f, 0.03f), Triple(0.64f, 0.982f, 0.022f)).forEachIndexed {
+            i,
+            (x, y, s) ->
+            // they bob as if they were breathing
+            val bob = wave(2.5f, phase = i * 1.7f)
+            scale(scaleX = 1f - 0.04f * bob, scaleY = 1f + 0.06f * bob, pivot = Offset(x, y)) {
+                sticker(
+                    roundRectPath(x - s * 0.35f, y - s * 1.1f, s * 0.7f, s * 1.15f, s * 0.25f),
+                    Color(0xFFF3E3C3),
                 )
-                .forEach { (dx, dy, r) ->
-                    drawCircle(Color.White, radius = r * s, center = Offset(x + dx * s, y + dy * s))
-                }
+                val cap =
+                    Path().apply {
+                        moveTo(x - s, y - s * 0.95f)
+                        quadraticTo(x - s, y - s * 2.1f, x, y - s * 2.1f)
+                        quadraticTo(x + s, y - s * 2.1f, x + s, y - s * 0.95f)
+                        quadraticTo(x, y - s * 1.15f, x - s, y - s * 0.95f)
+                        close()
+                    }
+                sticker(cap, Color(0xFFE5533D).mood())
+                listOf(
+                        Triple(-0.45f, -1.35f, 0.17f),
+                        Triple(0.2f, -1.7f, 0.14f),
+                        Triple(0.5f, -1.2f, 0.12f),
+                    )
+                    .forEach { (dx, dy, r) ->
+                        drawCircle(
+                            Color.White,
+                            radius = r * s,
+                            center = Offset(x + dx * s, y + dy * s),
+                        )
+                    }
+            }
         }
     }
 }
@@ -454,9 +506,11 @@ private fun DrawScope.snail(p: DecorationPainter) {
         val heading = if (moving && cos(2 * PI.toFloat() * time / 20f) < 0f) -1f else 1f
         translate(left = x, top = 0.955f) {
             scale(scaleX = heading, scaleY = 1f, pivot = Offset.Zero) {
+                // the feelers wiggle while it crawls
+                val wiggle = 0.006f * wave(1.25f)
                 listOf(
-                        Offset(0.038f, -0.04f) to Offset(0.03f, -0.068f),
-                        Offset(0.047f, -0.038f) to Offset(0.055f, -0.064f),
+                        Offset(0.038f, -0.04f) to Offset(0.03f + wiggle, -0.068f),
+                        Offset(0.047f, -0.038f) to Offset(0.055f - wiggle, -0.064f),
                     )
                     .forEach { (from, to) ->
                         stalk(from, to, 0.004f, skin)
@@ -491,9 +545,11 @@ private fun DrawScope.snail(p: DecorationPainter) {
 
 private fun DrawScope.hedgehog(p: DecorationPainter) {
     with(p) {
-        val x = 0.47f
+        // it trots a little back and forth and sniffs
+        val x = 0.47f + 0.015f * wave(15f)
         val y = groundY(x) - 0.001f
         val sniff = 0.006f * pulse(every = 2.6f, length = 0.5f)
+        val step = 0.003f * wave(0.5f)
         val spikes =
             Path().apply {
                 moveTo(x - 0.055f, y)
@@ -516,8 +572,8 @@ private fun DrawScope.hedgehog(p: DecorationPainter) {
         sticker(face, skin)
         drawCircle(outline, radius = 0.007f, center = Offset(x + 0.077f + sniff, y - 0.009f))
         eye(Offset(x + 0.045f, y - 0.018f), 0.0055f)
-        listOf(-0.03f, 0f).forEach {
-            sticker(roundRectPath(x + it, y - 0.006f, 0.012f, 0.012f, 0.005f), skin)
+        listOf(-0.03f to step, 0f to -step).forEach { (dx, lift) ->
+            sticker(roundRectPath(x + dx, y - 0.006f - abs(lift), 0.012f, 0.012f, 0.005f), skin)
         }
     }
 }
@@ -525,9 +581,10 @@ private fun DrawScope.hedgehog(p: DecorationPainter) {
 private fun DrawScope.rabbit(p: DecorationPainter) {
     with(p) {
         val fur = Color(0xFFF4EFE7).mood()
-        val hop = 0.03f * pulse(every = 5f, length = 0.45f)
+        // a high hop in a small arc that lands where it started
+        val hop = 0.055f * pulse(every = 5f, length = 0.6f)
         val twitch = 14f * pulse(every = 3f, length = 0.3f, offset = 1.2f)
-        val x = 1.76f
+        val x = 1.76f - 0.25f * hop
         val y = groundY(x) - 0.001f - hop
         if (!tired) {
             drawOval(
@@ -616,10 +673,13 @@ private fun DrawScope.bench(p: DecorationPainter) {
 private fun DrawScope.pond(p: DecorationPainter) {
     with(p) {
         // reeds behind the water
-        listOf(Triple(0.14f, 0.93f, 0.11f), Triple(0.165f, 0.935f, 0.085f)).forEach { (x, y, h) ->
-            stalk(Offset(x, y), Offset(x + 0.004f, y - h), 0.006f, Color(0xFF3FA34D).mood())
+        listOf(Triple(0.14f, 0.93f, 0.11f), Triple(0.165f, 0.935f, 0.085f)).forEachIndexed {
+            i,
+            (x, y, h) ->
+            val sway = 0.008f * wave(4f, phase = i.toFloat())
+            stalk(Offset(x, y), Offset(x + 0.004f + sway, y - h), 0.006f, Color(0xFF3FA34D).mood())
             sticker(
-                roundRectPath(x - 0.006f, y - h - 0.005f, 0.016f, 0.04f, 0.008f),
+                roundRectPath(x - 0.006f + sway, y - h - 0.005f, 0.016f, 0.04f, 0.008f),
                 Color(0xFF8A5A3B).mood(),
             )
         }
@@ -635,6 +695,7 @@ private fun DrawScope.pond(p: DecorationPainter) {
                 style = Stroke(width = 0.004f),
             )
         }
+        jumpingFish()
         val pad =
             Path().apply {
                 moveTo(0.22f, 0.95f)
@@ -696,6 +757,20 @@ private fun DrawScope.lantern(p: DecorationPainter) {
                 }
             sticker(roof, lanternGreen)
             drawLine(lanternGreen, Offset(x, 0.53f), Offset(x, 0.585f), 0.004f)
+            if (moving) {
+                // a moth circles the light
+                val a = 2 * PI.toFloat() * time / 2.5f
+                val moth = Offset(x - 0.02f + 0.045f * cos(a), 0.555f + 0.03f * sin(a * 2f))
+                val beat = 0.4f + 0.6f * abs(sin(time * 22f))
+                scale(scaleX = beat, scaleY = 1f, pivot = moth) {
+                    listOf(-1f, 1f).forEach { side ->
+                        val wing =
+                            ellipsePath(Offset(moth.x + side * 0.008f, moth.y), 0.008f, 0.006f)
+                        drawPath(wing, mothWing)
+                        drawPath(wing, outline, style = Stroke(width = 0.002f))
+                    }
+                }
+            }
         }
     }
 }
