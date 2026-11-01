@@ -62,6 +62,9 @@
         <item quantity="other">+1 💧 · %1$d Tage aktiv</item>
     </plurals>
 
-    <!-- Motivations-Pop-up, Eintrag der den Tagesbonus bringt: %1$d = Bonus-Energie, %2$d = nötige Routinen -->
-    <string name="energy_popup_bonus">+%1$d 💧 Bonus für %2$d Routinen heute</string>
+    <!-- Bonus-Pop-up nach dem Eintrag, der den Tagesbonus bringt: reason: %1$d = nötige Routinen; balance: %1$d = Wasser jetzt -->
+    <string name="bonus_popup_header">Tagesbonus</string>
+    <string name="bonus_popup_reason">%1$d Routinen an einem Tag!</string>
+    <string name="bonus_popup_text">Extra-Wasser für deine Pflanze.</string>
+    <string name="bonus_popup_balance">Du hast jetzt 💧 %1$d</string>
 </resources>

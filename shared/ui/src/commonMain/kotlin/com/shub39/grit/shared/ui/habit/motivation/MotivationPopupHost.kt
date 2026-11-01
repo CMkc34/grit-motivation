@@ -39,7 +39,6 @@ fun MotivationPopupHost() {
             activeDays = it.activeDays,
             quote = it.quote,
             activityStreak = it.activityStreak,
-            bonusEarned = it.bonusEarned,
             avatar = it.avatar,
             onDismiss = { viewModel.onAction(HabitsAction.DismissMotivationPopup) },
         )

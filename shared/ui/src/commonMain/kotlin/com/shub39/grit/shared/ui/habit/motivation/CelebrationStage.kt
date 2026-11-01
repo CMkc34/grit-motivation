@@ -92,6 +92,15 @@ val FreezeStageColors =
         rays = Color(0x29E3F4FF),
     )
 
+/** Gold stage for the daily bonus, behind the blue water coin. */
+val BonusStageColors =
+    StageColors(
+        center = Color(0xFFF2B33D),
+        middle = Color(0xFFB8680F),
+        edge = Color(0xFF6E3A06),
+        rays = Color(0x33FFF6D6),
+    )
+
 /** Yellow of the energy pill and the header, the same as the plant's flowers. */
 val StageYellow = Color(0xFFFFD45C)
 

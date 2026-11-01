@@ -210,6 +210,7 @@ Belohnt wird die **Nutzung der App**, nicht die Serie einzelner Routinen.
 - **+1 ⚡** pro aktivem Tag, **keine Obergrenze** (Energie wird in Phase 4 für den Avatar ausgegeben).
 - **Anzeige als Wasser (#112):** In der App heißt die Energie „Wasser“ mit Symbol 💧 (passend zum Baum). Code, Schlüssel und Backup-Format behalten den Namen *energy*; ⚡ in dieser SPEC meint 💧.
 - **Tagesbonus (#111):** +1 ⚡ zusätzlich an einem aktiven Tag, an dem mindestens 2 verschiedene Routinen für dieses Datum erledigt sind (messbare ab Zielwert). Höchstens 1 Bonus pro Tag. Wird wie die Tagesenergie aus den Einträgen berechnet (`DailyBonus`, `BonusDaySource`): Haken zurücknehmen nimmt den Bonus zurück, Backups bringen ihn mit.
+- **Bonus-Popup (#136):** Das Abhaken, das den Tagesbonus auslöst, zeigt nach dem Motivations-Popup ein eigenes goldenes Vollbild-Popup (`BonusPopup`, `BonusPopupHost`) mit Wassermünze, „+1“ und neuem Wasserstand. Gleiche Regeln wie das Motivations-Popup: nur heute/gestern, aus mit dem Popup-Schalter.
 - **Freeze = 7 ⚡**, überbrückt einen verpassten Tag der Aktiv-Serie, **max. 2 Tage am Stück**.
 - Freezes werden **automatisch** eingesetzt, sobald genug Energie da ist (Abschalten: Backlog #30).
 - Heute noch kein Eintrag → die Serie gilt bis Tagesende als nicht gerissen.

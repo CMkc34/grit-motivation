@@ -360,4 +360,51 @@ class HabitViewModelMotivationTest {
 
             assertEquals(1, assertNotNull(viewModel.state.value.motivationPopup).activityStreak)
         }
+
+    @Test
+    fun `second routine of the day shows the bonus popup with the water`() =
+        runTest(dispatcher) {
+            val viewModel = viewModel()
+            repo.currentStreaks[meditate.id] = 5
+            repo.currentStreaks[water.id] = 5
+            viewModel.onAction(HabitsAction.InsertStatus(meditate, today))
+            assertNull(viewModel.bonusPopup.value)
+            viewModel.onAction(HabitsAction.DismissMotivationPopup)
+
+            viewModel.onAction(HabitsAction.InsertMeasuredStatus(water, today, 8.0))
+
+            assertNotNull(viewModel.state.value.motivationPopup)
+            val bonus = assertNotNull(viewModel.bonusPopup.value)
+            assertEquals(activityRepo.report.value.energy, bonus.energy)
+
+            viewModel.onAction(HabitsAction.DismissBonusPopup)
+            assertNull(viewModel.bonusPopup.value)
+        }
+
+    @Test
+    fun `measured routine below its target earns no bonus popup`() =
+        runTest(dispatcher) {
+            val viewModel = viewModel()
+            repo.currentStreaks[meditate.id] = 5
+            repo.currentStreaks[water.id] = 5
+            viewModel.onAction(HabitsAction.InsertStatus(meditate, today))
+
+            viewModel.onAction(HabitsAction.InsertMeasuredStatus(water, today, 3.0))
+
+            assertNull(viewModel.bonusPopup.value)
+        }
+
+    @Test
+    fun `bonus popup stays hidden while popups are turned off`() =
+        runTest(dispatcher) {
+            val viewModel = viewModel()
+            repo.currentStreaks[meditate.id] = 5
+            repo.currentStreaks[water.id] = 5
+            motivationSettings.setPopupEnabled(false)
+            viewModel.onAction(HabitsAction.InsertStatus(meditate, today))
+
+            viewModel.onAction(HabitsAction.InsertMeasuredStatus(water, today, 8.0))
+
+            assertNull(viewModel.bonusPopup.value)
+        }
 }
