@@ -151,6 +151,21 @@ class FakeMotivationSettings : MotivationSettings {
     override suspend fun setPopupEnabled(enabled: Boolean) {
         popupEnabled.value = enabled
     }
+
+    val greetingEnabled = MutableStateFlow(true)
+    val lastGreetingDay = MutableStateFlow<LocalDate?>(null)
+
+    override fun getGreetingEnabled(): Flow<Boolean> = greetingEnabled
+
+    override suspend fun setGreetingEnabled(enabled: Boolean) {
+        greetingEnabled.value = enabled
+    }
+
+    override fun getLastGreetingDay(): Flow<LocalDate?> = lastGreetingDay
+
+    override suspend fun setLastGreetingDay(day: LocalDate) {
+        lastGreetingDay.value = day
+    }
 }
 
 /** [ActivityRepo] whose report and freeze notice tests set directly or via [markActive]. */

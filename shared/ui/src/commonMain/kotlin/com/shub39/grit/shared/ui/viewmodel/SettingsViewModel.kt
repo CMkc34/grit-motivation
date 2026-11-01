@@ -206,6 +206,10 @@ class SettingsViewModel(
                     motivationSettings.setPopupEnabled(action.pref)
                 }
 
+                is SettingsAction.ChangeDailyGreeting -> {
+                    motivationSettings.setGreetingEnabled(action.pref)
+                }
+
                 OnSettingsOpened -> {
                     analytics.trackEvent(AnalyticsEvent.SETTINGS_OPENED, emptyMap())
                 }
@@ -305,6 +309,11 @@ class SettingsViewModel(
                 motivationSettings
                     .getPopupEnabled()
                     .onEach { flow -> _state.update { it.copy(motivationPopup = flow) } }
+                    .launchIn(this)
+
+                motivationSettings
+                    .getGreetingEnabled()
+                    .onEach { flow -> _state.update { it.copy(dailyGreeting = flow) } }
                     .launchIn(this)
             }
         }

@@ -67,6 +67,12 @@ sealed interface HabitsAction {
     /** close the popup shown after a habit check-in */
     data object DismissMotivationPopup : HabitsAction
 
+    /** show the plant's greeting if it was not shown today yet, sent when the app comes up */
+    data object CheckDailyGreeting : HabitsAction
+
+    /** close the daily greeting; the welcome greeting opens the add sheet afterwards */
+    data object DismissDailyGreeting : HabitsAction
+
     /** close the freeze notice and remember its freezes as seen */
     data object DismissFreezeNotice : HabitsAction
 

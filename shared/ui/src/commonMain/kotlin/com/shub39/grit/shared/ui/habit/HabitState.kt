@@ -24,6 +24,7 @@ import com.shub39.grit.core.habits.HabitWithAnalytics
 import com.shub39.grit.core.habits.OverallAnalytics
 import com.shub39.grit.core.habits.style.RoutineStyle
 import com.shub39.grit.core.stats.ForkStats
+import com.shub39.grit.shared.ui.habit.motivation.DailyGreetingState
 import com.shub39.grit.shared.ui.habit.motivation.MotivationPopupState
 import kotlinx.datetime.DayOfWeek
 
@@ -46,6 +47,7 @@ import kotlinx.datetime.DayOfWeek
  * @property startingDay A user preference for the day of the week the calendar/week view should
  *   start on.
  * @property motivationPopup Popup shown after a habit check-in, `null` when hidden.
+ * @property dailyGreeting Greeting on the first app start of a day, `null` when hidden.
  * @property activity Activity streak and energy across all habits, `null` until loaded.
  * @property avatar The plant avatar on the avatar page, `null` until loaded.
  * @property routineStyles Colour and icon by habit id; habits without an entry use
@@ -61,6 +63,7 @@ data class HabitState(
     val showHabitAddSheet: Boolean = false,
     val editState: Boolean = false,
     val motivationPopup: MotivationPopupState? = null,
+    val dailyGreeting: DailyGreetingState? = null,
     val activity: ActivityReport? = null,
     val stats: ForkStats = ForkStats(),
     val avatar: AvatarState? = null,

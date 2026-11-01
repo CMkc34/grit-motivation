@@ -17,11 +17,25 @@
 package com.shub39.grit.core.motivation
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.LocalDate
 
-/** User preferences for the motivation popup, kept apart from the original settings. */
+/**
+ * User preferences for the motivation popup and the daily greeting, kept apart from the original
+ * settings.
+ */
 interface MotivationSettings {
     /** Whether a check-in shows the motivation popup; on by default. */
     fun getPopupEnabled(): Flow<Boolean>
 
     suspend fun setPopupEnabled(enabled: Boolean)
+
+    /** Whether the plant greets the user on the first app start of a day; on by default. */
+    fun getGreetingEnabled(): Flow<Boolean>
+
+    suspend fun setGreetingEnabled(enabled: Boolean)
+
+    /** Day the [DailyGreeting] was last shown, `null` if never. */
+    fun getLastGreetingDay(): Flow<LocalDate?>
+
+    suspend fun setLastGreetingDay(day: LocalDate)
 }

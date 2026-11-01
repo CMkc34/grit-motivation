@@ -39,6 +39,7 @@ data class SettingsState(
     val isBiometricLockOn: Boolean? = null,
     val isBiometricLockAvailable: Boolean = false,
     val motivationPopup: Boolean = true,
+    val dailyGreeting: Boolean = true,
 )
 
 @Stable
