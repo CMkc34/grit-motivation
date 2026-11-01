@@ -67,6 +67,9 @@ sealed interface HabitsAction {
     /** close the popup shown after a habit check-in */
     data object DismissMotivationPopup : HabitsAction
 
+    /** close the popup for the daily bonus */
+    data object DismissBonusPopup : HabitsAction
+
     /** show the plant's greeting if it was not shown today yet, sent when the app comes up */
     data object CheckDailyGreeting : HabitsAction
 

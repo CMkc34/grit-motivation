@@ -19,6 +19,7 @@ package com.shub39.grit.shared.ui.fakes
 import com.shub39.grit.core.AnalyticsEvent
 import com.shub39.grit.core.activity.ActivityRepo
 import com.shub39.grit.core.activity.ActivityReport
+import com.shub39.grit.core.activity.DailyBonus
 import com.shub39.grit.core.activity.DayStatus
 import com.shub39.grit.core.activity.FreezeNotice
 import com.shub39.grit.core.avatar.AvatarData
@@ -53,7 +54,8 @@ import kotlinx.datetime.LocalDate
 /**
  * In-memory [HabitRepo]. The current streak is not calculated: tests set it per habit in
  * [currentStreaks], so they check how the caller uses the repository's value. Like the real
- * repository, a check-in marks today as active in [activityRepo].
+ * repository, a check-in marks today as active in [activityRepo] and check-ins update its
+ * [DailyBonus] days.
  */
 class FakeHabitRepo(habits: List<Habit>, private val activityRepo: FakeActivityRepo? = null) :
     HabitRepo {
@@ -96,10 +98,18 @@ class FakeHabitRepo(habits: List<Habit>, private val activityRepo: FakeActivityR
     override suspend fun insertHabitStatus(habitStatus: HabitStatus) {
         statuses.update { it + habitStatus }
         activityRepo?.markActive(LocalDate.now())
+        updateBonusDays()
     }
 
     override suspend fun deleteHabitStatus(habitId: Long, date: LocalDate) {
         statuses.update { list -> list.filterNot { it.habitId == habitId && it.date == date } }
+        updateBonusDays()
+    }
+
+    private fun updateBonusDays() {
+        activityRepo?.report?.update {
+            it.copy(bonusDays = DailyBonus.days(habits.value, statuses.value))
+        }
     }
 
     override suspend fun getCompletedHabitsForDate(date: LocalDate): Map<Habit, Double?> =

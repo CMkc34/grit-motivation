@@ -38,6 +38,7 @@ import com.shub39.grit.core.now
 import com.shub39.grit.core.stats.ForkStats
 import com.shub39.grit.shared.ui.habit.HabitState
 import com.shub39.grit.shared.ui.habit.HabitsAction
+import com.shub39.grit.shared.ui.habit.motivation.BonusPopupState
 import com.shub39.grit.shared.ui.habit.motivation.DailyGreetingState
 import com.shub39.grit.shared.ui.habit.motivation.MotivationPopupState
 import kotlinx.coroutines.Job
@@ -113,6 +114,13 @@ class HabitViewModel(
     val motivationPopup: StateFlow<MotivationPopupState?> =
         _state
             .map { it.motivationPopup }
+            .distinctUntilChanged()
+            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    /** Popup for the daily bonus, observed app-wide like [motivationPopup]. */
+    val bonusPopup: StateFlow<BonusPopupState?> =
+        _state
+            .map { it.bonusPopup }
             .distinctUntilChanged()
             .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
@@ -242,6 +250,10 @@ class HabitViewModel(
 
                 HabitsAction.DismissMotivationPopup -> {
                     _state.update { it.copy(motivationPopup = null) }
+                }
+
+                HabitsAction.DismissBonusPopup -> {
+                    _state.update { it.copy(bonusPopup = null) }
                 }
 
                 HabitsAction.CheckDailyGreeting -> checkDailyGreeting()
@@ -404,7 +416,9 @@ class HabitViewModel(
             val firstOfDay = !isTodayActive()
             val hadBonus = hasBonus(date)
             repo.insertHabitStatus(HabitStatus(habitId = habit.id, date = date))
-            showMotivationPopup(habit, date, firstOfDay, bonusEarned = !hadBonus && hasBonus(date))
+            val bonusEarned = !hadBonus && hasBonus(date)
+            showMotivationPopup(habit, date, firstOfDay)
+            if (bonusEarned) showBonusPopup(date)
         }
     }
 
@@ -426,7 +440,8 @@ class HabitViewModel(
         repo.insertHabitStatus(HabitStatus(habitId = habit.id, date = date, value = value))
         val bonusEarned = !hadBonus && hasBonus(date)
         // only the first value of a day is a check-in, corrections stay silent
-        if (!isStatusAdded) showMotivationPopup(habit, date, firstOfDay, bonusEarned)
+        if (!isStatusAdded) showMotivationPopup(habit, date, firstOfDay)
+        if (bonusEarned) showBonusPopup(date)
     }
 
     /** Whether [date] currently earns the daily bonus for two or more routines. */
@@ -442,15 +457,9 @@ class HabitViewModel(
      * Only check-ins for today or yesterday are celebrated; catching up on older days stays silent,
      * as does a check-in that does not extend an active streak (streak 0), and every check-in while
      * the popup is turned off in the settings. The first check-in of the day ([firstOfDay]) also
-     * shows the activity streak that it extended, as it earns the day's energy; [bonusEarned] marks
-     * the check-in that earned the daily bonus.
+     * shows the activity streak that it extended, as it earns the day's energy.
      */
-    private suspend fun showMotivationPopup(
-        habit: Habit,
-        date: LocalDate,
-        firstOfDay: Boolean,
-        bonusEarned: Boolean = false,
-    ) {
+    private suspend fun showMotivationPopup(habit: Habit, date: LocalDate, firstOfDay: Boolean) {
         if (!motivationSettings.getPopupEnabled().first()) return
         if (date < LocalDate.now().minus(1, DateTimeUnit.DAY)) return
         val streak =
@@ -464,16 +473,21 @@ class HabitViewModel(
         _state.update {
             it.copy(
                 motivationPopup =
-                    MotivationPopupState(
-                        habit.title,
-                        streak,
-                        quote,
-                        activityStreak,
-                        avatar,
-                        bonusEarned,
-                    )
+                    MotivationPopupState(habit.title, streak, quote, activityStreak, avatar)
             )
         }
+    }
+
+    /**
+     * Shows the popup for the daily bonus that a check-in for [date] just earned, after the
+     * motivation popup. Like that one it stays silent for older days and while popups are turned
+     * off in the settings.
+     */
+    private suspend fun showBonusPopup(date: LocalDate) {
+        if (!motivationSettings.getPopupEnabled().first()) return
+        if (date < LocalDate.now().minus(1, DateTimeUnit.DAY)) return
+        val energy = avatarRepo.getAvatarState().first().energy
+        _state.update { it.copy(bonusPopup = BonusPopupState(energy)) }
     }
 
     /**
