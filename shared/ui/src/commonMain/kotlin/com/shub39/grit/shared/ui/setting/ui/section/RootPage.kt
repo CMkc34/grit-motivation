@@ -166,6 +166,25 @@ fun RootPage(
 
                         ListItem(
                             headlineContent = {
+                                Text(text = stringResource(Res.string.greeting_setting))
+                            },
+                            supportingContent = {
+                                Text(text = stringResource(Res.string.greeting_setting_desc))
+                            },
+                            trailingContent = {
+                                ExpressiveSwitch(
+                                    checked = state.dailyGreeting,
+                                    onCheckedChange = {
+                                        onAction(SettingsAction.ChangeDailyGreeting(it))
+                                    },
+                                )
+                            },
+                            colors = listItemColors(),
+                            modifier = Modifier.clip(middleItemShape()),
+                        )
+
+                        ListItem(
+                            headlineContent = {
                                 Text(text = stringResource(Res.string.staring_day))
                             },
                             trailingContent = {
