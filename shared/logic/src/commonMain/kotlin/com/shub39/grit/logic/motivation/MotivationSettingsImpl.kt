@@ -20,9 +20,11 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.shub39.grit.core.motivation.MotivationSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.datetime.LocalDate
 import org.koin.core.annotation.Single
 
 @Single(binds = [MotivationSettings::class])
@@ -31,6 +33,8 @@ class MotivationSettingsImpl(private val datastore: DataStore<Preferences>) : Mo
     companion object {
         // a new key, so the popup is on once for everyone who had switched it off before (#109)
         private val popupEnabledKey = booleanPreferencesKey("motivation_popup_on")
+        private val greetingEnabledKey = booleanPreferencesKey("daily_greeting_on")
+        private val lastGreetingKey = stringPreferencesKey("daily_greeting_last_day")
     }
 
     override fun getPopupEnabled(): Flow<Boolean> =
@@ -38,5 +42,21 @@ class MotivationSettingsImpl(private val datastore: DataStore<Preferences>) : Mo
 
     override suspend fun setPopupEnabled(enabled: Boolean) {
         datastore.edit { prefs -> prefs[popupEnabledKey] = enabled }
+    }
+
+    override fun getGreetingEnabled(): Flow<Boolean> =
+        datastore.data.map { prefs -> prefs[greetingEnabledKey] ?: true }
+
+    override suspend fun setGreetingEnabled(enabled: Boolean) {
+        datastore.edit { prefs -> prefs[greetingEnabledKey] = enabled }
+    }
+
+    override fun getLastGreetingDay(): Flow<LocalDate?> =
+        datastore.data.map { prefs ->
+            prefs[lastGreetingKey]?.let { runCatching { LocalDate.parse(it) }.getOrNull() }
+        }
+
+    override suspend fun setLastGreetingDay(day: LocalDate) {
+        datastore.edit { prefs -> prefs[lastGreetingKey] = day.toString() }
     }
 }

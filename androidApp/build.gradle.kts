@@ -136,6 +136,14 @@ android {
     }
 }
 
+// Fork: the foss release (APK for friends) gets its own package, so it never collides with the
+// original Grit app and can be installed next to it and next to the debug build.
+androidComponents {
+    onVariants(selector().withFlavor("version" to "foss").withBuildType("release")) { variant ->
+        variant.applicationId.set("com.shub39.grit.sprout")
+    }
+}
+
 kotlin {
     compilerOptions {
         freeCompilerArgs.add("-Xcontext-sensitive-resolution")

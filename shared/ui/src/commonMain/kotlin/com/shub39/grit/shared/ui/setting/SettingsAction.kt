@@ -51,6 +51,9 @@ sealed interface SettingsAction {
 
     data class ChangeMotivationPopup(val pref: Boolean) : SettingsAction
 
+    /** fork: switch the plant's daily greeting on or off */
+    data class ChangeDailyGreeting(val pref: Boolean) : SettingsAction
+
     data object OnSettingsOpened : SettingsAction
 
     data object OnAboutViewed : SettingsAction

@@ -46,3 +46,33 @@ jobs:
           name: grit-foss-debug
           path: androidApp/build/outputs/apk/foss/debug/*.apk
           retention-days: 14
+
+      - name: Build FOSS release APK (unsigned, R8)
+        run: ./gradlew :androidApp:assembleFossRelease
+
+      - name: Privacy check (no internet, no personal data, no cloud backup)
+        run: |
+          APK=$(find androidApp/build/outputs/apk/foss/release -name "*.apk" -print -quit)
+          AAPT2=$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)aapt2
+          echo "APK: $APK"
+          echo "--- Permissions in the final APK ---"
+          "$AAPT2" dump permissions "$APK" | tee permissions.txt
+          FORBIDDEN='INTERNET|CONTACTS|LOCATION|STORAGE|MEDIA_|CAMERA|RECORD_AUDIO|PHONE|CALL_LOG|SMS|CALENDAR|ACCOUNTS|BODY_SENSORS|ACTIVITY_RECOGNITION|QUERY_ALL_PACKAGES|NEARBY_WIFI|BLUETOOTH'
+          if grep -E "uses-permission.*($FORBIDDEN)" permissions.txt; then
+            echo "::error::Forbidden permission found in the release APK"
+            exit 1
+          fi
+          "$AAPT2" dump xmltree --file AndroidManifest.xml "$APK" > manifest.txt
+          grep -E "package=|allowBackup" manifest.txt
+          if ! grep -qE "allowBackup.*=(false|0x0)" manifest.txt; then
+            echo "::error::Cloud backup (allowBackup) is enabled"
+            exit 1
+          fi
+          echo "Privacy check passed"
+
+      - name: Upload release APK (unsigned)
+        uses: actions/upload-artifact@v4
+        with:
+          name: sprout-foss-release-unsigned
+          path: androidApp/build/outputs/apk/foss/release/*.apk
+          retention-days: 14

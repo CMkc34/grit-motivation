@@ -37,6 +37,7 @@ import com.shub39.grit.shared.ui.habit.HabitsAction
 import com.shub39.grit.shared.ui.habit.activity.FreezeNoticeHost
 import com.shub39.grit.shared.ui.habit.avatar.AvatarPage
 import com.shub39.grit.shared.ui.habit.motivation.BonusPopupHost
+import com.shub39.grit.shared.ui.habit.motivation.DailyGreetingHost
 import com.shub39.grit.shared.ui.habit.motivation.MotivationPopupHost
 import com.shub39.grit.shared.ui.habit.ui.sections.AnalyticsPage
 import com.shub39.grit.shared.ui.habit.ui.sections.Calendar
@@ -125,6 +126,7 @@ fun GritNavDisplay(
             MotivationPopupHost()
             BonusPopupHost()
             FreezeNoticeHost()
+            DailyGreetingHost()
         }
     }
 }

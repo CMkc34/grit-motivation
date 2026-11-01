@@ -30,6 +30,8 @@ import com.shub39.grit.core.habits.style.RoutineStyleStore
 import com.shub39.grit.core.interfaces.AlarmScheduler
 import com.shub39.grit.core.interfaces.AnalyticsWrapper
 import com.shub39.grit.core.interfaces.SettingsDatastore
+import com.shub39.grit.core.motivation.DailyGreeting
+import com.shub39.grit.core.motivation.GreetingKind
 import com.shub39.grit.core.motivation.GritQuoteEngine
 import com.shub39.grit.core.motivation.MotivationSettings
 import com.shub39.grit.core.now
@@ -37,6 +39,7 @@ import com.shub39.grit.core.stats.ForkStats
 import com.shub39.grit.shared.ui.habit.HabitState
 import com.shub39.grit.shared.ui.habit.HabitsAction
 import com.shub39.grit.shared.ui.habit.motivation.BonusPopupState
+import com.shub39.grit.shared.ui.habit.motivation.DailyGreetingState
 import com.shub39.grit.shared.ui.habit.motivation.MotivationPopupState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -55,6 +58,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.minus
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
@@ -81,6 +85,9 @@ class HabitViewModel(
 
     // id of the last motivation quote, so the next popup shows a different one
     private var lastQuoteId: String? = null
+
+    // set while the daily greeting is being prepared, so two quick resumes show it once
+    private var checkingGreeting = false
 
     private val _state = MutableStateFlow(HabitState())
 
@@ -114,6 +121,13 @@ class HabitViewModel(
     val bonusPopup: StateFlow<BonusPopupState?> =
         _state
             .map { it.bonusPopup }
+            .distinctUntilChanged()
+            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    /** Greeting on the first app start of a day, observed by the app-wide greeting host. */
+    val dailyGreeting: StateFlow<DailyGreetingState?> =
+        _state
+            .map { it.dailyGreeting }
             .distinctUntilChanged()
             .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
@@ -240,6 +254,18 @@ class HabitViewModel(
 
                 HabitsAction.DismissBonusPopup -> {
                     _state.update { it.copy(bonusPopup = null) }
+                }
+
+                HabitsAction.CheckDailyGreeting -> checkDailyGreeting()
+
+                HabitsAction.DismissDailyGreeting -> {
+                    val welcome = _state.value.dailyGreeting?.kind == GreetingKind.WELCOME
+                    _state.update {
+                        it.copy(
+                            dailyGreeting = null,
+                            showHabitAddSheet = it.showHabitAddSheet || welcome,
+                        )
+                    }
                 }
 
                 HabitsAction.DismissFreezeNotice -> {
@@ -462,5 +488,42 @@ class HabitViewModel(
         if (date < LocalDate.now().minus(1, DateTimeUnit.DAY)) return
         val energy = avatarRepo.getAvatarState().first().energy
         _state.update { it.copy(bonusPopup = BonusPopupState(energy)) }
+    }
+
+    /**
+     * Shows the plant's greeting once a day, on the first app start or return to the app on a new
+     * day. The day is remembered as soon as the greeting is shown, so closing the app does not
+     * bring it back.
+     */
+    private suspend fun checkDailyGreeting() {
+        if (checkingGreeting || _state.value.dailyGreeting != null) return
+        checkingGreeting = true
+        try {
+            val today = LocalDate.now()
+            val due =
+                DailyGreeting.isDue(
+                    enabled = motivationSettings.getGreetingEnabled().first(),
+                    lastShown = motivationSettings.getLastGreetingDay().first(),
+                    today = today,
+                )
+            if (!due) return
+            motivationSettings.setLastGreetingDay(today)
+            val avatar = avatarRepo.getAvatarState().first()
+            val hasRoutines = repo.getHabits().isNotEmpty()
+            val streak = activityRepo.getActivityReport().first().currentStreak
+            _state.update {
+                it.copy(
+                    dailyGreeting =
+                        DailyGreetingState(
+                            kind = DailyGreeting.kindOf(hasRoutines, avatar.plant),
+                            dayTime = DailyGreeting.dayTimeOf(LocalDateTime.now().hour),
+                            avatar = avatar,
+                            activityStreak = streak,
+                        )
+                )
+            }
+        } finally {
+            checkingGreeting = false
+        }
     }
 }

@@ -51,7 +51,6 @@ import androidx.compose.ui.unit.dp
 import com.shub39.grit.core.habits.Habit
 import com.shub39.grit.core.habits.style.styleOf
 import com.shub39.grit.core.now
-import com.shub39.grit.shared.ui.components.Empty
 import com.shub39.grit.shared.ui.components.PageFill
 import com.shub39.grit.shared.ui.components.detachedItemShape
 import com.shub39.grit.shared.ui.components.endItemShape
@@ -65,6 +64,7 @@ import com.shub39.grit.shared.ui.habit.ui.component.HabitListFABs
 import com.shub39.grit.shared.ui.habit.ui.component.HabitStatusDialog
 import com.shub39.grit.shared.ui.habit.ui.component.HabitUpsertSheet
 import com.shub39.grit.shared.ui.habit.ui.component.RoutineCard
+import com.shub39.grit.shared.ui.habit.ui.component.RoutinesEmptyState
 import com.shub39.grit.shared.ui.theme.flexFontEmphasis
 import com.shub39.grit.shared.ui.theme.flexFontRounded
 import grit.shared.ui.generated.resources.Res
@@ -293,9 +293,11 @@ private fun HabitsListContent(
             // when no habits
             if (state.habitsWithAnalytics.isEmpty()) {
                 item {
-                    Empty(
-                        modifier = Modifier.padding(top = 150.dp),
-                        color = MaterialTheme.colorScheme.onSurface,
+                    // fork: the sleeping plant invites to the first routine
+                    RoutinesEmptyState(
+                        avatar = state.avatar,
+                        onAddRoutine = { onAction(HabitsAction.OnAddHabitClicked) },
+                        modifier = Modifier.padding(top = 80.dp),
                     )
                 }
             }
