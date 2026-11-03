@@ -17,6 +17,7 @@
 package com.shub39.grit.shared.ui.viewmodel
 
 import com.shub39.grit.core.avatar.AvatarData
+import com.shub39.grit.core.avatar.AvatarSpecies
 import com.shub39.grit.core.habits.Habit
 import com.shub39.grit.core.motivation.GreetingKind
 import com.shub39.grit.core.now
@@ -132,7 +133,20 @@ class HabitViewModelGreetingTest {
             viewModel.onAction(HabitsAction.FinishNameSetup(""))
 
             assertEquals("", avatarRepo.data.value.userName)
+            assertEquals(AvatarSpecies.SPROUT, avatarRepo.data.value.species)
             assertTrue(motivationSettings.setupDone.value)
+            assertNotNull(viewModel.dailyGreeting.value)
+        }
+
+    @Test
+    fun `the plant chosen in the setup is stored`() =
+        runTest(dispatcher) {
+            val viewModel = viewModel(habits = emptyList())
+
+            viewModel.onAction(HabitsAction.CheckDailyGreeting)
+            viewModel.onAction(HabitsAction.FinishNameSetup("Lena", AvatarSpecies.CHERRY))
+
+            assertEquals(AvatarSpecies.CHERRY, avatarRepo.data.value.species)
             assertNotNull(viewModel.dailyGreeting.value)
         }
 

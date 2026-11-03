@@ -125,6 +125,7 @@ fun AvatarPage(
                 accessories = avatar.data.accessories,
                 decorations = avatar.data.decorations,
                 weather = avatar.plant.weather,
+                species = avatar.data.species,
                 plantScale = plantScale,
                 sceneHeight = sceneHeight,
                 skyTop = (statusBar + TOP_BAR_SPACE) / unit,
@@ -167,6 +168,7 @@ fun AvatarPage(
     if (avatar != null && showRename) {
         RenameAvatarDialog(
             currentName = avatar.data.name,
+            species = avatar.data.species,
             onSave = {
                 onAction(HabitsAction.RenameAvatar(it))
                 showRename = false

@@ -322,6 +322,7 @@ fun BuyItemDialog(
             accessories = shown.accessories,
             decorations = shown.decorations,
             weather = avatar.plant.weather,
+            species = avatar.data.species,
             modifier = Modifier.fillMaxWidth(),
         )
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

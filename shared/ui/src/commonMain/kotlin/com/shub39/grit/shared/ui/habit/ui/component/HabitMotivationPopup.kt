@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.shub39.grit.core.avatar.AvatarSpecies
 import com.shub39.grit.core.avatar.AvatarState
 import com.shub39.grit.core.avatar.PlantMood
 import com.shub39.grit.core.avatar.PlantStage
@@ -109,6 +110,7 @@ fun HabitMotivationPopup(
             mood = PlantMood.HAPPY,
             potColor = avatar?.data?.potColor ?: ShopCatalog.DEFAULT_POT_COLOR,
             accessories = avatar?.data?.accessories.orEmpty(),
+            species = avatar?.data?.species ?: AvatarSpecies.SPROUT,
             modifier =
                 Modifier.size(170.dp).graphicsLayer {
                     scaleX = plantScale

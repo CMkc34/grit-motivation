@@ -46,10 +46,10 @@ import com.shub39.grit.core.motivation.GreetingKind
 import com.shub39.grit.shared.ui.GritPreviewWrapper
 import com.shub39.grit.shared.ui.habit.HabitsAction
 import com.shub39.grit.shared.ui.habit.avatar.MeadowScene
+import com.shub39.grit.shared.ui.habit.avatar.plantName
 import com.shub39.grit.shared.ui.theme.flexFontEmphasis
 import com.shub39.grit.shared.ui.viewmodel.HabitViewModel
 import grit.shared.ui.generated.resources.Res
-import grit.shared.ui.generated.resources.avatar_default_name
 import grit.shared.ui.generated.resources.greeting_first_day_text
 import grit.shared.ui.generated.resources.greeting_first_day_title
 import grit.shared.ui.generated.resources.greeting_growing_last
@@ -114,7 +114,7 @@ fun DailyGreetingStage(
 ) {
     val avatar = greeting.avatar
     val plant = avatar.plant
-    val name = avatar.data.name.ifBlank { stringResource(Res.string.avatar_default_name) }
+    val name = plantName(avatar.data)
     // the user's own name in the header and the welcome when they gave one (#139)
     val userName = avatar.data.userName
 
@@ -152,6 +152,7 @@ fun DailyGreetingStage(
             accessories = avatar.data.accessories,
             decorations = avatar.data.decorations,
             weather = plant.weather,
+            species = avatar.data.species,
             plantScale = GREETING_PLANT_SCALE,
             modifier =
                 Modifier.widthIn(max = 420.dp)

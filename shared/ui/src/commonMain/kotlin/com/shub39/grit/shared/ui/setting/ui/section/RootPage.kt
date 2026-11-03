@@ -50,12 +50,16 @@ import com.shub39.grit.shared.ui.components.endItemShape
 import com.shub39.grit.shared.ui.components.leadingItemShape
 import com.shub39.grit.shared.ui.components.listItemColors
 import com.shub39.grit.shared.ui.components.middleItemShape
+import com.shub39.grit.shared.ui.habit.avatar.defaultPlantName
 import com.shub39.grit.shared.ui.setting.SettingsAction
 import com.shub39.grit.shared.ui.setting.SettingsState
+import com.shub39.grit.shared.ui.setting.ui.component.AvatarSpeciesSheet
 import com.shub39.grit.shared.ui.setting.ui.component.LocalePickerSheet
 import com.shub39.grit.shared.ui.setting.ui.component.UserNameDialog
 import com.shub39.grit.shared.ui.theme.flexFontEmphasis
 import grit.shared.ui.generated.resources.*
+import grit.shared.ui.generated.resources.avatar_species_setting
+import grit.shared.ui.generated.resources.avatar_species_setting_hint
 import grit.shared.ui.generated.resources.user_name_setting
 import grit.shared.ui.generated.resources.user_name_setting_empty
 import kotlinx.datetime.DayOfWeek
@@ -77,6 +81,7 @@ fun RootPage(
     PageFill(modifier = modifier.fillMaxSize()) {
         var showLocalePicker by rememberSaveable { mutableStateOf(false) }
         var showUserName by rememberSaveable { mutableStateOf(false) }
+        var showAvatarSpecies by rememberSaveable { mutableStateOf(false) }
 
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
         Column(
@@ -203,6 +208,27 @@ fun RootPage(
                             colors = listItemColors(),
                             modifier =
                                 Modifier.clip(middleItemShape()).clickable { showUserName = true },
+                        )
+
+                        // fork (#140): which plant grows on the meadow
+                        ListItem(
+                            headlineContent = {
+                                Text(text = stringResource(Res.string.avatar_species_setting))
+                            },
+                            supportingContent = {
+                                Text(
+                                    text =
+                                        stringResource(
+                                            Res.string.avatar_species_setting_hint,
+                                            defaultPlantName(state.avatar.species),
+                                        )
+                                )
+                            },
+                            colors = listItemColors(),
+                            modifier =
+                                Modifier.clip(middleItemShape()).clickable {
+                                    showAvatarSpecies = true
+                                },
                         )
 
                         ListItem(
@@ -380,6 +406,15 @@ fun RootPage(
                         showUserName = false
                     },
                     onDismiss = { showUserName = false },
+                )
+            }
+
+            if (showAvatarSpecies) {
+                AvatarSpeciesSheet(
+                    avatar = state.avatar,
+                    stage = state.avatarStage,
+                    onSelect = { onAction(SettingsAction.ChangeAvatarSpecies(it)) },
+                    onDismiss = { showAvatarSpecies = false },
                 )
             }
         }

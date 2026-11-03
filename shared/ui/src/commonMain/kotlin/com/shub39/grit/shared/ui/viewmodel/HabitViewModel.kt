@@ -23,6 +23,7 @@ import com.shub39.grit.core.activity.ActivityRepo
 import com.shub39.grit.core.activity.DayStatus
 import com.shub39.grit.core.activity.FreezeNotice
 import com.shub39.grit.core.avatar.AvatarRepo
+import com.shub39.grit.core.avatar.AvatarSpecies
 import com.shub39.grit.core.avatar.UserName
 import com.shub39.grit.core.habits.Habit
 import com.shub39.grit.core.habits.HabitRepo
@@ -280,6 +281,8 @@ class HabitViewModel(
                 is HabitsAction.FinishNameSetup -> {
                     val name = UserName.clean(action.name)
                     if (name.isNotEmpty()) avatarRepo.setUserName(name)
+                    if (action.species != AvatarSpecies.SPROUT)
+                        avatarRepo.setSpecies(action.species)
                     motivationSettings.setSetupDone()
                     _state.update { it.copy(nameSetup = false) }
                     checkDailyGreeting()

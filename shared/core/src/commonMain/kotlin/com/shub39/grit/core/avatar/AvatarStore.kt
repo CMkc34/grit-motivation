@@ -30,6 +30,8 @@ data class AvatarData(
     val seenStage: Int = 0,
     /** How the plant calls the user (#139); empty while the user has not given a name. */
     val userName: String = "",
+    /** Which plant the user chose (#140). */
+    val species: AvatarSpecies = AvatarSpecies.SPROUT,
 ) {
     /**
      * Combines the current record with a restored backup: purchases are joined (the earlier one
@@ -48,6 +50,7 @@ data class AvatarData(
             decorations = decorations.ifEmpty { backup.decorations },
             seenStage = maxOf(seenStage, backup.seenStage),
             userName = userName.ifBlank { backup.userName },
+            species = if (species == AvatarSpecies.SPROUT) backup.species else species,
         )
 }
 
@@ -57,6 +60,8 @@ interface AvatarStore {
     suspend fun setName(name: String)
 
     suspend fun setUserName(name: String)
+
+    suspend fun setSpecies(species: AvatarSpecies)
 
     suspend fun addPurchase(purchase: Purchase)
 

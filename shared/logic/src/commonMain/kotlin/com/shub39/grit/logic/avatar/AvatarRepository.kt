@@ -18,6 +18,7 @@ package com.shub39.grit.logic.avatar
 
 import com.shub39.grit.core.activity.ActivityRepo
 import com.shub39.grit.core.avatar.AvatarRepo
+import com.shub39.grit.core.avatar.AvatarSpecies
 import com.shub39.grit.core.avatar.AvatarState
 import com.shub39.grit.core.avatar.AvatarStore
 import com.shub39.grit.core.avatar.PlantStage
@@ -66,6 +67,8 @@ class AvatarRepository(private val activityRepo: ActivityRepo, private val store
     override suspend fun rename(name: String) = store.setName(name)
 
     override suspend fun setUserName(name: String) = store.setUserName(UserName.clean(name))
+
+    override suspend fun setSpecies(species: AvatarSpecies) = store.setSpecies(species)
 
     override suspend fun wear(itemId: String, worn: Boolean) {
         val item = ShopCatalog.byId(itemId) ?: return

@@ -17,6 +17,7 @@
 package com.shub39.grit.logic.avatar
 
 import com.shub39.grit.core.avatar.AvatarData
+import com.shub39.grit.core.avatar.AvatarSpecies
 import com.shub39.grit.core.avatar.AvatarStore
 import com.shub39.grit.core.avatar.Purchase
 import kotlinx.coroutines.flow.Flow
@@ -34,6 +35,10 @@ class FakeAvatarStore(initial: AvatarData = AvatarData()) : AvatarStore {
 
     override suspend fun setUserName(name: String) {
         data.update { it.copy(userName = name) }
+    }
+
+    override suspend fun setSpecies(species: AvatarSpecies) {
+        data.update { it.copy(species = species) }
     }
 
     override suspend fun addPurchase(purchase: Purchase) {

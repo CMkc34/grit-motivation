@@ -540,12 +540,27 @@ Anrede A).
 - Beim allerersten Start (`FirstLaunchSetup.isDue`: Einrichtung nicht erledigt, noch nie begrüßt,
   keine Routinen) fragt der Samen vor der Willkommens-Begrüßung auf eigener Bühne „Wie darf ich
   dich nennen?“ (Weiter / Überspringen, Zurück-Taste überspringt). Bestehende Installationen sehen
-  den Schritt nie (`user_setup_done` wird gesetzt). Später kommt hier die Avatar-Wahl (#140) dazu.
+  den Schritt nie (`user_setup_done` wird gesetzt). Danach folgt die Avatar-Wahl (#140, siehe 8.5d).
 - Der Name (`AvatarData.userName`, DataStore `avatar_user_name`, Backup-Feld `userName` im Avatar,
   höchstens 24 Zeichen) steht nur in Überschriften: Tagesbegrüßung („Guten Morgen, Lena“),
   Willkommen („Hallo Lena, ich bin Sprout!“) und Motivations-Pop-up („Starkes Ding, Lena!“). Die
   Sprüche bleiben unverändert. Ohne Namen sieht alles aus wie vorher.
 - Ändern unter Einstellungen → „Dein Name“; leer entfernt den Namen.
+
+### 8.5d Zweiter Avatar: Kirschbaum (#140)
+Abgestimmt am 2026-11-03 (Vorschau: https://claude.ai/artifact/SDLX9aPNqxjXpvyfYmYwX5, Kandidat C,
+Standardname „Kirsche“).
+- `AvatarSpecies` (SPROUT, CHERRY) in `AvatarData.species`, DataStore `avatar_species`, Backup-Feld
+  `species` im Avatar (fehlt es, gilt Sprout). Alle Arten durchlaufen dieselben 12 Stufen und tragen
+  dieselben Shop-Teile.
+- Der Kirschbaum nutzt Sprouts Gerüst (Stamm, Ast-Arme, Gesicht, Zubehör-Plätze) mit eigenen
+  Farben: dunklerer Stamm mit hellen Rindenstreifen, holziger Zweig mit rosa Knospen in den
+  kleinen Stufen, rosa Blütenkrone mit dunkleren Blüten ab dem Bäumchen (mehr Blüten je Stufe),
+  fallende Blütenblätter, Kirschpaare am mächtigen Baum.
+- Wahl als zweiter Schritt der Einrichtung beim ersten Start („Wer soll mit dir wachsen?“, nach dem
+  Namen) und jederzeit unter Einstellungen → „Dein Avatar“ (Bottom Sheet, Tippen wechselt sofort).
+  Beim Wechsel bleiben Stufe, Wasser und gekaufte Teile erhalten, nur das Aussehen ändert sich. Ein
+  nicht umbenannter Avatar heißt nach der Art („Sprout“ oder „Kirsche“).
 
 ### 8.6 Issues
 | # | Inhalt |

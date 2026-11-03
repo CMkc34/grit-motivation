@@ -68,6 +68,9 @@ interface AvatarRepo {
     /** Stores how the plant calls the user, see [UserName.clean]. */
     suspend fun setUserName(name: String)
 
+    /** Switches the plant; stage, water and purchases stay. */
+    suspend fun setSpecies(species: AvatarSpecies)
+
     /**
      * Puts an owned item on or takes it off (a decoration is shown or hidden on the meadow); a pot
      * color can only be replaced, not removed.

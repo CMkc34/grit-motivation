@@ -154,6 +154,7 @@ fun AvatarShopPage(
                     accessories = avatar.data.accessories,
                     decorations = avatar.data.decorations,
                     weather = avatar.plant.weather,
+                    species = avatar.data.species,
                     modifier = Modifier.widthIn(max = 480.dp).fillMaxWidth(),
                 )
             }

@@ -99,4 +99,11 @@
     <string name="shop_open">Open shop</string>
     <string name="shop_seasonal">Season</string>
     <string name="shop_out_of_season">Not on sale right now</string>
+    <!-- #140 second avatar -->
+    <string name="avatar_default_name_cherry">Cherry</string>
+    <string name="avatar_species_sprout_desc">Leafy green tree</string>
+    <string name="avatar_species_cherry_desc">Cherry tree with pink blossoms</string>
+    <string name="avatar_species_setting">Your avatar</string>
+    <string name="avatar_species_setting_hint">%1$s · tap to switch</string>
+    <string name="avatar_species_keep">Stage, water and bought items stay.</string>
 </resources>

@@ -16,6 +16,7 @@
  */
 package com.shub39.grit.shared.ui.habit
 
+import com.shub39.grit.core.avatar.AvatarSpecies
 import com.shub39.grit.core.habits.Habit
 import com.shub39.grit.core.habits.style.RoutineStyle
 import kotlinx.datetime.LocalDate
@@ -77,7 +78,10 @@ sealed interface HabitsAction {
     data object DismissDailyGreeting : HabitsAction
 
     /** finish the first start setup with the user's [name]; empty skips it (#139) */
-    data class FinishNameSetup(val name: String) : HabitsAction
+    data class FinishNameSetup(
+        val name: String,
+        val species: AvatarSpecies = AvatarSpecies.SPROUT,
+    ) : HabitsAction
 
     /** close the freeze notice and remember its freezes as seen */
     data object DismissFreezeNotice : HabitsAction
