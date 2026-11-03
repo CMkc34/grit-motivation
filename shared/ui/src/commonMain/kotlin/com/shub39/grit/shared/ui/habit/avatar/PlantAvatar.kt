@@ -48,6 +48,7 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
+import com.shub39.grit.core.avatar.AvatarSpecies
 import com.shub39.grit.core.avatar.PlantMood
 import com.shub39.grit.core.avatar.PlantStage
 import com.shub39.grit.core.avatar.ShopCatalog
@@ -78,6 +79,15 @@ private val blush = Color(0xFFFF8FA0)
 private val lightYellow = Color(0xFFFFEB3B)
 internal val tiredGray = Color(0xFFA3A79F)
 
+// the cherry tree (#140): darker wood, a pink blossom crown, cherries instead of apples
+private val cherryWood = Color(0xFF7A5A44)
+private val cherryPink = Color(0xFFFFB3C1)
+private val cherryPinkLight = Color(0xFFFFD3DC)
+private val cherryBlossom = Color(0xFFFF8FA0)
+private val cherryPetal = Color(0xFFFFC4D0)
+private val cherryPit = Color(0xFFD9A08A)
+private val cherryRed = Color(0xFFD7263D)
+
 /** Color of a pot color item; unknown ids fall back to terracotta. */
 fun potColorOf(itemId: String): Color =
     when (itemId) {
@@ -105,6 +115,7 @@ fun PlantAvatar(
     potColor: String = ShopCatalog.DEFAULT_POT_COLOR,
     accessories: Set<String> = emptySet(),
     animate: Boolean = true,
+    species: AvatarSpecies = AvatarSpecies.SPROUT,
 ) {
     val sway = if (animate) rememberSway() else 0f
     val time = if (animate) rememberMeadowTime() else 0f
@@ -112,7 +123,16 @@ fun PlantAvatar(
     Canvas(modifier = modifier.aspectRatio(1f)) {
         // everything below is drawn in a 1 x 1 square
         scale(scaleX = size.width, scaleY = size.height, pivot = Offset.Zero) {
-            drawPlantAvatar(stage, mood, potColor, accessories, sway, time, moving = animate)
+            drawPlantAvatar(
+                stage,
+                mood,
+                potColor,
+                accessories,
+                sway,
+                time,
+                moving = animate,
+                species = species,
+            )
         }
     }
 }
@@ -129,6 +149,7 @@ internal fun DrawScope.drawPlantAvatar(
     sway: Float,
     time: Float = 0f,
     moving: Boolean = false,
+    species: AvatarSpecies = AvatarSpecies.SPROUT,
 ) {
     val tired = mood == PlantMood.TIRED
     val plant =
@@ -139,6 +160,7 @@ internal fun DrawScope.drawPlantAvatar(
             accessories = accessories,
             time = time,
             moving = moving && !tired,
+            species = species,
         )
     with(plant) { draw(swayDegrees = sway * plant.maxSway) }
 }
@@ -255,7 +277,9 @@ private class PlantPainter(
     private val accessories: Set<String>,
     private val time: Float = 0f,
     private val moving: Boolean = false,
+    private val species: AvatarSpecies = AvatarSpecies.SPROUT,
 ) {
+    private val cherry = species == AvatarSpecies.CHERRY
     private val inPot = stage <= PlantStage.SAPLING
     private val isTree = stage >= PlantStage.SAPLING
     private val tree = treeShapeOf(stage)
@@ -282,8 +306,12 @@ private class PlantPainter(
 
     private val leaf = leafGreen.mood()
     private val leafHighlight = leafLight.mood()
-    private val stem = stemGreen.mood()
-    private val wood = trunkBrown.mood()
+    private val stem = (if (cherry) cherryWood else stemGreen).mood()
+    private val wood = (if (cherry) cherryWood else trunkBrown).mood()
+
+    // the cherry tree's crown and the leaves on its arms are blossoms
+    private val crownColor = if (cherry) cherryPink.mood() else leaf
+    private val crownHighlight = if (cherry) cherryPinkLight.mood() else leafHighlight
 
     // a tired plant droops
     private val sag = if (tired) 0.025f else 0f
@@ -456,6 +484,16 @@ private class PlantPainter(
             }
             else -> drawTree(tree!!)
         }
+        if (cherry && stage in PlantStage.SPROUT..PlantStage.PLANTLET) {
+            // the cherry twig carries pink buds at its tip
+            val top = stemTop(herbHeight())
+            val tip = Offset(top.x + if (tired) 0.045f else 0f, top.y + sag)
+            paper(circlePath(tip, 0.022f), cherryBlossom.mood(), depth = 0.5f)
+            if (stage == PlantStage.PLANTLET) {
+                paper(circlePath(turned(tip, -60f, 0f, 0.07f), 0.016f), cherryPink.mood(), 0.4f)
+                paper(circlePath(turned(tip, 60f, 0f, 0.07f), 0.016f), cherryPink.mood(), 0.4f)
+            }
+        }
         drawPlantAccessories()
     }
 
@@ -468,7 +506,7 @@ private class PlantPainter(
                 cubicTo(x - r * 1.05f, y + r * 0.85f, x - r * 1.1f, y - r * 1.05f, x, y - r * 1.1f)
                 close()
             }
-        paper(seed, seedBrown.mood())
+        paper(seed, (if (cherry) cherryPit else seedBrown).mood())
         face(Offset(x, y - r * 0.02f), size = r * 1.12f)
     }
 
@@ -518,7 +556,7 @@ private class PlantPainter(
                     )
                 }
             }
-        paper(petals, Color.White, depth = 0.5f)
+        paper(petals, if (cherry) cherryPetal.mood() else Color.White, depth = 0.5f)
         paper(circlePath(center, size * 0.55f), flowerYellow, depth = 0.3f)
     }
 
@@ -590,8 +628,8 @@ private class PlantPainter(
         }
         val leaves: DrawScope.() -> Unit = {
             hands.forEach { (twig1, side, twig2) ->
-                drawLeaf(twig1, side * if (tired) 150f else 60f, 0.04f)
-                drawLeaf(twig2, side * if (tired) 170f else 15f, 0.04f)
+                drawLeaf(twig1, side * if (tired) 150f else 60f, 0.04f, crownColor)
+                drawLeaf(twig2, side * if (tired) 170f else 15f, 0.04f, crownColor)
             }
         }
         return wood to leaves
@@ -603,11 +641,14 @@ private class PlantPainter(
         val pieces = listOf(trunkPath(shape)) + armWood
         pieces.forEach { paperShadow(it) }
         pieces.forEach { drawPath(it, wood) }
+        if (cherry) drawCherryBark(shape)
 
         val center = crownCenter
         val radius = shape.crown
         drawCrown(center, radius, shape.lobes)
-        if (stage >= PlantStage.BLOSSOMING_TREE) {
+        if (cherry) {
+            drawCherryBlossoms(center, radius)
+        } else if (stage >= PlantStage.BLOSSOMING_TREE) {
             val blossoms = if (stage == PlantStage.MIGHTY_TREE) 8 else 9
             crownSpots(center, radius, count = blossoms, seed = 1).forEach {
                 drawFlower(it, radius * if (stage == PlantStage.MIGHTY_TREE) 0.06f else 0.065f)
@@ -615,7 +656,8 @@ private class PlantPainter(
         }
         if (stage == PlantStage.MIGHTY_TREE) {
             crownSpots(center, radius, count = 6, seed = 4).forEach {
-                paper(circlePath(it, radius * 0.075f), fruitRed.mood(), depth = 0.5f)
+                if (cherry) drawCherries(it, radius * 0.06f)
+                else paper(circlePath(it, radius * 0.075f), fruitRed.mood(), depth = 0.5f)
             }
             if (!tired) {
                 drawStar(Offset(center.x - radius * 1.05f, center.y - radius * 0.55f), 0.03f)
@@ -643,17 +685,85 @@ private class PlantPainter(
         }
         paper(
             Path().apply { parts.forEach { (c, r) -> addOval(Rect(center = c, radius = r)) } },
-            leaf,
+            crownColor,
         )
         parts.drop(1).forEach { (c, r) ->
             if (c.y < center.y) {
                 drawCircle(
-                    leafHighlight,
+                    crownHighlight,
                     radius = r * 0.32f,
                     center = Offset(c.x - r * 0.25f, c.y - r * 0.3f),
                 )
             }
         }
+    }
+
+    /** The light stripes across a cherry trunk. */
+    private fun DrawScope.drawCherryBark(shape: TreeShape) {
+        val stripe = lerp(wood, Color.White, 0.3f)
+        // below and above the face, which sits at 0.28 of the height
+        listOf(0.08f, 0.5f, 0.62f, 0.74f).forEachIndexed { i, at ->
+            val y = base.y - shape.height * at
+            val half = shape.trunk * (0.6f - 0.08f * i)
+            val shift = if (i % 2 == 0) -0.25f else 0.2f
+            drawLine(
+                stripe,
+                Offset(base.x + half * (shift - 0.45f), y),
+                Offset(base.x + half * (shift + 0.45f), y),
+                strokeWidth = 0.006f,
+                cap = StrokeCap.Round,
+            )
+        }
+    }
+
+    /**
+     * Pink blossoms all over the crown, more the bigger the tree; while [moving], a few petals sail
+     * down to the ground.
+     */
+    private fun DrawScope.drawCherryBlossoms(center: Offset, radius: Float) {
+        val grown = stage.ordinal - PlantStage.SAPLING.ordinal
+        val spots = crownSpots(center, radius, count = 4 + grown, seed = 1)
+        spots.forEach { spot ->
+            val size = radius * 0.06f
+            val petals =
+                Path().apply {
+                    for (a in 0 until 5) {
+                        addOval(
+                            Rect(center = turned(spot, a * 72f, 0f, -size), radius = size * 0.62f)
+                        )
+                    }
+                }
+            paper(petals, cherryBlossom.mood(), depth = 0.5f)
+            drawCircle(Color(0xFFFFF3C4), radius = size * 0.45f, center = spot)
+        }
+        if (!moving) return
+        spots.take(3).forEachIndexed { i, from ->
+            val k = cycle(period = 7.5f, offset = i * 2.5f) ?: return@forEachIndexed
+            if (k > 0.8f) return@forEachIndexed
+            val q = k / 0.8f
+            val petal =
+                Offset(
+                    from.x + 0.05f * sin(q * 3 * PI.toFloat()) + 0.04f * q,
+                    from.y + (base.y - from.y) * q,
+                )
+            rotate(degrees = q * 360f, pivot = petal) {
+                drawOval(
+                    cherryPetal.copy(alpha = 1f - 0.5f * q),
+                    topLeft = Offset(petal.x - 0.012f, petal.y - 0.007f),
+                    size = Size(0.024f, 0.014f),
+                )
+            }
+        }
+    }
+
+    /** Two cherries hanging from one stalk. */
+    private fun DrawScope.drawCherries(at: Offset, r: Float) {
+        val left = Offset(at.x - r * 0.9f, at.y + r * 1.6f)
+        val right = Offset(at.x + r * 0.9f, at.y + r * 1.4f)
+        drawLine(cherryWood, at, left, strokeWidth = r * 0.35f, cap = StrokeCap.Round)
+        drawLine(cherryWood, at, right, strokeWidth = r * 0.35f, cap = StrokeCap.Round)
+        paper(circlePath(left, r), cherryRed.mood(), depth = 0.5f)
+        paper(circlePath(right, r), cherryRed.mood(), depth = 0.5f)
     }
 
     /** Evenly spread points inside the crown, the same on every frame. */
@@ -994,8 +1104,15 @@ private fun PlantAccessoriesPreview() {
     }
 }
 
+@PreviewWrapper(GritPreviewWrapper::class)
+@Preview(widthDp = 400, heightDp = 300)
 @Composable
-private fun PlantGrid(mood: PlantMood) {
+private fun CherryStagesPreview() {
+    PlantGrid(mood = PlantMood.HAPPY, species = AvatarSpecies.CHERRY)
+}
+
+@Composable
+private fun PlantGrid(mood: PlantMood, species: AvatarSpecies = AvatarSpecies.SPROUT) {
     Column {
         PlantStage.entries.chunked(4).forEach { row ->
             Row {
@@ -1003,6 +1120,7 @@ private fun PlantGrid(mood: PlantMood) {
                     PlantAvatar(
                         stage = stage,
                         mood = mood,
+                        species = species,
                         animate = false,
                         modifier = Modifier.size(100.dp),
                     )

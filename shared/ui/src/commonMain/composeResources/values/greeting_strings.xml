@@ -40,7 +40,7 @@
     <string name="greeting_welcome_title_named">Hi %1$s, I am %2$s!</string>
     <string name="setup_name_title">What should I call you?</string>
     <!-- %1$s = plant name -->
-    <string name="setup_name_text">Hi, I am %1$s! With your name I can greet you in person.</string>
+    <string name="setup_name_text">Hi, nice to have you here! With your name I can greet you in person.</string>
     <string name="setup_name_label">Your name</string>
     <string name="setup_name_hint">Only stored on your phone.</string>
     <string name="setup_name_next">Continue</string>
@@ -48,4 +48,9 @@
     <string name="user_name_setting">Your name</string>
     <string name="user_name_setting_empty">No name yet, tap to add one</string>
     <string name="user_name_hint">Leave empty to be greeted without a name</string>
+    <string name="setup_species_header">Nice to meet you!</string>
+    <string name="setup_species_header_named">Nice to meet you, %1$s!</string>
+    <string name="setup_species_title">Who should grow with you?</string>
+    <string name="setup_species_later">You can switch later in the settings.</string>
+    <string name="setup_species_start">Let’s go</string>
 </resources>

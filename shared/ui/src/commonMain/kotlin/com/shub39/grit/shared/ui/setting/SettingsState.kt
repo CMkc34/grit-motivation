@@ -19,6 +19,8 @@ package com.shub39.grit.shared.ui.setting
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import com.shub39.grit.core.app.Changelog
+import com.shub39.grit.core.avatar.AvatarData
+import com.shub39.grit.core.avatar.PlantStage
 import com.shub39.grit.core.settings.backup.ExportState
 import com.shub39.grit.core.settings.backup.RestoreState
 import com.shub39.grit.core.theme.Theme
@@ -42,6 +44,9 @@ data class SettingsState(
     val dailyGreeting: Boolean = true,
     // fork (#139): how the plant calls the user, empty without a name
     val userName: String = "",
+    // fork (#140): the plant, to pick its species
+    val avatar: AvatarData = AvatarData(),
+    val avatarStage: PlantStage = PlantStage.SEED,
 )
 
 @Stable

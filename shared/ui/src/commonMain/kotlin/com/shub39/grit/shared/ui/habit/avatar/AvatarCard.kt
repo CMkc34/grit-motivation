@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.grit.core.avatar.AvatarData
+import com.shub39.grit.core.avatar.AvatarSpecies
 import com.shub39.grit.core.avatar.AvatarState
 import com.shub39.grit.core.avatar.PlantMood
 import com.shub39.grit.core.avatar.PlantStage
@@ -45,6 +46,7 @@ import com.shub39.grit.shared.ui.theme.flexFontEmphasis
 import grit.shared.ui.generated.resources.Res
 import grit.shared.ui.generated.resources.avatar_cancel
 import grit.shared.ui.generated.resources.avatar_default_name
+import grit.shared.ui.generated.resources.avatar_default_name_cherry
 import grit.shared.ui.generated.resources.avatar_new_stage_ok
 import grit.shared.ui.generated.resources.avatar_new_stage_text
 import grit.shared.ui.generated.resources.avatar_new_stage_title
@@ -87,14 +89,28 @@ private fun PlantStage.nameRes(): StringResource =
 
 @Composable fun stageName(stage: PlantStage): String = stringResource(stage.nameRes())
 
-/** The stored name, or "Sprout" while the user has not named the plant. */
+/** The name a plant of [species] has until the user names it: "Sprout" or "Kirsche" (#140). */
 @Composable
-fun plantName(data: AvatarData): String =
-    data.name.ifBlank { stringResource(Res.string.avatar_default_name) }
+fun defaultPlantName(species: AvatarSpecies): String =
+    stringResource(
+        when (species) {
+            AvatarSpecies.SPROUT -> Res.string.avatar_default_name
+            AvatarSpecies.CHERRY -> Res.string.avatar_default_name_cherry
+        }
+    )
+
+/** The stored name, or the species' default name while the user has not named the plant. */
+@Composable
+fun plantName(data: AvatarData): String = data.name.ifBlank { defaultPlantName(data.species) }
 
 /** Asks for a new name; an empty name brings back the default. */
 @Composable
-fun RenameAvatarDialog(currentName: String, onSave: (String) -> Unit, onDismiss: () -> Unit) {
+fun RenameAvatarDialog(
+    currentName: String,
+    onSave: (String) -> Unit,
+    onDismiss: () -> Unit,
+    species: AvatarSpecies = AvatarSpecies.SPROUT,
+) {
     var name by remember { mutableStateOf(currentName) }
 
     GritDialog(onDismissRequest = onDismiss) {
@@ -106,7 +122,7 @@ fun RenameAvatarDialog(currentName: String, onSave: (String) -> Unit, onDismiss:
             value = name,
             onValueChange = { name = it.take(MAX_NAME_LENGTH) },
             singleLine = true,
-            placeholder = { Text(stringResource(Res.string.avatar_default_name)) },
+            placeholder = { Text(defaultPlantName(species)) },
             supportingText = {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
@@ -133,6 +149,7 @@ fun NewStageDialog(avatar: AvatarState, stage: PlantStage, onDismiss: () -> Unit
             mood = avatar.plant.mood,
             potColor = avatar.data.potColor,
             accessories = avatar.data.accessories,
+            species = avatar.data.species,
             modifier = Modifier.widthIn(max = 160.dp).fillMaxWidth(),
         )
         Text(

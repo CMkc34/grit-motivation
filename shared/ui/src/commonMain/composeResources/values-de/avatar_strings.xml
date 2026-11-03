@@ -99,4 +99,11 @@
     <string name="shop_open">Shop öffnen</string>
     <string name="shop_seasonal">Saison</string>
     <string name="shop_out_of_season">Gerade nicht im Angebot</string>
+    <!-- #140 zweiter Avatar -->
+    <string name="avatar_default_name_cherry">Kirsche</string>
+    <string name="avatar_species_sprout_desc">Grüner Laubbaum</string>
+    <string name="avatar_species_cherry_desc">Kirschbaum mit rosa Blüten</string>
+    <string name="avatar_species_setting">Dein Avatar</string>
+    <string name="avatar_species_setting_hint">%1$s · tippen zum Wechseln</string>
+    <string name="avatar_species_keep">Stufe, Wasser und gekaufte Teile bleiben.</string>
 </resources>

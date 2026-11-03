@@ -216,6 +216,8 @@ class SettingsViewModel(
 
                 is SettingsAction.ChangeUserName -> avatarRepo.setUserName(action.name)
 
+                is SettingsAction.ChangeAvatarSpecies -> avatarRepo.setSpecies(action.species)
+
                 OnSettingsOpened -> {
                     analytics.trackEvent(AnalyticsEvent.SETTINGS_OPENED, emptyMap())
                 }
@@ -324,9 +326,13 @@ class SettingsViewModel(
 
                 avatarRepo
                     .getAvatarState()
-                    .map { it.data.userName }
+                    .map { Triple(it.data.userName, it.data, it.plant.stage) }
                     .distinctUntilChanged()
-                    .onEach { name -> _state.update { it.copy(userName = name) } }
+                    .onEach { (name, data, stage) ->
+                        _state.update {
+                            it.copy(userName = name, avatar = data, avatarStage = stage)
+                        }
+                    }
                     .launchIn(this)
             }
         }

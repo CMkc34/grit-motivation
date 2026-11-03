@@ -24,6 +24,7 @@ import com.shub39.grit.core.activity.DayStatus
 import com.shub39.grit.core.activity.FreezeNotice
 import com.shub39.grit.core.avatar.AvatarData
 import com.shub39.grit.core.avatar.AvatarRepo
+import com.shub39.grit.core.avatar.AvatarSpecies
 import com.shub39.grit.core.avatar.AvatarState
 import com.shub39.grit.core.avatar.PlantStage
 import com.shub39.grit.core.avatar.PlantState
@@ -246,6 +247,9 @@ class FakeAvatarRepo(
     override suspend fun rename(name: String) = data.update { it.copy(name = name) }
 
     override suspend fun setUserName(name: String) = data.update { it.copy(userName = name) }
+
+    override suspend fun setSpecies(species: AvatarSpecies) =
+        data.update { it.copy(species = species) }
 
     override suspend fun wear(itemId: String, worn: Boolean) =
         data.update {

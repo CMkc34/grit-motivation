@@ -17,6 +17,7 @@
 package com.shub39.grit.logic.core.backup
 
 import com.shub39.grit.core.avatar.AvatarData
+import com.shub39.grit.core.avatar.AvatarSpecies
 import com.shub39.grit.core.avatar.Purchase
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -47,6 +48,8 @@ class AvatarSchemaTest {
                 accessories = setOf("acc_ladybug"),
                 seenStage = 5,
                 decorations = setOf("deco_pond"),
+                userName = "Lena",
+                species = AvatarSpecies.CHERRY,
             )
 
         val exported = Json.encodeToString(schema(data.toAvatarSchema()))
@@ -64,6 +67,7 @@ class AvatarSchemaTest {
 
         assertEquals(setOf("acc_bird"), avatar?.accessories)
         assertEquals(emptySet(), avatar?.decorations)
+        assertEquals(AvatarSpecies.SPROUT, avatar?.species)
     }
 
     @Test

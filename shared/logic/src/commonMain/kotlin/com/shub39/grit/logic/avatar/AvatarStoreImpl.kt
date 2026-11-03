@@ -23,6 +23,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.shub39.grit.core.avatar.AvatarData
+import com.shub39.grit.core.avatar.AvatarSpecies
 import com.shub39.grit.core.avatar.AvatarStore
 import com.shub39.grit.core.avatar.Purchase
 import com.shub39.grit.core.avatar.ShopCatalog
@@ -43,6 +44,7 @@ class AvatarStoreImpl(private val datastore: DataStore<Preferences>) : AvatarSto
         private val decorationsKey = stringSetPreferencesKey("avatar_decorations")
         private val seenStageKey = intPreferencesKey("avatar_seen_stage")
         private val userNameKey = stringPreferencesKey("avatar_user_name")
+        private val speciesKey = stringPreferencesKey("avatar_species")
 
         private const val SEPARATOR = "|"
 
@@ -69,6 +71,7 @@ class AvatarStoreImpl(private val datastore: DataStore<Preferences>) : AvatarSto
                 decorations = prefs[decorationsKey].orEmpty(),
                 seenStage = prefs[seenStageKey] ?: 0,
                 userName = prefs[userNameKey].orEmpty(),
+                species = AvatarSpecies.fromId(prefs[speciesKey]),
             )
         }
 
@@ -78,6 +81,10 @@ class AvatarStoreImpl(private val datastore: DataStore<Preferences>) : AvatarSto
 
     override suspend fun setUserName(name: String) {
         datastore.edit { it[userNameKey] = name }
+    }
+
+    override suspend fun setSpecies(species: AvatarSpecies) {
+        datastore.edit { it[speciesKey] = species.id }
     }
 
     override suspend fun addPurchase(purchase: Purchase) {
@@ -116,6 +123,7 @@ class AvatarStoreImpl(private val datastore: DataStore<Preferences>) : AvatarSto
             it[decorationsKey] = data.decorations
             it[seenStageKey] = data.seenStage
             it[userNameKey] = data.userName
+            it[speciesKey] = data.species.id
         }
     }
 }

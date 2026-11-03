@@ -17,6 +17,7 @@
 package com.shub39.grit.logic.core.backup
 
 import com.shub39.grit.core.avatar.AvatarData
+import com.shub39.grit.core.avatar.AvatarSpecies
 import com.shub39.grit.core.avatar.Purchase
 import com.shub39.grit.core.avatar.ShopCatalog
 import kotlinx.datetime.LocalDate
@@ -36,6 +37,8 @@ data class AvatarSchema(
     val decorations: List<String> = emptyList(),
     // #139: how the plant calls the user
     val userName: String = "",
+    // #140: which plant grows, see AvatarSpecies.id
+    val species: String = AvatarSpecies.SPROUT.id,
 )
 
 @Serializable data class PurchaseSchema(val itemId: String, val date: String, val price: Int)
@@ -49,6 +52,7 @@ fun AvatarData.toAvatarSchema(): AvatarSchema {
         seenStage = seenStage,
         decorations = decorations.sorted(),
         userName = userName,
+        species = species.id,
     )
 }
 
@@ -61,5 +65,6 @@ fun AvatarSchema.toAvatarData(): AvatarData {
         seenStage = seenStage,
         decorations = decorations.toSet(),
         userName = userName,
+        species = AvatarSpecies.fromId(species),
     )
 }
