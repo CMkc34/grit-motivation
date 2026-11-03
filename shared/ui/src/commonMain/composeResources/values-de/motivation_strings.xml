@@ -8,6 +8,8 @@
     <!-- Dialog -->
     <string name="motivation_header_motivating">Starkes Ding!</string>
     <string name="motivation_header_sarcastic">Na sieh mal einer an…</string>
+    <string name="motivation_header_motivating_named">Starkes Ding, %1$s!</string>
+    <string name="motivation_header_sarcastic_named">Na sieh mal einer an, %1$s…</string>
     <string name="motivation_tap_to_continue">Tippen zum Weitermachen</string>
     <!-- unter der Serienzahl: %1$s = Routine-Name -->
     <plurals name="motivation_streak_unit">

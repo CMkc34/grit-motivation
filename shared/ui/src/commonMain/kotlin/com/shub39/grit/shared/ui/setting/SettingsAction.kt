@@ -54,6 +54,9 @@ sealed interface SettingsAction {
     /** fork: switch the plant's daily greeting on or off */
     data class ChangeDailyGreeting(val pref: Boolean) : SettingsAction
 
+    /** fork (#139): change how the plant calls the user; empty removes the name */
+    data class ChangeUserName(val name: String) : SettingsAction
+
     data object OnSettingsOpened : SettingsAction
 
     data object OnAboutViewed : SettingsAction

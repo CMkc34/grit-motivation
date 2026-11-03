@@ -53,8 +53,11 @@ import com.shub39.grit.shared.ui.components.middleItemShape
 import com.shub39.grit.shared.ui.setting.SettingsAction
 import com.shub39.grit.shared.ui.setting.SettingsState
 import com.shub39.grit.shared.ui.setting.ui.component.LocalePickerSheet
+import com.shub39.grit.shared.ui.setting.ui.component.UserNameDialog
 import com.shub39.grit.shared.ui.theme.flexFontEmphasis
 import grit.shared.ui.generated.resources.*
+import grit.shared.ui.generated.resources.user_name_setting
+import grit.shared.ui.generated.resources.user_name_setting_empty
 import kotlinx.datetime.DayOfWeek
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
@@ -73,6 +76,7 @@ fun RootPage(
 ) =
     PageFill(modifier = modifier.fillMaxSize()) {
         var showLocalePicker by rememberSaveable { mutableStateOf(false) }
+        var showUserName by rememberSaveable { mutableStateOf(false) }
 
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
         Column(
@@ -181,6 +185,24 @@ fun RootPage(
                             },
                             colors = listItemColors(),
                             modifier = Modifier.clip(middleItemShape()),
+                        )
+
+                        // fork (#139): the user's own name for greetings and popups
+                        ListItem(
+                            headlineContent = {
+                                Text(text = stringResource(Res.string.user_name_setting))
+                            },
+                            supportingContent = {
+                                Text(
+                                    text =
+                                        state.userName.ifBlank {
+                                            stringResource(Res.string.user_name_setting_empty)
+                                        }
+                                )
+                            },
+                            colors = listItemColors(),
+                            modifier =
+                                Modifier.clip(middleItemShape()).clickable { showUserName = true },
                         )
 
                         ListItem(
@@ -348,6 +370,17 @@ fun RootPage(
 
             if (showLocalePicker) {
                 LocalePickerSheet(onDismissRequest = { showLocalePicker = false })
+            }
+
+            if (showUserName) {
+                UserNameDialog(
+                    currentName = state.userName,
+                    onSave = {
+                        onAction(SettingsAction.ChangeUserName(it))
+                        showUserName = false
+                    },
+                    onDismiss = { showUserName = false },
+                )
             }
         }
     }

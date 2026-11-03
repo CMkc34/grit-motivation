@@ -113,13 +113,16 @@ private const val TAP_GUARD_MILLIS = 600L
 
 /**
  * Full screen celebration with slowly turning light rays. Tapping anywhere or the back key closes
- * it. [content] is centered, a blinking "tap to continue" hint sits at the bottom.
+ * it. [content] is centered, a blinking "tap to continue" hint sits at the bottom. Without
+ * [tapToDismiss] only the back key closes it and the hint is left out, for a stage with its own
+ * buttons and input.
  */
 @Composable
 fun CelebrationStage(
     colors: StageColors,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
+    tapToDismiss: Boolean = true,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Dialog(
@@ -172,7 +175,7 @@ fun CelebrationStage(
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
-                        onClick = { if (ready) onDismiss() },
+                        onClick = { if (ready && tapToDismiss) onDismiss() },
                     )
         ) {
             Column(
@@ -183,12 +186,14 @@ fun CelebrationStage(
                 Spacer(Modifier.weight(1f))
                 content()
                 Spacer(Modifier.weight(1f))
-                Text(
-                    text = stringResource(Res.string.motivation_tap_to_continue),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = Color.White,
-                    modifier = Modifier.graphicsLayer { alpha = hintAlpha },
-                )
+                if (tapToDismiss) {
+                    Text(
+                        text = stringResource(Res.string.motivation_tap_to_continue),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = Color.White,
+                        modifier = Modifier.graphicsLayer { alpha = hintAlpha },
+                    )
+                }
             }
         }
     }

@@ -32,6 +32,10 @@ class FakeAvatarStore(initial: AvatarData = AvatarData()) : AvatarStore {
         data.update { it.copy(name = name) }
     }
 
+    override suspend fun setUserName(name: String) {
+        data.update { it.copy(userName = name) }
+    }
+
     override suspend fun addPurchase(purchase: Purchase) {
         data.update { it.copy(purchases = it.purchases + purchase) }
     }

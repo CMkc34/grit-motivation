@@ -28,6 +28,8 @@ data class AvatarData(
     val decorations: Set<String> = emptySet(),
     /** Highest stage the user has been told about, so a new stage is announced once. */
     val seenStage: Int = 0,
+    /** How the plant calls the user (#139); empty while the user has not given a name. */
+    val userName: String = "",
 ) {
     /**
      * Combines the current record with a restored backup: purchases are joined (the earlier one
@@ -45,6 +47,7 @@ data class AvatarData(
             accessories = accessories.ifEmpty { backup.accessories },
             decorations = decorations.ifEmpty { backup.decorations },
             seenStage = maxOf(seenStage, backup.seenStage),
+            userName = userName.ifBlank { backup.userName },
         )
 }
 
@@ -52,6 +55,8 @@ interface AvatarStore {
     fun getAvatar(): Flow<AvatarData>
 
     suspend fun setName(name: String)
+
+    suspend fun setUserName(name: String)
 
     suspend fun addPurchase(purchase: Purchase)
 

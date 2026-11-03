@@ -23,6 +23,7 @@ import com.shub39.grit.core.activity.ActivityRepo
 import com.shub39.grit.core.activity.DayStatus
 import com.shub39.grit.core.activity.FreezeNotice
 import com.shub39.grit.core.avatar.AvatarRepo
+import com.shub39.grit.core.avatar.UserName
 import com.shub39.grit.core.habits.Habit
 import com.shub39.grit.core.habits.HabitRepo
 import com.shub39.grit.core.habits.HabitStatus
@@ -31,6 +32,7 @@ import com.shub39.grit.core.interfaces.AlarmScheduler
 import com.shub39.grit.core.interfaces.AnalyticsWrapper
 import com.shub39.grit.core.interfaces.SettingsDatastore
 import com.shub39.grit.core.motivation.DailyGreeting
+import com.shub39.grit.core.motivation.FirstLaunchSetup
 import com.shub39.grit.core.motivation.GreetingKind
 import com.shub39.grit.core.motivation.GritQuoteEngine
 import com.shub39.grit.core.motivation.MotivationSettings
@@ -123,6 +125,13 @@ class HabitViewModel(
             .map { it.bonusPopup }
             .distinctUntilChanged()
             .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    /** The first start setup asking for the user's name, observed app-wide (#139). */
+    val nameSetup: StateFlow<Boolean> =
+        _state
+            .map { it.nameSetup }
+            .distinctUntilChanged()
+            .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     /** Greeting on the first app start of a day, observed by the app-wide greeting host. */
     val dailyGreeting: StateFlow<DailyGreetingState?> =
@@ -266,6 +275,14 @@ class HabitViewModel(
                             showHabitAddSheet = it.showHabitAddSheet || welcome,
                         )
                     }
+                }
+
+                is HabitsAction.FinishNameSetup -> {
+                    val name = UserName.clean(action.name)
+                    if (name.isNotEmpty()) avatarRepo.setUserName(name)
+                    motivationSettings.setSetupDone()
+                    _state.update { it.copy(nameSetup = false) }
+                    checkDailyGreeting()
                 }
 
                 HabitsAction.DismissFreezeNotice -> {
@@ -496,10 +513,24 @@ class HabitViewModel(
      * bring it back.
      */
     private suspend fun checkDailyGreeting() {
-        if (checkingGreeting || _state.value.dailyGreeting != null) return
+        if (checkingGreeting || _state.value.dailyGreeting != null || _state.value.nameSetup) return
         checkingGreeting = true
         try {
             val today = LocalDate.now()
+            // the very first start asks for the user's name before the welcome greeting (#139)
+            if (!motivationSettings.getSetupDone().first()) {
+                val setupDue =
+                    FirstLaunchSetup.isDue(
+                        done = false,
+                        lastGreeting = motivationSettings.getLastGreetingDay().first(),
+                        hasRoutines = repo.getHabits().isNotEmpty(),
+                    )
+                if (setupDue) {
+                    _state.update { it.copy(nameSetup = true) }
+                    return
+                }
+                motivationSettings.setSetupDone()
+            }
             val due =
                 DailyGreeting.isDue(
                     enabled = motivationSettings.getGreetingEnabled().first(),

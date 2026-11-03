@@ -52,7 +52,9 @@ import com.shub39.grit.shared.ui.theme.flexFontEmphasis
 import grit.shared.ui.generated.resources.Res
 import grit.shared.ui.generated.resources.energy_popup_line
 import grit.shared.ui.generated.resources.motivation_header_motivating
+import grit.shared.ui.generated.resources.motivation_header_motivating_named
 import grit.shared.ui.generated.resources.motivation_header_sarcastic
+import grit.shared.ui.generated.resources.motivation_header_sarcastic_named
 import grit.shared.ui.generated.resources.motivation_streak_unit
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
@@ -74,14 +76,27 @@ fun HabitMotivationPopup(
     modifier: Modifier = Modifier,
 ) {
     CelebrationStage(colors = CheckInStageColors, onDismiss = onDismiss, modifier = modifier) {
+        // the user's name in the header when they gave one (#139)
+        val userName = avatar?.data?.userName.orEmpty()
         Text(
             text =
-                stringResource(
-                        when (quote.tone) {
-                            QuoteTone.MOTIVATING -> Res.string.motivation_header_motivating
-                            QuoteTone.SARCASTIC -> Res.string.motivation_header_sarcastic
-                        }
-                    )
+                if (userName.isBlank()) {
+                        stringResource(
+                            when (quote.tone) {
+                                QuoteTone.MOTIVATING -> Res.string.motivation_header_motivating
+                                QuoteTone.SARCASTIC -> Res.string.motivation_header_sarcastic
+                            }
+                        )
+                    } else {
+                        stringResource(
+                            when (quote.tone) {
+                                QuoteTone.MOTIVATING ->
+                                    Res.string.motivation_header_motivating_named
+                                QuoteTone.SARCASTIC -> Res.string.motivation_header_sarcastic_named
+                            },
+                            userName,
+                        )
+                    }
                     .uppercase(),
             style = MaterialTheme.typography.labelLarge.copy(letterSpacing = 3.sp),
             color = StageYellow,

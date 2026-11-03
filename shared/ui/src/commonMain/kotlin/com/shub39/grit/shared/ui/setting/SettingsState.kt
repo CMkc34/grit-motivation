@@ -40,6 +40,8 @@ data class SettingsState(
     val isBiometricLockAvailable: Boolean = false,
     val motivationPopup: Boolean = true,
     val dailyGreeting: Boolean = true,
+    // fork (#139): how the plant calls the user, empty without a name
+    val userName: String = "",
 )
 
 @Stable

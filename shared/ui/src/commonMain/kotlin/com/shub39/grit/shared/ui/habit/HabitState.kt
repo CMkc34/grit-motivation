@@ -51,6 +51,7 @@ import kotlinx.datetime.DayOfWeek
  * @property bonusPopup Popup for the daily bonus, shown after [motivationPopup]; `null` when
  *   hidden.
  * @property dailyGreeting Greeting on the first app start of a day, `null` when hidden.
+ * @property nameSetup The plant asks for the user's name on the very first start (#139).
  * @property activity Activity streak and energy across all habits, `null` until loaded.
  * @property avatar The plant avatar on the avatar page, `null` until loaded.
  * @property routineStyles Colour and icon by habit id; habits without an entry use
@@ -68,6 +69,7 @@ data class HabitState(
     val motivationPopup: MotivationPopupState? = null,
     val bonusPopup: BonusPopupState? = null,
     val dailyGreeting: DailyGreetingState? = null,
+    val nameSetup: Boolean = false,
     val activity: ActivityReport? = null,
     val stats: ForkStats = ForkStats(),
     val avatar: AvatarState? = null,

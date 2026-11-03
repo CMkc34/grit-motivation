@@ -534,6 +534,19 @@ mit Namensschild in der Mitte, Shop A).
   kaufbar (`PurchaseCheck.OUT_OF_SEASON`); gekaufte bleiben für immer. Der Reiter „Saison“ erscheint
   nur, wenn es gerade Saisonteile gibt oder welche gekauft wurden. Noch keine Saisonteile im Katalog.
 
+### 8.5c Dein Name (#139)
+Abgestimmt am 2026-11-03 (Vorschau: https://claude.ai/artifact/4yCPNBHmtM9TUwaiFTvaj2, Einrichtung A,
+Anrede A).
+- Beim allerersten Start (`FirstLaunchSetup.isDue`: Einrichtung nicht erledigt, noch nie begrüßt,
+  keine Routinen) fragt der Samen vor der Willkommens-Begrüßung auf eigener Bühne „Wie darf ich
+  dich nennen?“ (Weiter / Überspringen, Zurück-Taste überspringt). Bestehende Installationen sehen
+  den Schritt nie (`user_setup_done` wird gesetzt). Später kommt hier die Avatar-Wahl (#140) dazu.
+- Der Name (`AvatarData.userName`, DataStore `avatar_user_name`, Backup-Feld `userName` im Avatar,
+  höchstens 24 Zeichen) steht nur in Überschriften: Tagesbegrüßung („Guten Morgen, Lena“),
+  Willkommen („Hallo Lena, ich bin Sprout!“) und Motivations-Pop-up („Starkes Ding, Lena!“). Die
+  Sprüche bleiben unverändert. Ohne Namen sieht alles aus wie vorher.
+- Ändern unter Einstellungen → „Dein Name“; leer entfernt den Namen.
+
 ### 8.6 Issues
 | # | Inhalt |
 |---|---|

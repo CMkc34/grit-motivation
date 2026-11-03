@@ -27,6 +27,7 @@ import com.shub39.grit.core.avatar.PurchaseCheck
 import com.shub39.grit.core.avatar.Shop
 import com.shub39.grit.core.avatar.ShopCatalog
 import com.shub39.grit.core.avatar.ShopItemKind
+import com.shub39.grit.core.avatar.UserName
 import com.shub39.grit.core.now
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -63,6 +64,8 @@ class AvatarRepository(private val activityRepo: ActivityRepo, private val store
     }
 
     override suspend fun rename(name: String) = store.setName(name)
+
+    override suspend fun setUserName(name: String) = store.setUserName(UserName.clean(name))
 
     override suspend fun wear(itemId: String, worn: Boolean) {
         val item = ShopCatalog.byId(itemId) ?: return

@@ -9,6 +9,8 @@
     <!-- Dialog -->
     <string name="motivation_header_motivating">Nice one!</string>
     <string name="motivation_header_sarcastic">Well, look at that…</string>
+    <string name="motivation_header_motivating_named">Nice one, %1$s!</string>
+    <string name="motivation_header_sarcastic_named">Well, look at that, %1$s…</string>
     <string name="motivation_tap_to_continue">Tap to continue</string>
     <!-- below the streak number: %1$s = routine name -->
     <plurals name="motivation_streak_unit">
