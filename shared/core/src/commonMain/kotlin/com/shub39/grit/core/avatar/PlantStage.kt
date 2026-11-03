@@ -64,6 +64,14 @@ data class PlantState(
     val daysToNextStage: Int?
         get() = stage.next?.let { it.minActiveDays - activeDays }
 
+    /** How far the plant is on its way to the next stage, from 0 to 1; 1 at the last stage. */
+    val stageProgress: Float
+        get() {
+            val next = stage.next ?: return 1f
+            val done = activeDays - stage.minActiveDays
+            return (done.toFloat() / (next.minActiveDays - stage.minActiveDays)).coerceIn(0f, 1f)
+        }
+
     companion object {
         fun of(report: ActivityReport): PlantState {
             val activeDays = report.days.values.count { it == DayStatus.ACTIVE }

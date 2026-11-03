@@ -16,15 +16,10 @@
  */
 package com.shub39.grit.shared.ui.habit.avatar
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -34,10 +29,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
@@ -46,15 +39,12 @@ import com.shub39.grit.core.avatar.AvatarState
 import com.shub39.grit.core.avatar.PlantMood
 import com.shub39.grit.core.avatar.PlantStage
 import com.shub39.grit.core.avatar.PlantState
-import com.shub39.grit.core.avatar.Weather
 import com.shub39.grit.shared.ui.GritPreviewWrapper
 import com.shub39.grit.shared.ui.components.GritDialog
 import com.shub39.grit.shared.ui.theme.flexFontEmphasis
 import grit.shared.ui.generated.resources.Res
 import grit.shared.ui.generated.resources.avatar_cancel
-import grit.shared.ui.generated.resources.avatar_days_to_next
 import grit.shared.ui.generated.resources.avatar_default_name
-import grit.shared.ui.generated.resources.avatar_fully_grown
 import grit.shared.ui.generated.resources.avatar_new_stage_ok
 import grit.shared.ui.generated.resources.avatar_new_stage_text
 import grit.shared.ui.generated.resources.avatar_new_stage_title
@@ -73,17 +63,11 @@ import grit.shared.ui.generated.resources.avatar_stage_6
 import grit.shared.ui.generated.resources.avatar_stage_7
 import grit.shared.ui.generated.resources.avatar_stage_8
 import grit.shared.ui.generated.resources.avatar_stage_9
-import grit.shared.ui.generated.resources.avatar_stage_label
-import grit.shared.ui.generated.resources.avatar_tired
 import org.jetbrains.compose.resources.StringResource
-import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 
 // the longest name that still fits under the plant
 private const val MAX_NAME_LENGTH = 24
-
-// the plant on the Avatar tab is shown bigger than in the shop's preview (#110)
-private const val CARD_PLANT_SCALE = 1.3f
 
 private fun PlantStage.nameRes(): StringResource =
     when (this) {
@@ -107,85 +91,6 @@ private fun PlantStage.nameRes(): StringResource =
 @Composable
 fun plantName(data: AvatarData): String =
     data.name.ifBlank { stringResource(Res.string.avatar_default_name) }
-
-/**
- * The plant on its meadow at the top of the Avatar tab with its name, stage and progress. Tapping
- * the name opens [onRenameClick].
- */
-@Composable
-fun AvatarCard(avatar: AvatarState, onRenameClick: () -> Unit, modifier: Modifier = Modifier) {
-    val plant = avatar.plant
-
-    Card(
-        modifier = modifier.widthIn(max = 500.dp).fillMaxWidth(),
-        colors =
-            CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-        shape = MaterialTheme.shapes.extraLarge,
-    ) {
-        Column(
-            // the wide meadow reaches closer to the card's edges than the text
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            MeadowScene(
-                stage = plant.stage,
-                mood = plant.mood,
-                potColor = avatar.data.potColor,
-                accessories = avatar.data.accessories,
-                decorations = avatar.data.decorations,
-                weather = plant.weather,
-                plantScale = CARD_PLANT_SCALE,
-                modifier = Modifier.widthIn(max = 480.dp).fillMaxWidth(),
-            )
-
-            Text(
-                text = "${plantName(avatar.data)} ✎",
-                style =
-                    MaterialTheme.typography.headlineSmall.copy(fontFamily = flexFontEmphasis()),
-                textAlign = TextAlign.Center,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.clickable(onClick = onRenameClick).padding(4.dp),
-            )
-
-            Text(
-                text =
-                    stringResource(
-                        Res.string.avatar_stage_label,
-                        plant.stage.number,
-                        stageName(plant.stage),
-                    ),
-                style = MaterialTheme.typography.titleSmall,
-                textAlign = TextAlign.Center,
-            )
-
-            val daysToNext = plant.daysToNextStage
-            Text(
-                text =
-                    if (daysToNext == null) stringResource(Res.string.avatar_fully_grown)
-                    else
-                        pluralStringResource(
-                            Res.plurals.avatar_days_to_next,
-                            daysToNext,
-                            daysToNext,
-                        ),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-            )
-
-            if (plant.mood == PlantMood.TIRED) {
-                Text(
-                    text = stringResource(Res.string.avatar_tired),
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 8.dp),
-                )
-            }
-        }
-    }
-}
 
 /** Asks for a new name; an empty name brings back the default. */
 @Composable
@@ -261,27 +166,6 @@ private val previewAvatar =
                 decorations = setOf("deco_mushrooms", "deco_rabbit"),
             ),
     )
-
-@PreviewWrapper(GritPreviewWrapper::class)
-@Preview
-@Composable
-private fun AvatarCardPreview() {
-    AvatarCard(avatar = previewAvatar, onRenameClick = {})
-}
-
-@PreviewWrapper(GritPreviewWrapper::class)
-@Preview
-@Composable
-private fun TiredAvatarCardPreview() {
-    AvatarCard(
-        avatar =
-            previewAvatar.copy(
-                plant = PlantState(400, PlantStage.MIGHTY_TREE, PlantMood.TIRED, Weather.OVERCAST),
-                data = AvatarData(name = "Fridolin"),
-            ),
-        onRenameClick = {},
-    )
-}
 
 @PreviewWrapper(GritPreviewWrapper::class)
 @Preview

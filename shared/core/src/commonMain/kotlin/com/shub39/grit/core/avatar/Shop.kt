@@ -32,6 +32,11 @@ data class ShopItem(
     val kind: ShopItemKind,
     val price: Int,
     val minStage: PlantStage,
+    /**
+     * Only for seasonal items: when they are for sale. Outside of it they disappear from the shop
+     * unless they were bought; bought ones stay forever.
+     */
+    val season: SaleWindow? = null,
 )
 
 /** A bought item. The price is kept, so later price changes do not rewrite the past. */
@@ -76,6 +81,8 @@ enum class PurchaseCheck {
     ALREADY_OWNED,
     STAGE_TOO_LOW,
     NOT_ENOUGH_ENERGY,
+    /** A seasonal item outside of its sale window. */
+    OUT_OF_SEASON,
 }
 
 object Shop {
@@ -84,14 +91,29 @@ object Shop {
         ShopCatalog.items.filter { it.price == 0 }.map { it.id }.toSet() +
             purchases.map { it.itemId }
 
+    /**
+     * The items the shop shows on [today]: everything except seasonal items outside of their window
+     * that were not bought.
+     */
+    fun offered(
+        today: LocalDate,
+        purchases: List<Purchase>,
+        items: List<ShopItem> = ShopCatalog.items,
+    ): List<ShopItem> {
+        val owned = owned(purchases)
+        return items.filter { it.id in owned || it.isForSale(today) }
+    }
+
     fun check(
         item: ShopItem,
         stage: PlantStage,
         energy: Int,
         purchases: List<Purchase>,
+        today: LocalDate,
     ): PurchaseCheck =
         when {
             item.id in owned(purchases) -> PurchaseCheck.ALREADY_OWNED
+            !item.isForSale(today) -> PurchaseCheck.OUT_OF_SEASON
             stage < item.minStage -> PurchaseCheck.STAGE_TOO_LOW
             energy < item.price -> PurchaseCheck.NOT_ENOUGH_ENERGY
             else -> PurchaseCheck.OK

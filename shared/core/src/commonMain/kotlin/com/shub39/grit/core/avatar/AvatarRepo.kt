@@ -16,10 +16,17 @@
  */
 package com.shub39.grit.core.avatar
 
+import com.shub39.grit.core.now
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.LocalDate
 
-/** The plant as the UI shows it. */
-data class AvatarState(val plant: PlantState, val energy: Int, val data: AvatarData) {
+/** The plant as the UI shows it; [today] decides which seasonal items are for sale. */
+data class AvatarState(
+    val plant: PlantState,
+    val energy: Int,
+    val data: AvatarData,
+    val today: LocalDate = LocalDate.now(),
+) {
     val owned: Set<String>
         get() = Shop.owned(data.purchases)
 
@@ -27,7 +34,12 @@ data class AvatarState(val plant: PlantState, val energy: Int, val data: AvatarD
     val newStage: PlantStage?
         get() = plant.stage.takeIf { it.number > data.seenStage && data.seenStage > 0 }
 
-    fun check(item: ShopItem): PurchaseCheck = Shop.check(item, plant.stage, energy, data.purchases)
+    fun check(item: ShopItem): PurchaseCheck =
+        Shop.check(item, plant.stage, energy, data.purchases, today)
+
+    /** What the shop shows today, see [Shop.offered]. */
+    val offered: List<ShopItem>
+        get() = Shop.offered(today, data.purchases)
 
     fun isWorn(item: ShopItem): Boolean =
         when (item.kind) {

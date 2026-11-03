@@ -41,7 +41,12 @@ class AvatarRepository(private val activityRepo: ActivityRepo, private val store
 
     override fun getAvatarState(): Flow<AvatarState> =
         combine(activityRepo.getActivityReport(), store.getAvatar()) { report, data ->
-                AvatarState(plant = PlantState.of(report), energy = report.energy, data = data)
+                AvatarState(
+                    plant = PlantState.of(report),
+                    energy = report.energy,
+                    data = data,
+                    today = LocalDate.now(),
+                )
             }
             // the first look sets the stage the user knows, later stages are announced
             .onEach { if (it.data.seenStage == 0) store.markStageSeen(it.plant.stage.number) }
@@ -49,7 +54,7 @@ class AvatarRepository(private val activityRepo: ActivityRepo, private val store
     override suspend fun buy(itemId: String): PurchaseCheck {
         val item = ShopCatalog.byId(itemId) ?: return PurchaseCheck.ALREADY_OWNED
         val state = getAvatarState().first()
-        val check = Shop.check(item, state.plant.stage, state.energy, state.data.purchases)
+        val check = state.check(item)
         if (check != PurchaseCheck.OK) return check
 
         store.addPurchase(Purchase(itemId = item.id, date = LocalDate.now(), price = item.price))

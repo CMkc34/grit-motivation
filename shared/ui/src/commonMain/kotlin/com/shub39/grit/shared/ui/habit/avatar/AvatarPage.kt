@@ -17,14 +17,28 @@
 package com.shub39.grit.shared.ui.habit.avatar
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,7 +46,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
@@ -42,69 +60,106 @@ import com.shub39.grit.core.avatar.PlantMood
 import com.shub39.grit.core.avatar.PlantStage
 import com.shub39.grit.core.avatar.PlantState
 import com.shub39.grit.core.avatar.Purchase
-import com.shub39.grit.core.avatar.ShopItem
+import com.shub39.grit.core.avatar.Weather
 import com.shub39.grit.shared.ui.GritPreviewWrapper
 import com.shub39.grit.shared.ui.LocalWindowSizeClass
 import com.shub39.grit.shared.ui.WindowSize.Companion.isExpanded
 import com.shub39.grit.shared.ui.habit.HabitsAction
-import com.shub39.grit.shared.ui.habit.ui.sections.EnergyBalance
+import com.shub39.grit.shared.ui.habit.ui.component.WATER_MARK
+import com.shub39.grit.shared.ui.habit.ui.component.WaterText
 import com.shub39.grit.shared.ui.theme.flexFontEmphasis
 import grit.shared.ui.generated.resources.Res
-import grit.shared.ui.generated.resources.avatar_tab
+import grit.shared.ui.generated.resources.avatar_stage_short_days
+import grit.shared.ui.generated.resources.avatar_stage_short_grown
+import grit.shared.ui.generated.resources.avatar_tired
+import grit.shared.ui.generated.resources.shop_open
+import grit.shared.ui.generated.resources.shopping_bag
 import kotlinx.datetime.LocalDate
+import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
+
+// the meadow never gets wider than this, on tablets it stands in the middle of the page
+private val MAX_SCENE_WIDTH = 600.dp
+
+// room for the bar on top of the sky, the sun and the clouds start below it
+private val TOP_BAR_SPACE = 76.dp
+
+// the plant is drawn bigger on the full page, but never bigger than half the scene's height
+private const val MAX_PLANT_SCALE = 1.6f
 
 /**
- * Own tab for the plant: energy balance on top (so the shop shows what can be spent), then the
- * plant with its name and progress, then the shop. The meadow around the plant can take decorations
- * later (#82).
+ * Own tab for the plant: the meadow fills the whole page. On top sit the water balance, the plant's
+ * name with its progress (tap to rename) and the button to the shop, which has its own page.
  */
 @Composable
 fun AvatarPage(
     avatar: AvatarState?,
     onAction: (HabitsAction) -> Unit,
+    onOpenShop: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val windowSizeClass = LocalWindowSizeClass.current
     var showRename by remember { mutableStateOf(false) }
-    var itemToBuy by remember { mutableStateOf<ShopItem?>(null) }
 
-    Column(modifier = modifier.fillMaxSize()) {
-        TopAppBar(
-            colors =
-                TopAppBarDefaults.topAppBarColors(
-                    scrolledContainerColor = Color.Transparent,
-                    containerColor = Color.Transparent,
-                ),
-            title = {
-                Text(text = stringResource(Res.string.avatar_tab), fontFamily = flexFontEmphasis())
-            },
-            windowInsets =
-                if (windowSizeClass.isExpanded()) {
-                    WindowInsets(0)
-                } else {
-                    TopAppBarDefaults.windowInsets
-                },
-        )
+    Box(modifier = modifier.fillMaxSize()) {
+        if (avatar == null) return@Box
 
-        if (avatar == null) return@Column
+        val expanded = LocalWindowSizeClass.current.isExpanded()
+        val statusBar =
+            if (expanded) 0.dp else WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 60.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+        BoxWithConstraints(
+            modifier = Modifier.fillMaxSize().clipToBounds(),
+            contentAlignment = Alignment.BottomCenter,
         ) {
-            item { EnergyBalance(energy = avatar.energy) }
+            val width = minOf(maxWidth, MAX_SCENE_WIDTH)
+            // one meadow height, the unit MeadowScene draws in
+            val unit = width / MEADOW_ASPECT_RATIO
+            val sceneHeight = maxHeight / unit
+            val plantScale = (sceneHeight / 2f).coerceIn(1f, MAX_PLANT_SCALE)
 
-            item { AvatarCard(avatar = avatar, onRenameClick = { showRename = true }) }
+            MeadowScene(
+                stage = avatar.plant.stage,
+                mood = avatar.plant.mood,
+                potColor = avatar.data.potColor,
+                accessories = avatar.data.accessories,
+                decorations = avatar.data.decorations,
+                weather = avatar.plant.weather,
+                plantScale = plantScale,
+                sceneHeight = sceneHeight,
+                skyTop = (statusBar + TOP_BAR_SPACE) / unit,
+                shape = RectangleShape,
+                modifier = Modifier.width(width),
+            )
+        }
 
-            item {
-                AvatarShop(
-                    avatar = avatar,
-                    onBuyClick = { itemToBuy = it },
-                    onWear = { item, worn -> onAction(HabitsAction.WearShopItem(item.id, worn)) },
-                )
+        Column(
+            modifier =
+                Modifier.align(Alignment.TopCenter)
+                    .padding(top = statusBar + 8.dp, start = 12.dp, end = 12.dp)
+                    .widthIn(max = MAX_SCENE_WIDTH)
+                    .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            AvatarTopBar(
+                avatar = avatar,
+                onRenameClick = { showRename = true },
+                onOpenShop = onOpenShop,
+            )
+
+            if (avatar.plant.mood == PlantMood.TIRED) {
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    color = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.9f),
+                ) {
+                    Text(
+                        text = stringResource(Res.string.avatar_tired),
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                    )
+                }
             }
         }
     }
@@ -120,24 +175,91 @@ fun AvatarPage(
         )
     }
 
-    val buying = itemToBuy
-    if (avatar != null && buying != null) {
-        BuyItemDialog(
-            avatar = avatar,
-            item = buying,
-            onConfirm = {
-                onAction(HabitsAction.BuyShopItem(buying.id))
-                itemToBuy = null
-            },
-            onDismiss = { itemToBuy = null },
-        )
-    }
-
     avatar?.newStage?.let { stage ->
         NewStageDialog(
             avatar = avatar,
             stage = stage,
             onDismiss = { onAction(HabitsAction.DismissNewStage) },
+        )
+    }
+}
+
+/** Water on the left, the name sign in the middle, the shop button on the right. */
+@Composable
+private fun AvatarTopBar(avatar: AvatarState, onRenameClick: () -> Unit, onOpenShop: () -> Unit) {
+    val plant = avatar.plant
+    val paper = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.9f)
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        WaterChip(energy = avatar.energy)
+
+        Surface(
+            onClick = onRenameClick,
+            modifier = Modifier.weight(1f),
+            shape = RoundedCornerShape(16.dp),
+            color = paper,
+        ) {
+            Column(
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(3.dp),
+            ) {
+                Text(
+                    text = "${plantName(avatar.data)} ✎",
+                    style =
+                        MaterialTheme.typography.titleMedium.copy(fontFamily = flexFontEmphasis()),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                LinearProgressIndicator(
+                    progress = { plant.stageProgress },
+                    modifier = Modifier.fillMaxWidth().height(6.dp),
+                )
+                val daysToNext = plant.daysToNextStage
+                Text(
+                    text =
+                        if (daysToNext == null)
+                            stringResource(Res.string.avatar_stage_short_grown, plant.stage.number)
+                        else
+                            pluralStringResource(
+                                Res.plurals.avatar_stage_short_days,
+                                daysToNext,
+                                plant.stage.number,
+                                daysToNext,
+                            ),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        }
+
+        FilledIconButton(onClick = onOpenShop, modifier = Modifier.size(48.dp)) {
+            Icon(
+                imageVector = vectorResource(Res.drawable.shopping_bag),
+                contentDescription = stringResource(Res.string.shop_open),
+            )
+        }
+    }
+}
+
+/** The water balance as a small paper pill, for the Avatar and the shop page. */
+@Composable
+internal fun WaterChip(energy: Int, modifier: Modifier = Modifier) {
+    Surface(
+        modifier = modifier,
+        shape = CircleShape,
+        color = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.9f),
+    ) {
+        WaterText(
+            text = "$WATER_MARK $energy",
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
         )
     }
 }
@@ -154,6 +276,7 @@ private fun AvatarPageFreshInstallPreview() {
                 data = AvatarData(),
             ),
         onAction = {},
+        onOpenShop = {},
     )
 }
 
@@ -166,9 +289,10 @@ private fun AvatarPageWithPurchasesPreview() {
             AvatarState(
                 plant =
                     PlantState(
-                        activeDays = 32,
-                        stage = PlantStage.YOUNG_PLANT,
+                        activeDays = 100,
+                        stage = PlantStage.TREE,
                         mood = PlantMood.HAPPY,
+                        weather = Weather.SUNNY,
                     ),
                 energy = 30,
                 data =
@@ -178,11 +302,14 @@ private fun AvatarPageWithPurchasesPreview() {
                             listOf(
                                 Purchase("pot_blue", LocalDate(2026, 10, 1), 10),
                                 Purchase("acc_ladybug", LocalDate(2026, 10, 2), 15),
+                                Purchase("deco_rabbit", LocalDate(2026, 10, 3), 30),
                             ),
                         potColor = "pot_blue",
                         accessories = setOf("acc_ladybug"),
+                        decorations = setOf("deco_rabbit"),
                     ),
             ),
         onAction = {},
+        onOpenShop = {},
     )
 }

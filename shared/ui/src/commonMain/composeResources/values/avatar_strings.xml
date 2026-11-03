@@ -89,4 +89,14 @@
 
     <!-- Avatar tab (Phase 5) -->
     <string name="avatar_tab">Avatar</string>
+
+    <!-- Meadow page and own shop page (#138) -->
+    <plurals name="avatar_stage_short_days">
+        <item quantity="one">Stage %1$d · %2$d day to go</item>
+        <item quantity="other">Stage %1$d · %2$d days to go</item>
+    </plurals>
+    <string name="avatar_stage_short_grown">Stage %1$d · fully grown</string>
+    <string name="shop_open">Open shop</string>
+    <string name="shop_seasonal">Season</string>
+    <string name="shop_out_of_season">Not on sale right now</string>
 </resources>
