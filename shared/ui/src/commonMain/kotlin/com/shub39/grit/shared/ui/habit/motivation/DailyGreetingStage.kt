@@ -56,8 +56,11 @@ import grit.shared.ui.generated.resources.greeting_growing_last
 import grit.shared.ui.generated.resources.greeting_growing_next
 import grit.shared.ui.generated.resources.greeting_growing_title
 import grit.shared.ui.generated.resources.greeting_header_day
+import grit.shared.ui.generated.resources.greeting_header_day_named
 import grit.shared.ui.generated.resources.greeting_header_evening
+import grit.shared.ui.generated.resources.greeting_header_evening_named
 import grit.shared.ui.generated.resources.greeting_header_morning
+import grit.shared.ui.generated.resources.greeting_header_morning_named
 import grit.shared.ui.generated.resources.greeting_header_welcome
 import grit.shared.ui.generated.resources.greeting_start
 import grit.shared.ui.generated.resources.greeting_tired_text
@@ -65,6 +68,7 @@ import grit.shared.ui.generated.resources.greeting_tired_title
 import grit.shared.ui.generated.resources.greeting_water
 import grit.shared.ui.generated.resources.greeting_welcome_text
 import grit.shared.ui.generated.resources.greeting_welcome_title
+import grit.shared.ui.generated.resources.greeting_welcome_title_named
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -111,22 +115,29 @@ fun DailyGreetingStage(
     val avatar = greeting.avatar
     val plant = avatar.plant
     val name = avatar.data.name.ifBlank { stringResource(Res.string.avatar_default_name) }
+    // the user's own name in the header and the welcome when they gave one (#139)
+    val userName = avatar.data.userName
 
     CelebrationStage(colors = CheckInStageColors, onDismiss = onDismiss, modifier = modifier) {
+        val header =
+            // the welcome has the name in its title already
+            if (greeting.kind == GreetingKind.WELCOME) {
+                Res.string.greeting_header_welcome
+            } else {
+                when (greeting.dayTime) {
+                    DayTime.MORNING ->
+                        if (userName.isBlank()) Res.string.greeting_header_morning
+                        else Res.string.greeting_header_morning_named
+                    DayTime.DAY ->
+                        if (userName.isBlank()) Res.string.greeting_header_day
+                        else Res.string.greeting_header_day_named
+                    DayTime.EVENING ->
+                        if (userName.isBlank()) Res.string.greeting_header_evening
+                        else Res.string.greeting_header_evening_named
+                }
+            }
         Text(
-            text =
-                stringResource(
-                        if (greeting.kind == GreetingKind.WELCOME) {
-                            Res.string.greeting_header_welcome
-                        } else {
-                            when (greeting.dayTime) {
-                                DayTime.MORNING -> Res.string.greeting_header_morning
-                                DayTime.DAY -> Res.string.greeting_header_day
-                                DayTime.EVENING -> Res.string.greeting_header_evening
-                            }
-                        }
-                    )
-                    .uppercase(),
+            text = stringResource(header, userName).uppercase(),
             style = MaterialTheme.typography.labelLarge.copy(letterSpacing = 3.sp),
             color = StageYellow,
             textAlign = TextAlign.Center,
@@ -154,7 +165,9 @@ fun DailyGreetingStage(
 
         val title =
             when (greeting.kind) {
-                GreetingKind.WELCOME -> stringResource(Res.string.greeting_welcome_title, name)
+                GreetingKind.WELCOME ->
+                    if (userName.isBlank()) stringResource(Res.string.greeting_welcome_title, name)
+                    else stringResource(Res.string.greeting_welcome_title_named, userName, name)
                 GreetingKind.FIRST_DAY -> stringResource(Res.string.greeting_first_day_title)
                 GreetingKind.TIRED -> stringResource(Res.string.greeting_tired_title)
                 GreetingKind.GROWING ->

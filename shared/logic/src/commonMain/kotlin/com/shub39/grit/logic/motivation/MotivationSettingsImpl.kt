@@ -35,6 +35,7 @@ class MotivationSettingsImpl(private val datastore: DataStore<Preferences>) : Mo
         private val popupEnabledKey = booleanPreferencesKey("motivation_popup_on")
         private val greetingEnabledKey = booleanPreferencesKey("daily_greeting_on")
         private val lastGreetingKey = stringPreferencesKey("daily_greeting_last_day")
+        private val setupDoneKey = booleanPreferencesKey("user_setup_done")
     }
 
     override fun getPopupEnabled(): Flow<Boolean> =
@@ -58,5 +59,12 @@ class MotivationSettingsImpl(private val datastore: DataStore<Preferences>) : Mo
 
     override suspend fun setLastGreetingDay(day: LocalDate) {
         datastore.edit { prefs -> prefs[lastGreetingKey] = day.toString() }
+    }
+
+    override fun getSetupDone(): Flow<Boolean> =
+        datastore.data.map { prefs -> prefs[setupDoneKey] ?: false }
+
+    override suspend fun setSetupDone() {
+        datastore.edit { prefs -> prefs[setupDoneKey] = true }
     }
 }

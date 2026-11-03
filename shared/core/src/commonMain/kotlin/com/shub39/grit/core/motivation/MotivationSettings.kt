@@ -38,4 +38,9 @@ interface MotivationSettings {
     fun getLastGreetingDay(): Flow<LocalDate?>
 
     suspend fun setLastGreetingDay(day: LocalDate)
+
+    /** Whether the first start setup (#139) is done or was never needed; false by default. */
+    fun getSetupDone(): Flow<Boolean>
+
+    suspend fun setSetupDone()
 }

@@ -104,6 +104,15 @@ class HabitViewModelGreetingTest {
 
             viewModel.onAction(HabitsAction.CheckDailyGreeting)
 
+            // the very first start asks for the name first
+            assertTrue(viewModel.nameSetup.value)
+            assertNull(viewModel.dailyGreeting.value)
+
+            viewModel.onAction(HabitsAction.FinishNameSetup("  Lena "))
+
+            assertFalse(viewModel.nameSetup.value)
+            assertTrue(motivationSettings.setupDone.value)
+            assertEquals("Lena", avatarRepo.data.value.userName)
             val greeting = assertNotNull(viewModel.dailyGreeting.value)
             assertEquals(GreetingKind.WELCOME, greeting.kind)
             assertEquals(today, motivationSettings.lastGreetingDay.value)
@@ -112,6 +121,31 @@ class HabitViewModelGreetingTest {
 
             assertNull(viewModel.dailyGreeting.value)
             assertTrue(viewModel.state.value.showHabitAddSheet)
+        }
+
+    @Test
+    fun `skipping the name setup keeps the name empty`() =
+        runTest(dispatcher) {
+            val viewModel = viewModel(habits = emptyList())
+
+            viewModel.onAction(HabitsAction.CheckDailyGreeting)
+            viewModel.onAction(HabitsAction.FinishNameSetup(""))
+
+            assertEquals("", avatarRepo.data.value.userName)
+            assertTrue(motivationSettings.setupDone.value)
+            assertNotNull(viewModel.dailyGreeting.value)
+        }
+
+    @Test
+    fun `an install already in use never gets the name setup`() =
+        runTest(dispatcher) {
+            val viewModel = viewModel()
+
+            viewModel.onAction(HabitsAction.CheckDailyGreeting)
+
+            assertFalse(viewModel.nameSetup.value)
+            assertTrue(motivationSettings.setupDone.value)
+            assertNotNull(viewModel.dailyGreeting.value)
         }
 
     @Test

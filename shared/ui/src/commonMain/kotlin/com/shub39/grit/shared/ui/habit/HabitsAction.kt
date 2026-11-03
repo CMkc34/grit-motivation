@@ -76,6 +76,9 @@ sealed interface HabitsAction {
     /** close the daily greeting; the welcome greeting opens the add sheet afterwards */
     data object DismissDailyGreeting : HabitsAction
 
+    /** finish the first start setup with the user's [name]; empty skips it (#139) */
+    data class FinishNameSetup(val name: String) : HabitsAction
+
     /** close the freeze notice and remember its freezes as seen */
     data object DismissFreezeNotice : HabitsAction
 

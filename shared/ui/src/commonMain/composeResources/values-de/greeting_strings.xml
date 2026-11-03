@@ -31,4 +31,21 @@
     <string name="greeting_empty_title">%1$s wartet auf dich</string>
     <string name="greeting_empty_text">Leg eine Routine an, dann wacht %1$s auf.</string>
     <string name="greeting_empty_button">Routine anlegen</string>
+
+    <!-- Einrichtung beim ersten Start und dein Name (#139); %1$s = Name der Nutzerin / des Nutzers -->
+    <string name="greeting_header_morning_named">Guten Morgen, %1$s</string>
+    <string name="greeting_header_day_named">Hallo, %1$s</string>
+    <string name="greeting_header_evening_named">Guten Abend, %1$s</string>
+    <!-- %1$s = Name der Nutzerin / des Nutzers, %2$s = Name der Pflanze -->
+    <string name="greeting_welcome_title_named">Hallo %1$s, ich bin %2$s!</string>
+    <string name="setup_name_title">Wie darf ich dich nennen?</string>
+    <!-- %1$s = Name der Pflanze -->
+    <string name="setup_name_text">Hallo, ich bin %1$s! Mit deinem Namen kann ich dich persönlich begrüßen.</string>
+    <string name="setup_name_label">Dein Name</string>
+    <string name="setup_name_hint">Nur auf deinem Handy gespeichert.</string>
+    <string name="setup_name_next">Weiter</string>
+    <string name="setup_name_skip">Überspringen</string>
+    <string name="user_name_setting">Dein Name</string>
+    <string name="user_name_setting_empty">Noch kein Name, tippen zum Eintragen</string>
+    <string name="user_name_hint">Leer lassen für eine Begrüßung ohne Namen</string>
 </resources>

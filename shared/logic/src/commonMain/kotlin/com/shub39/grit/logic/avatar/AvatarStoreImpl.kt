@@ -42,6 +42,7 @@ class AvatarStoreImpl(private val datastore: DataStore<Preferences>) : AvatarSto
         private val accessoriesKey = stringSetPreferencesKey("avatar_accessories")
         private val decorationsKey = stringSetPreferencesKey("avatar_decorations")
         private val seenStageKey = intPreferencesKey("avatar_seen_stage")
+        private val userNameKey = stringPreferencesKey("avatar_user_name")
 
         private const val SEPARATOR = "|"
 
@@ -67,11 +68,16 @@ class AvatarStoreImpl(private val datastore: DataStore<Preferences>) : AvatarSto
                 accessories = prefs[accessoriesKey].orEmpty(),
                 decorations = prefs[decorationsKey].orEmpty(),
                 seenStage = prefs[seenStageKey] ?: 0,
+                userName = prefs[userNameKey].orEmpty(),
             )
         }
 
     override suspend fun setName(name: String) {
         datastore.edit { it[nameKey] = name.trim() }
+    }
+
+    override suspend fun setUserName(name: String) {
+        datastore.edit { it[userNameKey] = name }
     }
 
     override suspend fun addPurchase(purchase: Purchase) {
@@ -109,6 +115,7 @@ class AvatarStoreImpl(private val datastore: DataStore<Preferences>) : AvatarSto
             it[accessoriesKey] = data.accessories
             it[decorationsKey] = data.decorations
             it[seenStageKey] = data.seenStage
+            it[userNameKey] = data.userName
         }
     }
 }

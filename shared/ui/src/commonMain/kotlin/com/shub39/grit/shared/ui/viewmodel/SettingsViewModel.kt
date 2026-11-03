@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.grit.core.AnalyticsEvent
+import com.shub39.grit.core.avatar.AvatarRepo
 import com.shub39.grit.core.interfaces.AnalyticsWrapper
 import com.shub39.grit.core.interfaces.BiometricUtils
 import com.shub39.grit.core.interfaces.ChangelogManager
@@ -35,8 +36,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -55,6 +58,7 @@ class SettingsViewModel(
     @Provided private val biometricUtils: BiometricUtils,
     @Provided private val analytics: AnalyticsWrapper,
     @Provided private val motivationSettings: MotivationSettings,
+    @Provided private val avatarRepo: AvatarRepo,
 ) : ViewModel() {
     private var observeJob: Job? = null
 
@@ -210,6 +214,8 @@ class SettingsViewModel(
                     motivationSettings.setGreetingEnabled(action.pref)
                 }
 
+                is SettingsAction.ChangeUserName -> avatarRepo.setUserName(action.name)
+
                 OnSettingsOpened -> {
                     analytics.trackEvent(AnalyticsEvent.SETTINGS_OPENED, emptyMap())
                 }
@@ -314,6 +320,13 @@ class SettingsViewModel(
                 motivationSettings
                     .getGreetingEnabled()
                     .onEach { flow -> _state.update { it.copy(dailyGreeting = flow) } }
+                    .launchIn(this)
+
+                avatarRepo
+                    .getAvatarState()
+                    .map { it.data.userName }
+                    .distinctUntilChanged()
+                    .onEach { name -> _state.update { it.copy(userName = name) } }
                     .launchIn(this)
             }
         }

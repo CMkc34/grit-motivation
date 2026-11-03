@@ -65,6 +65,9 @@ interface AvatarRepo {
 
     suspend fun rename(name: String)
 
+    /** Stores how the plant calls the user, see [UserName.clean]. */
+    suspend fun setUserName(name: String)
+
     /**
      * Puts an owned item on or takes it off (a decoration is shown or hidden on the meadow); a pot
      * color can only be replaced, not removed.

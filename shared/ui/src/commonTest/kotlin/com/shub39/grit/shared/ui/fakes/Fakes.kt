@@ -176,6 +176,14 @@ class FakeMotivationSettings : MotivationSettings {
     override suspend fun setLastGreetingDay(day: LocalDate) {
         lastGreetingDay.value = day
     }
+
+    val setupDone = MutableStateFlow(false)
+
+    override fun getSetupDone(): Flow<Boolean> = setupDone
+
+    override suspend fun setSetupDone() {
+        setupDone.value = true
+    }
 }
 
 /** [ActivityRepo] whose report and freeze notice tests set directly or via [markActive]. */
@@ -236,6 +244,8 @@ class FakeAvatarRepo(
     }
 
     override suspend fun rename(name: String) = data.update { it.copy(name = name) }
+
+    override suspend fun setUserName(name: String) = data.update { it.copy(userName = name) }
 
     override suspend fun wear(itemId: String, worn: Boolean) =
         data.update {

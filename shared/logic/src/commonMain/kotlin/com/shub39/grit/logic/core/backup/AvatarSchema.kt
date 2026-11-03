@@ -34,6 +34,8 @@ data class AvatarSchema(
     val accessories: List<String> = emptyList(),
     val seenStage: Int = 0,
     val decorations: List<String> = emptyList(),
+    // #139: how the plant calls the user
+    val userName: String = "",
 )
 
 @Serializable data class PurchaseSchema(val itemId: String, val date: String, val price: Int)
@@ -46,6 +48,7 @@ fun AvatarData.toAvatarSchema(): AvatarSchema {
         accessories = accessories.sorted(),
         seenStage = seenStage,
         decorations = decorations.sorted(),
+        userName = userName,
     )
 }
 
@@ -57,5 +60,6 @@ fun AvatarSchema.toAvatarData(): AvatarData {
         accessories = accessories.toSet(),
         seenStage = seenStage,
         decorations = decorations.toSet(),
+        userName = userName,
     )
 }
