@@ -62,11 +62,8 @@ import com.shub39.grit.core.avatar.preview
 import com.shub39.grit.shared.ui.GritPreviewWrapper
 import com.shub39.grit.shared.ui.components.GritDialog
 import com.shub39.grit.shared.ui.habit.ui.component.WaterText
-import com.shub39.grit.shared.ui.theme.flexFontRounded
 import grit.shared.ui.generated.resources.Res
 import grit.shared.ui.generated.resources.avatar_cancel
-import grit.shared.ui.generated.resources.shop_accessories
-import grit.shared.ui.generated.resources.shop_balance
 import grit.shared.ui.generated.resources.shop_buy
 import grit.shared.ui.generated.resources.shop_buy_for
 import grit.shared.ui.generated.resources.shop_choose
@@ -74,7 +71,6 @@ import grit.shared.ui.generated.resources.shop_chosen
 import grit.shared.ui.generated.resources.shop_close
 import grit.shared.ui.generated.resources.shop_confirm_text
 import grit.shared.ui.generated.resources.shop_confirm_title
-import grit.shared.ui.generated.resources.shop_decorations
 import grit.shared.ui.generated.resources.shop_from_stage
 import grit.shared.ui.generated.resources.shop_item_acc_bird
 import grit.shared.ui.generated.resources.shop_item_acc_birdhouse
@@ -100,7 +96,7 @@ import grit.shared.ui.generated.resources.shop_item_pot_purple
 import grit.shared.ui.generated.resources.shop_item_pot_terracotta
 import grit.shared.ui.generated.resources.shop_item_pot_yellow
 import grit.shared.ui.generated.resources.shop_low_energy
-import grit.shared.ui.generated.resources.shop_pot_colors
+import grit.shared.ui.generated.resources.shop_out_of_season
 import grit.shared.ui.generated.resources.shop_preview
 import grit.shared.ui.generated.resources.shop_preview_missing
 import grit.shared.ui.generated.resources.shop_preview_stage
@@ -111,7 +107,6 @@ import grit.shared.ui.generated.resources.shop_put_away
 import grit.shared.ui.generated.resources.shop_put_on
 import grit.shared.ui.generated.resources.shop_set_up
 import grit.shared.ui.generated.resources.shop_take_off
-import grit.shared.ui.generated.resources.shop_title
 import grit.shared.ui.generated.resources.visibility
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.StringResource
@@ -172,13 +167,14 @@ private fun ShopItem.emoji(): String =
     }
 
 /**
- * Pot colors, accessories and meadow decorations bought with energy. [onBuyClick] opens the buy
- * dialog with its preview (also from the eye button of items that cannot be bought yet), [onWear]
- * puts an owned item on or takes it off.
+ * One tab of the shop page: [items] as rows. [onBuyClick] opens the buy dialog with its preview
+ * (also from the eye button of items that cannot be bought yet), [onWear] puts an owned item on or
+ * takes it off.
  */
 @Composable
-fun AvatarShop(
+fun ShopItemList(
     avatar: AvatarState,
+    items: List<ShopItem>,
     onBuyClick: (ShopItem) -> Unit,
     onWear: (ShopItem, Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -191,44 +187,17 @@ fun AvatarShop(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Text(
-                text = stringResource(Res.string.shop_title),
-                fontFamily = flexFontRounded(),
-                style = MaterialTheme.typography.titleMedium,
-            )
-            WaterText(
-                text = stringResource(Res.string.shop_balance, avatar.energy),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-
-            ShopKind.entries.forEach { kind ->
-                Text(
-                    text = stringResource(kind.title),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(top = 8.dp),
+            items.forEach { item ->
+                ShopRow(
+                    item = item,
+                    check = avatar.check(item),
+                    worn = avatar.isWorn(item),
+                    onBuyClick = { onBuyClick(item) },
+                    onWear = { onWear(item, it) },
                 )
-                ShopCatalog.items
-                    .filter { it.kind == kind.kind }
-                    .forEach { item ->
-                        ShopRow(
-                            item = item,
-                            check = avatar.check(item),
-                            worn = avatar.isWorn(item),
-                            onBuyClick = { onBuyClick(item) },
-                            onWear = { onWear(item, it) },
-                        )
-                    }
             }
         }
     }
-}
-
-private enum class ShopKind(val kind: ShopItemKind, val title: StringResource) {
-    POTS(ShopItemKind.POT_COLOR, Res.string.shop_pot_colors),
-    ACCESSORIES(ShopItemKind.ACCESSORY, Res.string.shop_accessories),
-    DECORATIONS(ShopItemKind.DECORATION, Res.string.shop_decorations),
 }
 
 @Composable
@@ -291,6 +260,12 @@ private fun ShopRow(
             PurchaseCheck.STAGE_TOO_LOW ->
                 Text(
                     text = "🔒 " + stringResource(Res.string.shop_from_stage, item.minStage.number),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            PurchaseCheck.OUT_OF_SEASON ->
+                Text(
+                    text = stringResource(Res.string.shop_out_of_season),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -405,6 +380,13 @@ fun BuyItemDialog(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
                 )
+            PurchaseCheck.OUT_OF_SEASON ->
+                Text(
+                    text = stringResource(Res.string.shop_out_of_season),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                )
             PurchaseCheck.ALREADY_OWNED -> Unit
         }
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
@@ -437,8 +419,13 @@ private val previewAvatar =
 @PreviewWrapper(GritPreviewWrapper::class)
 @Preview
 @Composable
-private fun AvatarShopPreview() {
-    AvatarShop(avatar = previewAvatar, onBuyClick = {}, onWear = { _, _ -> })
+private fun ShopItemListPreview() {
+    ShopItemList(
+        avatar = previewAvatar,
+        items = ShopCatalog.items.filter { it.kind == ShopItemKind.ACCESSORY },
+        onBuyClick = {},
+        onWear = { _, _ -> },
+    )
 }
 
 @PreviewWrapper(GritPreviewWrapper::class)

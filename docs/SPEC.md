@@ -520,6 +520,20 @@ Abgestimmt am 2026-10-29 (Entwurf: https://claude.ai/artifact/Mw37mjDy9J1AbhEHHJ
   Mit). Gesperrte Teile werden an der Pflanze auf der benötigten Stufe gezeigt.
 - Berechnung als reine Funktion `AvatarState.preview` in `core.avatar` (`ShopPreview`).
 
+### 8.5b Wiese als ganze Seite, eigener Shop, Saison (#138)
+Abgestimmt am 2026-11-03 (Vorschau: https://claude.ai/artifact/7ZA5C48eovNtma5vVGcedt, Avatar-Seite B
+mit Namensschild in der Mitte, Shop A).
+- Avatar-Reiter: `MeadowScene` füllt die ganze Seite (höchstens 600 dp breit, `sceneHeight`, Sonne
+  und Wolken per `skyTop` unter der Leiste). Oben eine Leiste: links Wasser, in der Mitte das
+  Namensschild (Name ✎ zum Umbenennen, Fortschrittsbalken `PlantState.stageProgress`, Stufe und Tage
+  bis zur nächsten), rechts ein runder Shop-Knopf. Darunter der Hinweis „müde“.
+- Shop als eigene Seite (`PlantShop`, Zurück führt zum Avatar-Reiter): oben die eigene Wiese,
+  darunter Reiter Töpfe | Zubehör | Deko | Saison; Zeilen, Vorschau und Kauf wie bisher.
+- Saisonteile: `ShopItem.season` (`SaleWindow`, jährlich, darf über Neujahr gehen). Außerhalb des
+  Zeitraums verschwinden nicht gekaufte Saisonteile aus dem Shop (`Shop.offered`) und sind nicht
+  kaufbar (`PurchaseCheck.OUT_OF_SEASON`); gekaufte bleiben für immer. Der Reiter „Saison“ erscheint
+  nur, wenn es gerade Saisonteile gibt oder welche gekauft wurden. Noch keine Saisonteile im Katalog.
+
 ### 8.6 Issues
 | # | Inhalt |
 |---|---|
@@ -534,6 +548,9 @@ Abgestimmt am 2026-10-29 (Entwurf: https://claude.ai/artifact/Mw37mjDy9J1AbhEHHJ
 | #104 | Deko: Shop-Kategorie „Deko“ |
 | #107 | Wiese: hellblauer Himmel mit Wolken und Sonne je nach Serie |
 | #121 | Shop: Vorschau vor dem Kauf für jedes Teil |
+| #138 | Wiese als ganze Seite, Shop als eigene Seite, Saison-Mechanik |
+| #139 | Einrichtung beim ersten Start: eigener Name (und Avatar-Wahl) |
+| #140 | Zweiter Avatar zur Auswahl |
 
 ---
 

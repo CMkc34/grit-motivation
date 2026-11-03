@@ -89,4 +89,14 @@
 
     <!-- Reiter Avatar (Phase 5) -->
     <string name="avatar_tab">Avatar</string>
+
+    <!-- Wiese als ganze Seite und eigene Shop-Seite (#138) -->
+    <plurals name="avatar_stage_short_days">
+        <item quantity="one">Stufe %1$d · noch %2$d Tag</item>
+        <item quantity="other">Stufe %1$d · noch %2$d Tage</item>
+    </plurals>
+    <string name="avatar_stage_short_grown">Stufe %1$d · ausgewachsen</string>
+    <string name="shop_open">Shop öffnen</string>
+    <string name="shop_seasonal">Saison</string>
+    <string name="shop_out_of_season">Gerade nicht im Angebot</string>
 </resources>

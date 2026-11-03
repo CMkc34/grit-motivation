@@ -39,6 +39,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -60,6 +61,7 @@ import com.shub39.grit.shared.ui.GritPreviewWrapper
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
+import kotlin.math.ceil
 import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.sin
@@ -98,7 +100,9 @@ private val mothWing = Color(0xFFE8DCC8)
  * plant's sway.
  *
  * [plantScale] above 1 makes the plant that much bigger and the scene as much higher, with more sky
- * on top; the width, the decorations, the sun and the clouds stay as they are.
+ * on top; the width, the decorations, the sun and the clouds stay as they are. [sceneHeight] (in
+ * meadow heights, at least [plantScale]) makes the scene even higher, for a meadow that fills a
+ * whole page; [skyTop] then moves the sun and the clouds that far down, below what lies on top.
  */
 @Composable
 fun MeadowScene(
@@ -111,21 +115,22 @@ fun MeadowScene(
     weather: Weather = Weather.FAIR,
     animate: Boolean = true,
     plantScale: Float = 1f,
+    sceneHeight: Float = plantScale,
+    skyTop: Float = 0f,
+    shape: Shape = RoundedCornerShape(20.dp),
 ) {
+    val height = maxOf(sceneHeight, plantScale)
     val sway = if (animate) rememberSway() else 0f
     val time = if (animate) rememberMeadowTime() else 0f
     val tired = mood == PlantMood.TIRED
     val shown = decorationsInOrder.filter { it.id in decorations }
 
-    Canvas(
-        modifier =
-            modifier.aspectRatio(MEADOW_ASPECT_RATIO / plantScale).clip(RoundedCornerShape(20.dp))
-    ) {
-        // everything below is drawn in a 2 x plantScale rectangle, the meadow in its lower 2 x 1
+    Canvas(modifier = modifier.aspectRatio(MEADOW_ASPECT_RATIO / height).clip(shape)) {
+        // everything below is drawn in a 2 x height rectangle, the meadow in its lower 2 x 1
         scale(scale = size.width / MEADOW_ASPECT_RATIO, pivot = Offset.Zero) {
             val painter = DecorationPainter(tired = tired, time = time, moving = animate && !tired)
-            with(painter) { drawSky(weather, height = plantScale) }
-            translate(top = plantScale - 1f) {
+            with(painter) { drawSky(weather, height = height, skyTop = skyTop) }
+            translate(top = height - 1f) {
                 with(painter) { drawGround() }
                 shown.filter { !it.inFront }.forEach { it.draw(this, painter) }
                 // the plant grows from its foot on the hill
@@ -144,7 +149,10 @@ fun MeadowScene(
                 }
                 shown.filter { it.inFront }.forEach { it.draw(this, painter) }
             }
-            drawPaperGrain()
+            // the grain covers 2 x 2, so a high scene gets it once more below
+            for (tile in 0 until ceil(height / 2f).toInt()) {
+                translate(top = tile * 2f) { drawPaperGrain() }
+            }
         }
     }
 }
@@ -261,8 +269,11 @@ private class DecorationPainter(val tired: Boolean, val time: Float, val moving:
         }
     }
 
-    /** The sky over a [height] high scene; the sun and the clouds stay at its top. */
-    fun DrawScope.drawSky(weather: Weather, height: Float = 1f) {
+    /**
+     * The sky over a [height] high scene; the sun and the clouds stay at its top, moved down by
+     * [skyTop].
+     */
+    fun DrawScope.drawSky(weather: Weather, height: Float = 1f, skyTop: Float = 0f) {
         // the sky and the clouds turn grey the longer the user stays away
         val gray =
             when (weather) {
@@ -275,17 +286,19 @@ private class DecorationPainter(val tired: Boolean, val time: Float, val moving:
             topLeft = Offset.Zero,
             size = Size(MEADOW_ASPECT_RATIO, height),
         )
-        when (weather) {
-            Weather.SUNNY -> sun(Offset(1.72f, 0.22f), 0.1f, rays = true)
-            Weather.FAIR -> sun(Offset(1.72f, 0.22f), 0.085f, rays = true)
-            Weather.HAZY -> sun(Offset(1.76f, 0.2f), 0.075f, rays = false)
-            else -> Unit
-        }
-        // the clouds drift a little to and fro; the big ones stay clear of the plant's crown
-        val drift = 0.03f * wave(LOOP_SECONDS)
-        cloudsFor(weather).forEachIndexed { i, (x, y, width) ->
-            val direction = if (i % 2 == 0) 1f else -0.6f
-            cloud(Offset(x + drift * direction, y), width, lerp(Color.White, cloudGray, gray))
+        translate(top = skyTop) {
+            when (weather) {
+                Weather.SUNNY -> sun(Offset(1.72f, 0.22f), 0.1f, rays = true)
+                Weather.FAIR -> sun(Offset(1.72f, 0.22f), 0.085f, rays = true)
+                Weather.HAZY -> sun(Offset(1.76f, 0.2f), 0.075f, rays = false)
+                else -> Unit
+            }
+            // the clouds drift a little to and fro; the big ones stay clear of the plant's crown
+            val drift = 0.03f * wave(LOOP_SECONDS)
+            cloudsFor(weather).forEachIndexed { i, (x, y, width) ->
+                val direction = if (i % 2 == 0) 1f else -0.6f
+                cloud(Offset(x + drift * direction, y), width, lerp(Color.White, cloudGray, gray))
+            }
         }
     }
 

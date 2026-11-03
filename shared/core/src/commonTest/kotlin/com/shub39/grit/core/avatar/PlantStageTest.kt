@@ -60,6 +60,13 @@ class PlantStageTest {
     }
 
     @Test
+    fun `progress towards the next stage`() {
+        assertEquals(0f, PlantState(0, PlantStage.SEED, PlantMood.HAPPY).stageProgress)
+        assertEquals(0.5f, PlantState(120, PlantStage.TREE, PlantMood.HAPPY).stageProgress)
+        assertEquals(1f, PlantState(400, PlantStage.MIGHTY_TREE, PlantMood.HAPPY).stageProgress)
+    }
+
+    @Test
     fun `active days come from the report and frozen days do not count`() {
         // seven active days, one frozen day, one active day
         val report =

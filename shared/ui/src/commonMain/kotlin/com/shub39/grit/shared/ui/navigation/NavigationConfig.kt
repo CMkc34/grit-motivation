@@ -63,6 +63,7 @@ fun Routes.getSubType(): Routes =
     when (this) {
         in HABIT_ROUTES -> Habits
         in SETTINGS_ROUTES -> Settings
+        PlantShop -> Avatar
         else -> this
     }
 
@@ -104,6 +105,8 @@ class TopLevelBackStack(private val startKey: Routes = HabitsList) {
                 return
             }
 
+            // the shop opens on top of the Avatar tab, back leads there
+            if (route == PlantShop) backStack.add(Avatar)
             backStack.add(route)
         }
     }

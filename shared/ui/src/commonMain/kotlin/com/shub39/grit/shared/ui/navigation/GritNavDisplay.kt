@@ -36,6 +36,7 @@ import com.shub39.grit.shared.ui.app.MainAppState
 import com.shub39.grit.shared.ui.habit.HabitsAction
 import com.shub39.grit.shared.ui.habit.activity.FreezeNoticeHost
 import com.shub39.grit.shared.ui.habit.avatar.AvatarPage
+import com.shub39.grit.shared.ui.habit.avatar.AvatarShopPage
 import com.shub39.grit.shared.ui.habit.motivation.BonusPopupHost
 import com.shub39.grit.shared.ui.habit.motivation.DailyGreetingHost
 import com.shub39.grit.shared.ui.habit.motivation.MotivationPopupHost
@@ -231,6 +232,19 @@ private fun EntryProviderScope<Routes>.habitsScreens(
         AvatarPage(
             avatar = state.avatar,
             onAction = viewModel::onAction,
+            onOpenShop = { topLevelBackStack.add(PlantShop) },
+            modifier = Modifier.paperBackground(),
+        )
+    }
+
+    entry<PlantShop>(metadata = horizontalTransitionMetadata()) {
+        val viewModel = koinViewModel<HabitViewModel>()
+        val state by viewModel.state.collectAsStateWithLifecycle()
+
+        AvatarShopPage(
+            avatar = state.avatar,
+            onAction = viewModel::onAction,
+            onNavigateBack = { topLevelBackStack.removeLast() },
             modifier = Modifier.paperBackground(),
         )
     }

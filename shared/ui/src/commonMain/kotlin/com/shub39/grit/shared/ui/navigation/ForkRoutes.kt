@@ -21,3 +21,6 @@ data object Energy : Routes
 
 /** Own tab with the plant avatar and its shop (fork-specific). */
 data object Avatar : Routes
+
+/** The shop of the plant, opened from the Avatar tab (fork-specific, #138). */
+data object PlantShop : Routes

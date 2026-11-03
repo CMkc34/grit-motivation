@@ -132,19 +132,19 @@ class ShopTest {
 
         assertEquals(
             PurchaseCheck.ALREADY_OWNED,
-            Shop.check(blue, PlantStage.TREE, energy = 100, purchases = bought),
+            Shop.check(blue, PlantStage.TREE, energy = 100, purchases = bought, today = day(0)),
         )
         assertEquals(
             PurchaseCheck.STAGE_TOO_LOW,
-            Shop.check(bird, PlantStage.SAPLING, energy = 100, purchases = bought),
+            Shop.check(bird, PlantStage.SAPLING, energy = 100, purchases = bought, today = day(0)),
         )
         assertEquals(
             PurchaseCheck.NOT_ENOUGH_ENERGY,
-            Shop.check(bird, PlantStage.YOUNG_TREE, energy = 39, purchases = bought),
+            Shop.check(bird, PlantStage.YOUNG_TREE, energy = 39, purchases = bought, today = day(0)),
         )
         assertEquals(
             PurchaseCheck.OK,
-            Shop.check(bird, PlantStage.YOUNG_TREE, energy = 40, purchases = bought),
+            Shop.check(bird, PlantStage.YOUNG_TREE, energy = 40, purchases = bought, today = day(0)),
         )
     }
 
