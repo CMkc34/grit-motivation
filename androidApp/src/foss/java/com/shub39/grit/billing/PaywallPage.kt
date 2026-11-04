@@ -18,9 +18,11 @@ package com.shub39.grit.billing
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.shub39.grit.shared.ui.components.FossPaywall
 
+/**
+ * Sprout: the foss build never shows a paywall (MainActivity passes no paywall for foss). This
+ * empty stub only exists because the shared MainActivity references PaywallPage in both flavors.
+ */
+@Suppress("UNUSED_PARAMETER")
 @Composable
-fun PaywallPage(isPlusUser: Boolean, onDismissRequest: () -> Unit, modifier: Modifier = Modifier) {
-    FossPaywall(modifier = modifier)
-}
+fun PaywallPage(isPlusUser: Boolean, onDismissRequest: () -> Unit, modifier: Modifier = Modifier) {}

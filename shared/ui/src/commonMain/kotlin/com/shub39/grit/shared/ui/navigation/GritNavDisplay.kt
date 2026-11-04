@@ -62,10 +62,14 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun GritNavDisplay(
     modifier: Modifier = Modifier,
-    paywall: @Composable (Boolean, () -> Unit) -> Unit,
+    paywall: (@Composable (Boolean, () -> Unit) -> Unit)?,
 ) {
     val globalVM = koinViewModel<MainViewModel>()
-    val globalState by globalVM.state.collectAsStateWithLifecycle()
+    val rawGlobalState by globalVM.state.collectAsStateWithLifecycle()
+    // Sprout: without a paywall (foss, desktop) every feature is unlocked from the first frame
+    // and no Grit Plus route exists.
+    val globalState =
+        if (paywall == null) rawGlobalState.copy(isUserSubscribed = true) else rawGlobalState
 
     val adaptiveInfo = currentWindowAdaptiveInfoV2()
     val topLevelBackStack = retain { TopLevelBackStack(startKey = HabitsList) }
@@ -107,19 +111,23 @@ fun GritNavDisplay(
                             habitsScreens(
                                 topLevelBackStack = topLevelBackStack,
                                 globalState = globalState,
+                                hasPaywall = paywall != null,
                             )
 
-                            entry<Paywall>(metadata = verticalTransitionMetadata()) {
-                                LaunchedEffect(Unit) { globalVM.trackPaywallOpened() }
-                                paywall(globalState.isUserSubscribed) {
-                                    globalVM.updateSubscription()
-                                    topLevelBackStack.removeLast()
+                            if (paywall != null) {
+                                entry<Paywall>(metadata = verticalTransitionMetadata()) {
+                                    LaunchedEffect(Unit) { globalVM.trackPaywallOpened() }
+                                    paywall(globalState.isUserSubscribed) {
+                                        globalVM.updateSubscription()
+                                        topLevelBackStack.removeLast()
+                                    }
                                 }
                             }
 
                             settingsScreens(
                                 topLevelBackStack = topLevelBackStack,
                                 globalState = globalState,
+                                hasPaywall = paywall != null,
                             )
                         },
                 )
@@ -137,7 +145,10 @@ fun GritNavDisplay(
 private fun EntryProviderScope<Routes>.habitsScreens(
     topLevelBackStack: TopLevelBackStack,
     globalState: MainAppState,
+    hasPaywall: Boolean,
 ) {
+    val openPaywall: () -> Unit = { if (hasPaywall) topLevelBackStack.add(Paywall) }
+
     entry<HabitsList>(metadata = ListDetailScene.listPane() + fadeTransitionMetadata()) {
         val viewModel = koinViewModel<HabitViewModel>()
         val state by viewModel.state.collectAsStateWithLifecycle()
@@ -148,7 +159,7 @@ private fun EntryProviderScope<Routes>.habitsScreens(
             state = state,
             onAction = viewModel::onAction,
             onNavigateToAnalytics = { topLevelBackStack.add(HabitAnalytics) },
-            onNavigateToPaywall = { topLevelBackStack.add(Paywall) },
+            onNavigateToPaywall = openPaywall,
             onNavigateToOverallAnalytics = { topLevelBackStack.add(OverallAnalytics) },
             onNavigateToEnergy = { topLevelBackStack.add(Energy) },
             isUserSubscribed = globalState.isUserSubscribed,
@@ -167,7 +178,7 @@ private fun EntryProviderScope<Routes>.habitsScreens(
             state = state,
             onAction = viewModel::onAction,
             onNavigateBack = { topLevelBackStack.removeLast() },
-            onNavigateToPaywall = { topLevelBackStack.add(Paywall) },
+            onNavigateToPaywall = openPaywall,
             onNavigateToCalendar = { topLevelBackStack.add(Calendar) },
             isUserSubscribed = globalState.isUserSubscribed,
             modifier = Modifier.paperBackground(),
@@ -204,7 +215,7 @@ private fun EntryProviderScope<Routes>.habitsScreens(
         OverallAnalytics(
             state = state,
             onNavigateBack = { topLevelBackStack.removeLast() },
-            onNavigateToPaywall = { topLevelBackStack.add(Paywall) },
+            onNavigateToPaywall = openPaywall,
             isUserSubscribed = globalState.isUserSubscribed,
             onNavigateToCalendarHeatMap = { topLevelBackStack.add(CalendarHeatMap) },
             modifier = Modifier.paperBackground(),
@@ -269,7 +280,10 @@ private fun EntryProviderScope<Routes>.habitsScreens(
 private fun EntryProviderScope<Routes>.settingsScreens(
     topLevelBackStack: TopLevelBackStack,
     globalState: MainAppState,
+    hasPaywall: Boolean,
 ) {
+    val openPaywall: () -> Unit = { if (hasPaywall) topLevelBackStack.add(Paywall) }
+
     entry<SettingsHome>(metadata = TwoPaneScene.twoPane() + fadeTransitionMetadata()) {
         val viewModel = koinViewModel<SettingsViewModel>()
         val state by viewModel.state.collectAsStateWithLifecycle()
@@ -282,7 +296,8 @@ private fun EntryProviderScope<Routes>.settingsScreens(
             onAction = viewModel::onAction,
             onNavigateToLookAndFeel = { topLevelBackStack.add(LookAndFeel) },
             onNavigateToBackup = { topLevelBackStack.add(Backup) },
-            onNavigateToPaywall = { topLevelBackStack.add(Paywall) },
+            onNavigateToPaywall = openPaywall,
+            showGritPlus = hasPaywall,
             onNavigateToChangelog = { topLevelBackStack.add(Changelog) },
             onNavigateToAppInfo = { topLevelBackStack.add(About) },
         )
@@ -296,7 +311,7 @@ private fun EntryProviderScope<Routes>.settingsScreens(
             state = state,
             onAction = viewModel::onAction,
             isUserSubscribed = globalState.isUserSubscribed,
-            onNavigateToPaywall = { topLevelBackStack.add(Paywall) },
+            onNavigateToPaywall = openPaywall,
             onNavigateBack = { topLevelBackStack.removeLast() },
             modifier = Modifier.paperBackground(),
         )

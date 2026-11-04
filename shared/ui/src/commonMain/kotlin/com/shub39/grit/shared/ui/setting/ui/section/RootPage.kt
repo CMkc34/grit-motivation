@@ -75,6 +75,7 @@ fun RootPage(
     onNavigateToLookAndFeel: () -> Unit,
     onNavigateToBackup: () -> Unit,
     onNavigateToPaywall: () -> Unit,
+    showGritPlus: Boolean = true,
     onNavigateToChangelog: () -> Unit,
     onNavigateToAppInfo: () -> Unit,
 ) =
@@ -108,29 +109,32 @@ fun RootPage(
                     PaddingValues(start = 12.dp, end = 12.dp, top = 16.dp, bottom = 60.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                // Grit Plus
-                item {
-                    ListItem(
-                        headlineContent = { Text(text = stringResource(Res.string.grit_plus)) },
-                        colors = listItemColors(),
-                        modifier =
-                            Modifier.clip(detachedItemShape()).clickable { onNavigateToPaywall() },
-                        trailingContent = {
-                            Icon(
-                                imageVector = vectorResource(Res.drawable.arrow_forward),
-                                contentDescription = "Grit Plus",
-                            )
-                        },
-                        leadingContent = {
-                            Icon(
-                                imageVector = vectorResource(Res.drawable.grit_icon),
-                                contentDescription = null,
-                                modifier = Modifier.size(30.dp),
-                                tint = MaterialTheme.colorScheme.primary,
-                            )
-                        },
-                    )
-                }
+                // Grit Plus (hidden in Sprout, which has no paywall)
+                if (showGritPlus)
+                    item {
+                        ListItem(
+                            headlineContent = { Text(text = stringResource(Res.string.grit_plus)) },
+                            colors = listItemColors(),
+                            modifier =
+                                Modifier.clip(detachedItemShape()).clickable {
+                                    onNavigateToPaywall()
+                                },
+                            trailingContent = {
+                                Icon(
+                                    imageVector = vectorResource(Res.drawable.arrow_forward),
+                                    contentDescription = "Grit Plus",
+                                )
+                            },
+                            leadingContent = {
+                                Icon(
+                                    imageVector = vectorResource(Res.drawable.grit_icon),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(30.dp),
+                                    tint = MaterialTheme.colorScheme.primary,
+                                )
+                            },
+                        )
+                    }
 
                 // General settings
                 item {
