@@ -30,7 +30,7 @@ class QuoteCatalogTest {
     }
 
     @Test
-    fun `every tier and tone offers twelve quotes with their own ids`() {
+    fun `every tier and tone offers QUOTES_PER_POOL quotes with their own ids`() {
         StreakTier.entries.forEach { tier ->
             QuoteTone.entries.forEach { tone ->
                 val pool = QuoteCatalog.all.filter { it.tier == tier && it.tone == tone }

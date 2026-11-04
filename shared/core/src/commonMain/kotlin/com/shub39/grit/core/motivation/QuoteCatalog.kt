@@ -24,8 +24,8 @@ object QuoteCatalog {
     /** Shown when no quote fits the streak, so a check-in never ends without a message. */
     val fallback = MotivationQuote("quote_fallback", MOTIVATING, STARTER)
 
-    /** Quotes per tier and tone (#146): 6 own lines, 4 film-style lines, 2 historical quotes. */
-    const val QUOTES_PER_POOL = 12
+    /** Quotes per tier and tone (#146): 7 own lines, 5 film-style lines, 3 historical quotes. */
+    const val QUOTES_PER_POOL = 15
 
     /**
      * Every quote, ids `quote_<tier>_<tone>_<n>` with n from 1 to [QUOTES_PER_POOL]; the ids are
