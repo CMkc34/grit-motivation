@@ -59,7 +59,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.shub39.grit.shared.ui.habit.ui.component.WaterText
 import grit.shared.ui.generated.resources.Res
 import grit.shared.ui.generated.resources.motivation_tap_to_continue
@@ -125,10 +124,8 @@ fun CelebrationStage(
     tapToDismiss: Boolean = true,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    Dialog(
-        onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false),
-    ) {
+    Dialog(onDismissRequest = onDismiss, properties = stageDialogProperties()) {
+        StageWindowSetup()
         val transition = rememberInfiniteTransition(label = "stage")
         val rotation by
             transition.animateFloat(
