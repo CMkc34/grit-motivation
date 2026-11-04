@@ -14,8 +14,24 @@
 
 ## Screenshots
 
-<!-- New screenshots from the Pixel (light and dark) follow in docs/readme/screenshots/. -->
-_Screenshots of the current version are coming soon._
+| Routines | Motivation popup | Your avatar |
+|:---:|:---:|:---:|
+| <img src="docs/readme/screenshots/light-1-routines.png" width="240" alt="Routines"> | <img src="docs/readme/screenshots/light-2-motivation.png" width="240" alt="Motivation popup"> | <img src="docs/readme/screenshots/light-3-avatar.png" width="240" alt="Avatar on its meadow"> |
+| **Shop** | **Statistics** | **More statistics** |
+| <img src="docs/readme/screenshots/light-4-shop.png" width="240" alt="Shop"> | <img src="docs/readme/screenshots/light-5-statistics.png" width="240" alt="Overall statistics"> | <img src="docs/readme/screenshots/light-6-statistics-details.png" width="240" alt="Monthly rate, comebacks and streaks"> |
+
+<details>
+<summary>Dark mode</summary>
+
+| Routines | Motivation popup | Your avatar |
+|:---:|:---:|:---:|
+| <img src="docs/readme/screenshots/dark-1-routines.png" width="240" alt="Routines, dark"> | <img src="docs/readme/screenshots/dark-2-motivation.png" width="240" alt="Motivation popup, dark"> | <img src="docs/readme/screenshots/dark-3-avatar.png" width="240" alt="Avatar, dark"> |
+| **Shop** | **Statistics** | **More statistics** |
+| <img src="docs/readme/screenshots/dark-4-shop.png" width="240" alt="Shop, dark"> | <img src="docs/readme/screenshots/dark-5-statistics.png" width="240" alt="Overall statistics, dark"> | <img src="docs/readme/screenshots/dark-6-statistics-details.png" width="240" alt="More statistics, dark"> |
+
+</details>
+
+_Screenshots show sample data._
 
 ## What Sprout does
 
