@@ -18,12 +18,11 @@ package com.shub39.grit
 
 import androidx.compose.ui.window.singleWindowApplication
 import com.shub39.grit.di.GritModules
-import com.shub39.grit.shared.ui.components.FossPaywall
 import com.shub39.grit.shared.ui.navigation.GritNavDisplay
 import org.koin.plugin.module.dsl.startKoin
 
 fun main() {
     startKoin<GritModules>()
 
-    singleWindowApplication(title = "Grit") { GritNavDisplay(paywall = { _, _ -> FossPaywall() }) }
+    singleWindowApplication(title = "Grit") { GritNavDisplay(paywall = null) }
 }

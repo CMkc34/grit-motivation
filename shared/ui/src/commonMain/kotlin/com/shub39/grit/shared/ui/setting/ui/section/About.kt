@@ -61,7 +61,6 @@ import com.shub39.grit.shared.ui.components.detachedItemShape
 import com.shub39.grit.shared.ui.components.endItemShape
 import com.shub39.grit.shared.ui.components.leadingItemShape
 import com.shub39.grit.shared.ui.components.listItemColors
-import com.shub39.grit.shared.ui.components.middleItemShape
 import com.shub39.grit.shared.ui.setting.ui.component.LicenseBottomSheet
 import com.shub39.grit.shared.ui.theme.flexFontEmphasis
 import com.shub39.grit.shared.ui.theme.flexFontRounded
@@ -141,50 +140,6 @@ private fun LazyListScope.engagementLinks(uriHandler: UriHandler) {
                 colors = listItemColors(),
                 leadingContent = {
                     Icon(
-                        imageVector = vectorResource(Res.drawable.buymeacoffee),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp),
-                    )
-                },
-                trailingContent = {
-                    Icon(
-                        imageVector = vectorResource(Res.drawable.open_link),
-                        contentDescription = null,
-                    )
-                },
-                headlineContent = { Text(text = stringResource(Res.string.bmc)) },
-                supportingContent = { Text(text = stringResource(Res.string.bmc_desc)) },
-                modifier =
-                    Modifier.clip(leadingItemShape()).clickable {
-                        uriHandler.openUri("https://buymeacoffee.com/shub39")
-                    },
-            )
-            ListItem(
-                colors = listItemColors(),
-                leadingContent = {
-                    Icon(
-                        painter = painterResource(Res.drawable.github),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp),
-                    )
-                },
-                trailingContent = {
-                    Icon(
-                        painter = painterResource(Res.drawable.open_link),
-                        contentDescription = null,
-                    )
-                },
-                headlineContent = { Text(text = "GitHub Sponsors") },
-                supportingContent = { Text(text = "Support me through GitHub") },
-                modifier =
-                    Modifier.clip(middleItemShape()).clickable {
-                        uriHandler.openUri("https://github.com/sponsors/shub39")
-                    },
-            )
-            ListItem(
-                colors = listItemColors(),
-                leadingContent = {
-                    Icon(
                         imageVector = vectorResource(Res.drawable.translate),
                         contentDescription = null,
                         modifier = Modifier.size(24.dp),
@@ -199,7 +154,7 @@ private fun LazyListScope.engagementLinks(uriHandler: UriHandler) {
                 headlineContent = { Text(text = stringResource(Res.string.translate)) },
                 supportingContent = { Text(text = stringResource(Res.string.translate_desc)) },
                 modifier =
-                    Modifier.clip(endItemShape()).clickable {
+                    Modifier.clip(detachedItemShape()).clickable {
                         uriHandler.openUri("https://hosted.weblate.org/engage/grit/")
                     },
             )

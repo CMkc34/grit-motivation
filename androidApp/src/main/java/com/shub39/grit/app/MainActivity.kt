@@ -32,6 +32,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.shub39.grit.BuildConfig
 import com.shub39.grit.billing.PaywallPage
 import com.shub39.grit.core.interfaces.BiometricUtils
 import com.shub39.grit.shared.ui.components.InitialLoading
@@ -83,9 +84,18 @@ class MainActivity : FragmentActivity() {
             }
 
             if (showContent) {
-                GritNavDisplay { isPlusUser, onDismissRequest ->
-                    PaywallPage(isPlusUser = isPlusUser, onDismissRequest = onDismissRequest)
-                }
+                // Sprout: the foss build has no paywall page or Grit Plus route.
+                GritNavDisplay(
+                    paywall =
+                        if (BuildConfig.FLAVOR == "foss") null
+                        else
+                            { isPlusUser, onDismissRequest ->
+                                PaywallPage(
+                                    isPlusUser = isPlusUser,
+                                    onDismissRequest = onDismissRequest,
+                                )
+                            }
+                )
             } else {
                 GritTheme(theme = state.theme) { InitialLoading() }
             }
