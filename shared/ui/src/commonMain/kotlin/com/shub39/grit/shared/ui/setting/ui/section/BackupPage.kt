@@ -147,7 +147,7 @@ fun BackupPage(
                             },
                             headlineContent = { Text(text = stringResource(Res.string.restore)) },
                             supportingContent = {
-                                Text(text = stringResource(Res.string.restore_desc))
+                                Text(text = stringResource(Res.string.sprout_restore_desc))
                             },
                         )
 

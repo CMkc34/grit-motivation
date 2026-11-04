@@ -72,8 +72,8 @@ import grit.shared.ui.generated.resources.collapse
 import grit.shared.ui.generated.resources.completed
 import grit.shared.ui.generated.resources.drag_indicator
 import grit.shared.ui.generated.resources.expand
-import grit.shared.ui.generated.resources.habits
 import grit.shared.ui.generated.resources.reorder
+import grit.shared.ui.generated.resources.sprout_routines
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -148,7 +148,9 @@ private fun HabitsTopAppBar(
             TopAppBarDefaults.topAppBarColors(
                 scrolledContainerColor = MaterialTheme.colorScheme.surface
             ),
-        title = { Text(text = stringResource(Res.string.habits), fontFamily = flexFontEmphasis()) },
+        title = {
+            Text(text = stringResource(Res.string.sprout_routines), fontFamily = flexFontEmphasis())
+        },
         subtitle = {
             Column {
                 Text(

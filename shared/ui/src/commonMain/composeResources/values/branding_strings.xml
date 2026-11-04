@@ -2,4 +2,11 @@
 <resources>
     <!-- App branding (#97) -->
     <string name="about_based_on_grit">Based on Grit by shub39</string>
+    <!-- Sprout wording instead of upstream Grit texts (#151) -->
+    <string name="sprout_routines">Routines</string>
+    <string name="sprout_add_routine">Add routine</string>
+    <string name="sprout_edit_routine">Edit routine</string>
+    <string name="sprout_backup_desc">Export or restore your routines</string>
+    <string name="sprout_restore_desc">Restore routines from the selected file</string>
+    <string name="sprout_version">Sprout %1$s · based on Grit by shub39</string>
 </resources>

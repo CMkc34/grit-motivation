@@ -45,7 +45,7 @@ sealed interface AppSections : NavKey {
 
         fun AppSections.toStringRes(): StringResource {
             return when (this) {
-                HabitPages -> Res.string.habits
+                HabitPages -> Res.string.sprout_routines
                 SettingsPages -> Res.string.settings
             }
         }

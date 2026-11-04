@@ -328,7 +328,7 @@ fun RootPage(
                             colors = listItemColors(),
                             headlineContent = { Text(text = stringResource(Res.string.backup)) },
                             supportingContent = {
-                                Text(text = stringResource(Res.string.backup_desc))
+                                Text(text = stringResource(Res.string.sprout_backup_desc))
                             },
                             trailingContent = {
                                 Icon(
@@ -358,7 +358,13 @@ fun RootPage(
                                 )
                             },
                             supportingContent = {
-                                Text(text = "Grit ${state.currentVersion ?: "x.x.x"}")
+                                Text(
+                                    text =
+                                        stringResource(
+                                            Res.string.sprout_version,
+                                            state.currentVersion ?: "x.x.x",
+                                        )
+                                )
                             },
                             trailingContent = {
                                 Icon(
