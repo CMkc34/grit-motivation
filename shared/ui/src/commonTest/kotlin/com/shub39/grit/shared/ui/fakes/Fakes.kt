@@ -185,6 +185,14 @@ class FakeMotivationSettings : MotivationSettings {
     override suspend fun setSetupDone() {
         setupDone.value = true
     }
+
+    val shownQuotes = MutableStateFlow(emptyList<String>())
+
+    override fun getShownQuotes(): Flow<List<String>> = shownQuotes
+
+    override suspend fun setShownQuotes(ids: List<String>) {
+        shownQuotes.value = ids
+    }
 }
 
 /** [ActivityRepo] whose report and freeze notice tests set directly or via [markActive]. */

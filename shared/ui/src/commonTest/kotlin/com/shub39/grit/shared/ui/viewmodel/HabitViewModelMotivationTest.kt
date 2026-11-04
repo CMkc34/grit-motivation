@@ -20,6 +20,7 @@ import com.shub39.grit.core.activity.ActivityReport
 import com.shub39.grit.core.avatar.AvatarData
 import com.shub39.grit.core.habits.Habit
 import com.shub39.grit.core.habits.HabitStatus
+import com.shub39.grit.core.motivation.QuoteCatalog
 import com.shub39.grit.core.motivation.StreakTier
 import com.shub39.grit.core.now
 import com.shub39.grit.shared.ui.fakes.FakeActivityRepo
@@ -181,6 +182,22 @@ class HabitViewModelMotivationTest {
                 }
 
             quoteIds.zipWithNext().forEach { (previous, next) -> assertNotEquals(previous, next) }
+        }
+
+    @Test
+    fun `popup skips quotes shown before and remembers the new one`() =
+        runTest(dispatcher) {
+            val viewModel = viewModel()
+            repo.currentStreaks[meditate.id] = 3
+            val building = QuoteCatalog.all.filter { it.tier == StreakTier.BUILDING }
+            val shown = building.dropLast(1).map { it.id }
+            motivationSettings.shownQuotes.value = shown
+
+            viewModel.onAction(HabitsAction.InsertStatus(meditate, today))
+
+            val popup = assertNotNull(viewModel.state.value.motivationPopup)
+            assertEquals(building.last().id, popup.quote.id)
+            assertEquals(shown + building.last().id, motivationSettings.shownQuotes.value)
         }
 
     @Test

@@ -28,3 +28,9 @@ import org.jetbrains.compose.resources.StringResource
  */
 fun MotivationQuote.textResource(): StringResource =
     Res.allStringResources[id] ?: Res.allStringResources.getValue(QuoteCatalog.fallback.id)
+
+/**
+ * Author of this quote when it cites a historical person (#146), stored as `author_<quote id>`;
+ * `null` for the app's own lines.
+ */
+fun MotivationQuote.authorResource(): StringResource? = Res.allStringResources["author_$id"]

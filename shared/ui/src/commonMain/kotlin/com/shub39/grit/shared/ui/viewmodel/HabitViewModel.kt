@@ -86,9 +86,6 @@ class HabitViewModel(
     private var avatarJob: Job? = null
     private var routineStylesJob: Job? = null
 
-    // id of the last motivation quote, so the next popup shows a different one
-    private var lastQuoteId: String? = null
-
     // set while the daily greeting is being prepared, so two quick resumes show it once
     private var checkingGreeting = false
 
@@ -485,8 +482,9 @@ class HabitViewModel(
         val streak =
             repo.getHabitsWithAnalytics().first().find { it.habit.id == habit.id }?.currentStreak
         if (streak == null || streak < 1) return
-        val quote = GritQuoteEngine.getQuote(streak, previous = lastQuoteId)
-        lastQuoteId = quote.id
+        val pick = GritQuoteEngine.pick(streak, motivationSettings.getShownQuotes().first())
+        motivationSettings.setShownQuotes(pick.shown)
+        val quote = pick.quote
         val activityStreak =
             if (firstOfDay) activityRepo.getActivityReport().first().currentStreak else null
         val avatar = avatarRepo.getAvatarState().first()

@@ -18,24 +18,40 @@ package com.shub39.grit.core.motivation
 
 import kotlin.random.Random
 
-/** Picks a quote that fits the user's current streak. Stateless; knows nothing about storage. */
+/** A picked [quote] and the updated list of [shown] quote ids to store for the next pick. */
+data class QuotePick(val quote: MotivationQuote, val shown: List<String>)
+
 object GritQuoteEngine {
 
     /**
-     * Returns a random quote for the tier of [activeDays]. The quote with id [previous] is skipped
-     * as long as the tier offers another one. Without any fitting quote, [QuoteCatalog.fallback] is
-     * returned.
+     * Picks a random quote for the tier of [activeDays] that is not in [shown], so every quote of a
+     * tier appears once before any repeats (#146). When all quotes of the tier were shown, the
+     * tier's ids are cleared from the list and a new round starts, skipping the last shown quote so
+     * it never comes twice in a row. Ids no longer in [quotes] are dropped from the list. Without
+     * any fitting quote, [QuoteCatalog.fallback] is returned and [shown] stays as it is.
      */
-    fun getQuote(
+    fun pick(
         activeDays: Int,
+        shown: List<String> = emptyList(),
         random: Random = Random.Default,
-        previous: String? = null,
         quotes: List<MotivationQuote> = QuoteCatalog.all,
-    ): MotivationQuote {
+    ): QuotePick {
         val tier = StreakTier.forStreak(activeDays)
         val candidates = quotes.filter { it.tier == tier }
-        if (candidates.isEmpty()) return QuoteCatalog.fallback
-        val fresh = candidates.filter { it.id != previous }
-        return fresh.ifEmpty { candidates }.random(random)
+        if (candidates.isEmpty()) return QuotePick(QuoteCatalog.fallback, shown)
+
+        val known = quotes.map { it.id }.toSet()
+        val tierIds = candidates.map { it.id }.toSet()
+        val history = shown.filter { it in known }
+        val unseen = candidates.filter { it.id !in history }
+
+        if (unseen.isNotEmpty()) {
+            val quote = unseen.random(random)
+            return QuotePick(quote, history + quote.id)
+        }
+
+        val last = history.lastOrNull { it in tierIds }
+        val quote = candidates.filter { it.id != last }.ifEmpty { candidates }.random(random)
+        return QuotePick(quote, history.filter { it !in tierIds } + quote.id)
     }
 }

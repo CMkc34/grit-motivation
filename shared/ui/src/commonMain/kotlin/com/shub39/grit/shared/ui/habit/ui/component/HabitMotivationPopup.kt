@@ -46,6 +46,7 @@ import com.shub39.grit.shared.ui.habit.motivation.CelebrationStage
 import com.shub39.grit.shared.ui.habit.motivation.CheckInStageColors
 import com.shub39.grit.shared.ui.habit.motivation.StagePill
 import com.shub39.grit.shared.ui.habit.motivation.StageYellow
+import com.shub39.grit.shared.ui.habit.motivation.authorResource
 import com.shub39.grit.shared.ui.habit.motivation.rememberCountUp
 import com.shub39.grit.shared.ui.habit.motivation.rememberPopIn
 import com.shub39.grit.shared.ui.habit.motivation.textResource
@@ -148,6 +149,14 @@ fun HabitMotivationPopup(
             color = Color.White,
             textAlign = TextAlign.Center,
         )
+        quote.authorResource()?.let { author ->
+            Text(
+                text = "– ${stringResource(author)}",
+                style = MaterialTheme.typography.titleMedium,
+                color = Color.White.copy(alpha = 0.9f),
+                textAlign = TextAlign.Center,
+            )
+        }
         activityStreak?.let {
             val pillScale = rememberPopIn(delayMillis = 1000)
             StagePill(
