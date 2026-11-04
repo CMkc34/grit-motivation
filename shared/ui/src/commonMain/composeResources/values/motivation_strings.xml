@@ -29,38 +29,126 @@
     <string name="quote_starter_motivating_2">First check is in. Tomorrow gets easier.</string>
     <string name="quote_starter_motivating_3">Starting is the hardest part – and you just did it.</string>
     <string name="quote_starter_motivating_4">One day, one check, one good start.</string>
+    <!-- 5–6 own lines, 7–10 film-style, 11–12 historical quotes with author_ -->
+    <string name="quote_starter_motivating_5">Today you showed up. That’s the whole trick.</string>
+    <string name="quote_starter_motivating_6">One check mark. The seed is in the ground.</string>
+    <string name="quote_starter_motivating_7">This could be the beginning of a beautiful habit.</string>
+    <string name="quote_starter_motivating_8">Your mission, should you choose to accept it: day two.</string>
+    <string name="quote_starter_motivating_9">Every great journey starts with leaving the Shire. Day one: done.</string>
+    <string name="quote_starter_motivating_10">There’s no place like… day two. See you tomorrow.</string>
+    <string name="quote_starter_motivating_11">“A journey of a thousand miles begins with a single step.”</string>
+    <string name="author_quote_starter_motivating_11">Laozi</string>
+    <string name="quote_starter_motivating_12">“It is not because things are difficult that we do not dare; it is because we do not dare that they are difficult.”</string>
+    <string name="author_quote_starter_motivating_12">Seneca</string>
     <string name="quote_starter_sarcastic_1">One day. Not a legend yet, but hey, you showed up.</string>
     <string name="quote_starter_sarcastic_2">Day one. The bar is now officially above zero.</string>
     <string name="quote_starter_sarcastic_3">Look at that, the checkbox actually works.</string>
     <string name="quote_starter_sarcastic_4">Day one done. Future you gives a cautious nod.</string>
+    <!-- 5–6 own lines, 7–10 film-style, 11–12 historical quotes with author_ -->
+    <string name="quote_starter_sarcastic_5">Day one. Your couch has been informed.</string>
+    <string name="quote_starter_sarcastic_6">A whole day. Let’s not get carried away just yet.</string>
+    <string name="quote_starter_sarcastic_7">Houston, we have… a check mark.</string>
+    <string name="quote_starter_sarcastic_8">You had me at “day one”.</string>
+    <string name="quote_starter_sarcastic_9">I’ll be back. Tomorrow. Same time.</string>
+    <string name="quote_starter_sarcastic_10">Run, Forrest, run? Walking is fine too. Day one.</string>
+    <string name="quote_starter_sarcastic_11">“Never put off till tomorrow what may be done day after tomorrow just as well.”</string>
+    <string name="author_quote_starter_sarcastic_11">Mark Twain</string>
+    <string name="quote_starter_sarcastic_12">“I can resist everything except temptation.”</string>
+    <string name="author_quote_starter_sarcastic_12">Oscar Wilde</string>
 
     <!-- BUILDING (2–4 days) -->
     <string name="quote_building_motivating_1">%1$d days in a row – something is growing here.</string>
     <string name="quote_building_motivating_2">%1$d days straight. You’re building something.</string>
     <string name="quote_building_motivating_3">Already %1$d days in. Keep exactly this going.</string>
     <string name="quote_building_motivating_4">%1$d days! Small steps, real impact.</string>
+    <!-- 5–6 own lines, 7–10 film-style, 11–12 historical quotes with author_ -->
+    <string name="quote_building_motivating_5">%1$d days. Your sprout noticed.</string>
+    <string name="quote_building_motivating_6">%1$d days. Tomorrow-you says thanks.</string>
+    <string name="quote_building_motivating_7">%1$d days. Just keep going, just keep going…</string>
+    <string name="quote_building_motivating_8">%1$d days. Your training montage has officially started.</string>
+    <string name="quote_building_motivating_9">%1$d days. Wax on, check off.</string>
+    <string name="quote_building_motivating_10">%1$d days. Roads? Where you’re going, you only need check marks.</string>
+    <string name="quote_building_motivating_11">“Dripping water hollows out stone.”</string>
+    <string name="author_quote_building_motivating_11">Ovid</string>
+    <string name="quote_building_motivating_12">“Knowing is not enough; we must apply. Willing is not enough; we must do.”</string>
+    <string name="author_quote_building_motivating_12">Goethe</string>
     <string name="quote_building_sarcastic_1">%1$d days? Almost as if you had a plan.</string>
     <string name="quote_building_sarcastic_2">%1$d days straight. Hard to call that luck anymore.</string>
     <string name="quote_building_sarcastic_3">%1$d days. The habit noticed you mean it – it’s just still a bit skeptical.</string>
     <string name="quote_building_sarcastic_4">Day %1$d. Not bad for someone who said “we’ll see”.</string>
+    <!-- 5–6 own lines, 7–10 film-style, 11–12 historical quotes with author_ -->
+    <string name="quote_building_sarcastic_5">%1$d days. Careful, this almost looks like discipline.</string>
+    <string name="quote_building_sarcastic_6">%1$d days. Your excuses are drafting a complaint.</string>
+    <string name="quote_building_sarcastic_7">%1$d days in a row? Is this… Groundhog Day?</string>
+    <string name="quote_building_sarcastic_8">%1$d days. Shaken, not stirred – and still showing up.</string>
+    <string name="quote_building_sarcastic_9">%1$d days. You’re gonna need a bigger calendar.</string>
+    <string name="quote_building_sarcastic_10">%1$d days. You took the red pill, didn’t you?</string>
+    <string name="quote_building_sarcastic_11">“Habit is habit, and not to be flung out of the window, but coaxed downstairs a step at a time.”</string>
+    <string name="author_quote_building_sarcastic_11">Mark Twain</string>
+    <string name="quote_building_sarcastic_12">“Surprise always happens where you least expect it.”</string>
+    <string name="author_quote_building_sarcastic_12">Wilhelm Busch</string>
 
     <!-- ESTABLISHED (5–13 days) -->
     <string name="quote_established_motivating_1">%1$d days! That’s not a mood anymore, that’s a habit.</string>
     <string name="quote_established_motivating_2">%1$d days in a row – your persistence is paying off.</string>
     <string name="quote_established_motivating_3">%1$d days. You’ve proven you can do this.</string>
     <string name="quote_established_motivating_4">%1$d days straight. That’s real progress.</string>
+    <!-- 5–6 own lines, 7–10 film-style, 11–12 historical quotes with author_ -->
+    <string name="quote_established_motivating_5">%1$d days. Roots grow even when nobody’s watching.</string>
+    <string name="quote_established_motivating_6">%1$d days. You’re not trying anymore – you’re doing.</string>
+    <string name="quote_established_motivating_7">%1$d days. Houston, we have no problem.</string>
+    <string name="quote_established_motivating_8">%1$d days. With great streaks comes great responsibility.</string>
+    <string name="quote_established_motivating_9">%1$d days. Life finds a way – and so do you.</string>
+    <string name="quote_established_motivating_10">%1$d days. Eye of the tiger, my friend.</string>
+    <string name="quote_established_motivating_11">“No great thing is created suddenly.”</string>
+    <string name="author_quote_established_motivating_11">Epictetus</string>
+    <string name="quote_established_motivating_12">“Begin at once to live, and count each separate day as a separate life.”</string>
+    <string name="author_quote_established_motivating_12">Seneca</string>
     <string name="quote_established_sarcastic_1">%1$d days straight. Who are you and what did you do with the old version?</string>
     <string name="quote_established_sarcastic_2">%1$d days. Careful, you might turn into a role model.</string>
     <string name="quote_established_sarcastic_3">%1$d days straight. Your excuse department is running out of work.</string>
     <string name="quote_established_sarcastic_4">%1$d days. Your calendar is starting to wonder if you’re okay.</string>
+    <!-- 5–6 own lines, 7–10 film-style, 11–12 historical quotes with author_ -->
+    <string name="quote_established_sarcastic_5">%1$d days. Your brain now files this under “normal”. Sorry.</string>
+    <string name="quote_established_sarcastic_6">%1$d days. At this point, skipping would be the weird thing.</string>
+    <string name="quote_established_sarcastic_7">%1$d days. Someone made your excuses an offer they couldn’t refuse.</string>
+    <string name="quote_established_sarcastic_8">%1$d days. Hasta la vista, excuses.</string>
+    <string name="quote_established_sarcastic_9">%1$d days. Are you not entertained?</string>
+    <string name="quote_established_sarcastic_10">%1$d days. Toto, I don’t think we’re in Lazytown anymore.</string>
+    <string name="quote_established_sarcastic_11">“Experience is simply the name we give our mistakes.”</string>
+    <string name="author_quote_established_sarcastic_11">Oscar Wilde</string>
+    <string name="quote_established_sarcastic_12">“Well done is better than well said.”</string>
+    <string name="author_quote_established_sarcastic_12">Benjamin Franklin</string>
 
     <!-- LEGEND (14+ days) -->
     <string name="quote_legend_motivating_1">%1$d days. Honestly: respect.</string>
     <string name="quote_legend_motivating_2">%1$d days! This is part of who you are now.</string>
     <string name="quote_legend_motivating_3">%1$d days straight. You can be genuinely proud of that.</string>
     <string name="quote_legend_motivating_4">%1$d days. You’re living proof that sticking with it works.</string>
+    <!-- 5–6 own lines, 7–10 film-style, 11–12 historical quotes with author_ -->
+    <string name="quote_legend_motivating_5">%1$d days. Your sprout is turning into a tree.</string>
+    <string name="quote_legend_motivating_6">%1$d days. Remember this number for the hard days.</string>
+    <string name="quote_legend_motivating_7">%1$d days. The Force is strong with you.</string>
+    <string name="quote_legend_motivating_8">%1$d days. To infinity – and beyond.</string>
+    <string name="quote_legend_motivating_9">%1$d days. Carpe diem. Every single diem.</string>
+    <string name="quote_legend_motivating_10">%1$d days. One does not simply walk away from a streak like this.</string>
+    <string name="quote_legend_motivating_11">“Whoever strives with all their might, that one we can redeem.”</string>
+    <string name="author_quote_legend_motivating_11">Goethe</string>
+    <string name="quote_legend_motivating_12">“The soul becomes dyed with the color of its thoughts.”</string>
+    <string name="author_quote_legend_motivating_12">Marcus Aurelius</string>
     <string name="quote_legend_sarcastic_1">%1$d days. Your reliability is getting a little spooky.</string>
     <string name="quote_legend_sarcastic_2">%1$d days. At some point you’ll have to tell us who replaced you.</string>
     <string name="quote_legend_sarcastic_3">%1$d days. Your other habits are getting jealous.</string>
     <string name="quote_legend_sarcastic_4">%1$d days straight. Okay, we get it. Feel free to brag anyway.</string>
+    <!-- 5–6 own lines, 7–10 film-style, 11–12 historical quotes with author_ -->
+    <string name="quote_legend_sarcastic_5">%1$d days. At this point the habit is doing you.</string>
+    <string name="quote_legend_sarcastic_6">%1$d days. We’d make you a trophy, but you’d just check it off.</string>
+    <string name="quote_legend_sarcastic_7">%1$d days. “I’m the king of the world!” – your streak, probably.</string>
+    <string name="quote_legend_sarcastic_8">%1$d days. There can be only one. Apparently it’s you.</string>
+    <string name="quote_legend_sarcastic_9">%1$d days. Say hello to my little streak.</string>
+    <string name="quote_legend_sarcastic_10">%1$d days. Nobody’s perfect. Well… almost nobody.</string>
+    <string name="quote_legend_sarcastic_11">“To love oneself is the beginning of a lifelong romance.”</string>
+    <string name="author_quote_legend_sarcastic_11">Oscar Wilde</string>
+    <string name="quote_legend_sarcastic_12">“Always do right. This will gratify some people and astonish the rest.”</string>
+    <string name="author_quote_legend_sarcastic_12">Mark Twain</string>
 </resources>

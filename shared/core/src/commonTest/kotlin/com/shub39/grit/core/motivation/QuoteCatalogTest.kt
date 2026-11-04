@@ -28,4 +28,16 @@ class QuoteCatalogTest {
             assertEquals(QuoteTone.entries.toSet(), tones, "tier $tier")
         }
     }
+
+    @Test
+    fun `every tier and tone offers twelve quotes with their own ids`() {
+        StreakTier.entries.forEach { tier ->
+            QuoteTone.entries.forEach { tone ->
+                val pool = QuoteCatalog.all.filter { it.tier == tier && it.tone == tone }
+                assertEquals(QuoteCatalog.QUOTES_PER_POOL, pool.size, "$tier $tone")
+            }
+        }
+        assertEquals(QuoteCatalog.all.size, QuoteCatalog.all.map { it.id }.toSet().size)
+        assertEquals("quote_starter_motivating_1", QuoteCatalog.all.first().id)
+    }
 }

@@ -28,38 +28,126 @@
     <string name="quote_starter_motivating_2">Der erste Haken sitzt. Morgen wird’s schon leichter.</string>
     <string name="quote_starter_motivating_3">Anfangen ist der schwerste Teil – und den hast du gerade erledigt.</string>
     <string name="quote_starter_motivating_4">Ein Tag, ein Haken, ein guter Start.</string>
+    <!-- 5–6 own lines, 7–10 film-style, 11–12 historical quotes with author_ -->
+    <string name="quote_starter_motivating_5">Heute bist du aufgetaucht. Das ist der ganze Trick.</string>
+    <string name="quote_starter_motivating_6">Ein Haken. Der Samen ist in der Erde.</string>
+    <string name="quote_starter_motivating_7">Das könnte der Beginn einer wunderbaren Gewohnheit sein.</string>
+    <string name="quote_starter_motivating_8">Deine Mission, falls du sie annimmst: Tag zwei.</string>
+    <string name="quote_starter_motivating_9">Jede große Reise beginnt mit dem Verlassen des Auenlands. Tag eins: erledigt.</string>
+    <string name="quote_starter_motivating_10">Es ist nirgends so schön wie… an Tag zwei. Bis morgen.</string>
+    <string name="quote_starter_motivating_11">„Eine Reise von tausend Meilen beginnt mit einem einzigen Schritt.“</string>
+    <string name="author_quote_starter_motivating_11">Laozi</string>
+    <string name="quote_starter_motivating_12">„Nicht weil es schwer ist, wagen wir es nicht, sondern weil wir es nicht wagen, ist es schwer.“</string>
+    <string name="author_quote_starter_motivating_12">Seneca</string>
     <string name="quote_starter_sarcastic_1">Ein Tag. Noch keine Legende, aber immerhin aufgetaucht.</string>
     <string name="quote_starter_sarcastic_2">Tag eins. Die Messlatte liegt jetzt offiziell über null.</string>
     <string name="quote_starter_sarcastic_3">Schau an, der Haken funktioniert ja tatsächlich.</string>
     <string name="quote_starter_sarcastic_4">Erster Tag geschafft. Dein zukünftiges Ich nickt vorsichtig anerkennend.</string>
+    <!-- 5–6 own lines, 7–10 film-style, 11–12 historical quotes with author_ -->
+    <string name="quote_starter_sarcastic_5">Tag eins. Dein Sofa wurde informiert.</string>
+    <string name="quote_starter_sarcastic_6">Ein ganzer Tag. Jetzt nicht gleich übermütig werden.</string>
+    <string name="quote_starter_sarcastic_7">Houston, wir haben… einen Haken.</string>
+    <string name="quote_starter_sarcastic_8">Du hattest mich schon bei „Tag eins“.</string>
+    <string name="quote_starter_sarcastic_9">Ich komme wieder. Morgen. Gleiche Uhrzeit.</string>
+    <string name="quote_starter_sarcastic_10">Lauf, Forrest, lauf? Gehen tut’s auch. Tag eins.</string>
+    <string name="quote_starter_sarcastic_11">„Verschiebe nie auf morgen, was du genauso gut übermorgen erledigen kannst.“</string>
+    <string name="author_quote_starter_sarcastic_11">Mark Twain</string>
+    <string name="quote_starter_sarcastic_12">„Ich kann allem widerstehen, nur nicht der Versuchung.“</string>
+    <string name="author_quote_starter_sarcastic_12">Oscar Wilde</string>
 
     <!-- BUILDING (2–4 Tage) -->
     <string name="quote_building_motivating_1">%1$d Tage am Stück – da wächst gerade was.</string>
     <string name="quote_building_motivating_2">%1$d Tage in Folge. Du baust gerade etwas auf.</string>
     <string name="quote_building_motivating_3">Schon %1$d Tage dran. Bleib genau so dabei.</string>
     <string name="quote_building_motivating_4">%1$d Tage! Kleine Schritte, echte Wirkung.</string>
+    <!-- 5–6 own lines, 7–10 film-style, 11–12 historical quotes with author_ -->
+    <string name="quote_building_motivating_5">%1$d Tage. Dein Sprössling hat’s gemerkt.</string>
+    <string name="quote_building_motivating_6">%1$d Tage. Dein Morgen-Ich sagt danke.</string>
+    <string name="quote_building_motivating_7">%1$d Tage. Einfach weitermachen, einfach weitermachen…</string>
+    <string name="quote_building_motivating_8">%1$d Tage. Deine Trainingsmontage hat offiziell begonnen.</string>
+    <string name="quote_building_motivating_9">%1$d Tage. Auftragen, abhaken.</string>
+    <string name="quote_building_motivating_10">%1$d Tage. Straßen? Wo du hingehst, brauchst du nur Haken.</string>
+    <string name="quote_building_motivating_11">„Steter Tropfen höhlt den Stein.“</string>
+    <string name="author_quote_building_motivating_11">Ovid</string>
+    <string name="quote_building_motivating_12">„Es ist nicht genug zu wissen, man muss auch anwenden; es ist nicht genug zu wollen, man muss auch tun.“</string>
+    <string name="author_quote_building_motivating_12">Goethe</string>
     <string name="quote_building_sarcastic_1">%1$d Tage? Fast so, als hättest du einen Plan.</string>
     <string name="quote_building_sarcastic_2">%1$d Tage am Stück. Zufall ist das langsam nicht mehr.</string>
     <string name="quote_building_sarcastic_3">%1$d Tage. Die Gewohnheit merkt, dass du es ernst meinst – sie ist nur noch etwas skeptisch.</string>
     <string name="quote_building_sarcastic_4">Tag %1$d. Nicht schlecht für jemanden, der „mal schauen“ gesagt hat.</string>
+    <!-- 5–6 own lines, 7–10 film-style, 11–12 historical quotes with author_ -->
+    <string name="quote_building_sarcastic_5">%1$d Tage. Vorsicht, das sieht fast nach Disziplin aus.</string>
+    <string name="quote_building_sarcastic_6">%1$d Tage. Deine Ausreden schreiben schon eine Beschwerde.</string>
+    <string name="quote_building_sarcastic_7">%1$d Tage am Stück? Ist das hier… Und täglich grüßt das Murmeltier?</string>
+    <string name="quote_building_sarcastic_8">%1$d Tage. Geschüttelt, nicht gerührt – und trotzdem da.</string>
+    <string name="quote_building_sarcastic_9">%1$d Tage. Du wirst einen größeren Kalender brauchen.</string>
+    <string name="quote_building_sarcastic_10">%1$d Tage. Du hast die rote Pille genommen, oder?</string>
+    <string name="quote_building_sarcastic_11">„Gewohnheit ist Gewohnheit – man wirft sie nicht aus dem Fenster, man lockt sie Stufe für Stufe die Treppe hinunter.“</string>
+    <string name="author_quote_building_sarcastic_11">Mark Twain</string>
+    <string name="quote_building_sarcastic_12">„Stets findet Überraschung statt, da, wo man’s nicht erwartet hat.“</string>
+    <string name="author_quote_building_sarcastic_12">Wilhelm Busch</string>
 
     <!-- ESTABLISHED (5–13 Tage) -->
     <string name="quote_established_motivating_1">%1$d Tage! Das ist keine Laune mehr, das ist Gewohnheit.</string>
     <string name="quote_established_motivating_2">%1$d Tage in Folge – dein Durchhaltevermögen zahlt sich aus.</string>
     <string name="quote_established_motivating_3">%1$d Tage. Du hast bewiesen, dass du das kannst.</string>
     <string name="quote_established_motivating_4">%1$d Tage am Stück. Das ist echter Fortschritt.</string>
+    <!-- 5–6 own lines, 7–10 film-style, 11–12 historical quotes with author_ -->
+    <string name="quote_established_motivating_5">%1$d Tage. Wurzeln wachsen, auch wenn keiner hinschaut.</string>
+    <string name="quote_established_motivating_6">%1$d Tage. Du versuchst es nicht mehr – du machst es.</string>
+    <string name="quote_established_motivating_7">%1$d Tage. Houston, wir haben kein Problem.</string>
+    <string name="quote_established_motivating_8">%1$d Tage. Aus großer Serie folgt große Verantwortung.</string>
+    <string name="quote_established_motivating_9">%1$d Tage. Das Leben findet einen Weg – und du auch.</string>
+    <string name="quote_established_motivating_10">%1$d Tage. Auge des Tigers, mein Freund.</string>
+    <string name="quote_established_motivating_11">„Nichts Großes entsteht plötzlich.“</string>
+    <string name="author_quote_established_motivating_11">Epiktet</string>
+    <string name="quote_established_motivating_12">„Fang sofort an zu leben, und zähle jeden Tag als ein eigenes Leben.“</string>
+    <string name="author_quote_established_motivating_12">Seneca</string>
     <string name="quote_established_sarcastic_1">%1$d Tage in Folge. Wer bist du und was hast du mit der alten Version gemacht?</string>
     <string name="quote_established_sarcastic_2">%1$d Tage. Pass auf, sonst wirst du noch zum Vorbild.</string>
     <string name="quote_established_sarcastic_3">%1$d Tage am Stück. Die Ausreden-Abteilung meldet Kurzarbeit an.</string>
     <string name="quote_established_sarcastic_4">%1$d Tage. Dein Kalender fragt sich langsam, ob alles in Ordnung ist.</string>
+    <!-- 5–6 own lines, 7–10 film-style, 11–12 historical quotes with author_ -->
+    <string name="quote_established_sarcastic_5">%1$d Tage. Dein Gehirn legt das jetzt unter „normal“ ab. Tut uns leid.</string>
+    <string name="quote_established_sarcastic_6">%1$d Tage. Mittlerweile wäre Auslassen das Komische.</string>
+    <string name="quote_established_sarcastic_7">%1$d Tage. Jemand hat deinen Ausreden ein Angebot gemacht, das sie nicht ablehnen konnten.</string>
+    <string name="quote_established_sarcastic_8">%1$d Tage. Hasta la vista, Ausreden.</string>
+    <string name="quote_established_sarcastic_9">%1$d Tage. Seid ihr nicht unterhalten?</string>
+    <string name="quote_established_sarcastic_10">%1$d Tage. Toto, ich glaube, wir sind nicht mehr in Faulenzhausen.</string>
+    <string name="quote_established_sarcastic_11">„Erfahrung ist einfach der Name, den wir unseren Fehlern geben.“</string>
+    <string name="author_quote_established_sarcastic_11">Oscar Wilde</string>
+    <string name="quote_established_sarcastic_12">„Gut gemacht ist besser als gut gesagt.“</string>
+    <string name="author_quote_established_sarcastic_12">Benjamin Franklin</string>
 
     <!-- LEGEND (14+ Tage) -->
     <string name="quote_legend_motivating_1">%1$d Tage. Ehrlich: Respekt.</string>
     <string name="quote_legend_motivating_2">%1$d Tage! Das ist jetzt ein Teil von dir.</string>
     <string name="quote_legend_motivating_3">%1$d Tage am Stück. Darauf kannst du richtig stolz sein.</string>
     <string name="quote_legend_motivating_4">%1$d Tage. Du bist der Beweis, dass Dranbleiben funktioniert.</string>
+    <!-- 5–6 own lines, 7–10 film-style, 11–12 historical quotes with author_ -->
+    <string name="quote_legend_motivating_5">%1$d Tage. Aus deinem Sprössling wird ein Baum.</string>
+    <string name="quote_legend_motivating_6">%1$d Tage. Merk dir diese Zahl für schwere Tage.</string>
+    <string name="quote_legend_motivating_7">%1$d Tage. Die Macht ist stark in dir.</string>
+    <string name="quote_legend_motivating_8">%1$d Tage. Bis zur Unendlichkeit – und noch viel weiter.</string>
+    <string name="quote_legend_motivating_9">%1$d Tage. Carpe diem. Jeden einzelnen diem.</string>
+    <string name="quote_legend_motivating_10">%1$d Tage. Von so einer Serie geht man nicht einfach weg.</string>
+    <string name="quote_legend_motivating_11">„Wer immer strebend sich bemüht, den können wir erlösen.“</string>
+    <string name="author_quote_legend_motivating_11">Goethe</string>
+    <string name="quote_legend_motivating_12">„Die Seele nimmt die Farbe ihrer Gedanken an.“</string>
+    <string name="author_quote_legend_motivating_12">Mark Aurel</string>
     <string name="quote_legend_sarcastic_1">%1$d Tage. Langsam wird es unheimlich, wie zuverlässig du bist.</string>
     <string name="quote_legend_sarcastic_2">%1$d Tage. Irgendwann musst du uns verraten, wer dich ersetzt hat.</string>
     <string name="quote_legend_sarcastic_3">%1$d Tage. Deine anderen Gewohnheiten werden langsam neidisch.</string>
     <string name="quote_legend_sarcastic_4">%1$d Tage am Stück. Okay, wir haben verstanden. Angeben darfst du trotzdem.</string>
+    <!-- 5–6 own lines, 7–10 film-style, 11–12 historical quotes with author_ -->
+    <string name="quote_legend_sarcastic_5">%1$d Tage. Mittlerweile macht eher die Gewohnheit dich.</string>
+    <string name="quote_legend_sarcastic_6">%1$d Tage. Wir würden dir einen Pokal basteln, aber du würdest ihn nur abhaken.</string>
+    <string name="quote_legend_sarcastic_7">%1$d Tage. „Ich bin der König der Welt!“ – sagt vermutlich deine Serie.</string>
+    <string name="quote_legend_sarcastic_8">%1$d Tage. Es kann nur einen geben. Offenbar dich.</string>
+    <string name="quote_legend_sarcastic_9">%1$d Tage. Sag Hallo zu meiner kleinen Serie.</string>
+    <string name="quote_legend_sarcastic_10">%1$d Tage. Niemand ist perfekt. Na ja… fast niemand.</string>
+    <string name="quote_legend_sarcastic_11">„Sich selbst zu lieben ist der Beginn einer lebenslangen Romanze.“</string>
+    <string name="author_quote_legend_sarcastic_11">Oscar Wilde</string>
+    <string name="quote_legend_sarcastic_12">„Tu immer das Richtige. Das wird manche freuen und den Rest verblüffen.“</string>
+    <string name="author_quote_legend_sarcastic_12">Mark Twain</string>
 </resources>

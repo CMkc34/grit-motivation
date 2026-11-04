@@ -21,6 +21,7 @@ import grit.shared.ui.generated.resources.Res
 import grit.shared.ui.generated.resources.allStringResources
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class QuoteTextTest {
 
@@ -37,5 +38,16 @@ class QuoteTextTest {
         val quoteTextIds = Res.allStringResources.keys.filter { it.startsWith("quote_") }.toSet()
 
         assertEquals(catalogIds, quoteTextIds)
+    }
+
+    @Test
+    fun `every author belongs to a catalog quote`() {
+        val catalogIds = QuoteCatalog.all.map { it.id }.toSet()
+        val authorIds =
+            Res.allStringResources.keys
+                .filter { it.startsWith("author_") }
+                .map { it.removePrefix("author_") }
+
+        authorIds.forEach { assertTrue(it in catalogIds, "author for unknown quote $it") }
     }
 }

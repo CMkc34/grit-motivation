@@ -43,4 +43,9 @@ interface MotivationSettings {
     fun getSetupDone(): Flow<Boolean>
 
     suspend fun setSetupDone()
+
+    /** Ids of the quotes shown in the current rounds of [GritQuoteEngine.pick], oldest first. */
+    fun getShownQuotes(): Flow<List<String>>
+
+    suspend fun setShownQuotes(ids: List<String>)
 }

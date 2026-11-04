@@ -17,10 +17,6 @@
 package com.shub39.grit.core.motivation
 
 import com.shub39.grit.core.motivation.QuoteTone.MOTIVATING
-import com.shub39.grit.core.motivation.QuoteTone.SARCASTIC
-import com.shub39.grit.core.motivation.StreakTier.BUILDING
-import com.shub39.grit.core.motivation.StreakTier.ESTABLISHED
-import com.shub39.grit.core.motivation.StreakTier.LEGEND
 import com.shub39.grit.core.motivation.StreakTier.STARTER
 
 /** All quotes the engine can pick from. Texts live in the UI's string resources, keyed by id. */
@@ -28,39 +24,23 @@ object QuoteCatalog {
     /** Shown when no quote fits the streak, so a check-in never ends without a message. */
     val fallback = MotivationQuote("quote_fallback", MOTIVATING, STARTER)
 
+    /** Quotes per tier and tone (#146): 6 own lines, 4 film-style lines, 2 historical quotes. */
+    const val QUOTES_PER_POOL = 12
+
+    /**
+     * Every quote, ids `quote_<tier>_<tone>_<n>` with n from 1 to [QUOTES_PER_POOL]; the ids are
+     * the string resource names in shared:ui.
+     */
     val all: List<MotivationQuote> =
-        listOf(
-            MotivationQuote("quote_starter_motivating_1", MOTIVATING, STARTER),
-            MotivationQuote("quote_starter_motivating_2", MOTIVATING, STARTER),
-            MotivationQuote("quote_starter_motivating_3", MOTIVATING, STARTER),
-            MotivationQuote("quote_starter_motivating_4", MOTIVATING, STARTER),
-            MotivationQuote("quote_starter_sarcastic_1", SARCASTIC, STARTER),
-            MotivationQuote("quote_starter_sarcastic_2", SARCASTIC, STARTER),
-            MotivationQuote("quote_starter_sarcastic_3", SARCASTIC, STARTER),
-            MotivationQuote("quote_starter_sarcastic_4", SARCASTIC, STARTER),
-            MotivationQuote("quote_building_motivating_1", MOTIVATING, BUILDING),
-            MotivationQuote("quote_building_motivating_2", MOTIVATING, BUILDING),
-            MotivationQuote("quote_building_motivating_3", MOTIVATING, BUILDING),
-            MotivationQuote("quote_building_motivating_4", MOTIVATING, BUILDING),
-            MotivationQuote("quote_building_sarcastic_1", SARCASTIC, BUILDING),
-            MotivationQuote("quote_building_sarcastic_2", SARCASTIC, BUILDING),
-            MotivationQuote("quote_building_sarcastic_3", SARCASTIC, BUILDING),
-            MotivationQuote("quote_building_sarcastic_4", SARCASTIC, BUILDING),
-            MotivationQuote("quote_established_motivating_1", MOTIVATING, ESTABLISHED),
-            MotivationQuote("quote_established_motivating_2", MOTIVATING, ESTABLISHED),
-            MotivationQuote("quote_established_motivating_3", MOTIVATING, ESTABLISHED),
-            MotivationQuote("quote_established_motivating_4", MOTIVATING, ESTABLISHED),
-            MotivationQuote("quote_established_sarcastic_1", SARCASTIC, ESTABLISHED),
-            MotivationQuote("quote_established_sarcastic_2", SARCASTIC, ESTABLISHED),
-            MotivationQuote("quote_established_sarcastic_3", SARCASTIC, ESTABLISHED),
-            MotivationQuote("quote_established_sarcastic_4", SARCASTIC, ESTABLISHED),
-            MotivationQuote("quote_legend_motivating_1", MOTIVATING, LEGEND),
-            MotivationQuote("quote_legend_motivating_2", MOTIVATING, LEGEND),
-            MotivationQuote("quote_legend_motivating_3", MOTIVATING, LEGEND),
-            MotivationQuote("quote_legend_motivating_4", MOTIVATING, LEGEND),
-            MotivationQuote("quote_legend_sarcastic_1", SARCASTIC, LEGEND),
-            MotivationQuote("quote_legend_sarcastic_2", SARCASTIC, LEGEND),
-            MotivationQuote("quote_legend_sarcastic_3", SARCASTIC, LEGEND),
-            MotivationQuote("quote_legend_sarcastic_4", SARCASTIC, LEGEND),
-        )
+        StreakTier.entries.flatMap { tier ->
+            QuoteTone.entries.flatMap { tone ->
+                (1..QUOTES_PER_POOL).map { n ->
+                    MotivationQuote(
+                        "quote_${tier.name.lowercase()}_${tone.name.lowercase()}_$n",
+                        tone,
+                        tier,
+                    )
+                }
+            }
+        }
 }
