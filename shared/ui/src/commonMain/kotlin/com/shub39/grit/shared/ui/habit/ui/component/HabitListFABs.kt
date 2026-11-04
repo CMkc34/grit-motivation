@@ -119,7 +119,7 @@ fun BoxScope.HabitListFABs(
                             enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
                             exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
                         ) {
-                            Text(text = stringResource(Res.string.add_habit))
+                            Text(text = stringResource(Res.string.sprout_add_routine))
                         }
                     }
                 }
@@ -161,7 +161,7 @@ fun BoxScope.HabitListFABs(
                             enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
                             exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
                         ) {
-                            Text(text = stringResource(Res.string.add_habit))
+                            Text(text = stringResource(Res.string.sprout_add_routine))
                         }
                     }
                 }

@@ -31,9 +31,9 @@ import grit.shared.ui.generated.resources.Res
 import grit.shared.ui.generated.resources.Res.string
 import grit.shared.ui.generated.resources.alarm
 import grit.shared.ui.generated.resources.avatar_tab
-import grit.shared.ui.generated.resources.habits
 import grit.shared.ui.generated.resources.potted_plant
 import grit.shared.ui.generated.resources.settings
+import grit.shared.ui.generated.resources.sprout_routines
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
@@ -43,7 +43,7 @@ private data class NavItem(val route: Routes, val title: StringResource, val ico
 
 private val NAV_ITEMS =
     listOf(
-        NavItem(Habits, string.habits, Res.drawable.alarm),
+        NavItem(Habits, string.sprout_routines, Res.drawable.alarm),
         NavItem(Avatar, string.avatar_tab, Res.drawable.potted_plant),
         NavItem(Settings, string.settings, Res.drawable.settings),
     )

@@ -226,7 +226,8 @@ fun HabitUpsertSheetContent(
             Text(
                 text =
                     stringResource(
-                        if (isEditSheet) Res.string.edit_habit else Res.string.add_habit
+                        if (isEditSheet) Res.string.sprout_edit_routine
+                        else Res.string.sprout_add_routine
                     ),
                 style = MaterialTheme.typography.headlineSmall.copy(fontFamily = flexFontEmphasis()),
             )
@@ -544,7 +545,7 @@ fun HabitUpsertSheetContent(
                                 if (isEditSheet) {
                                     Res.string.save
                                 } else {
-                                    Res.string.add_habit
+                                    Res.string.sprout_add_routine
                                 }
                             ),
                         style =
