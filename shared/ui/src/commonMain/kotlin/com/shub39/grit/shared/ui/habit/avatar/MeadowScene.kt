@@ -104,6 +104,8 @@ private val mothWing = Color(0xFFE8DCC8)
  * on top; the width, the decorations, the sun and the clouds stay as they are. [sceneHeight] (in
  * meadow heights, at least [plantScale]) makes the scene even higher, for a meadow that fills a
  * whole page; [skyTop] then moves the sun and the clouds that far down, below what lies on top.
+ * [groundBelow] (in meadow heights) adds that much plain meadow under the scene, so the front edge
+ * with its decorations does not touch the page's bottom and the plant stands higher (#152).
  */
 @Composable
 fun MeadowScene(
@@ -118,6 +120,7 @@ fun MeadowScene(
     plantScale: Float = 1f,
     sceneHeight: Float = plantScale,
     skyTop: Float = 0f,
+    groundBelow: Float = 0f,
     shape: Shape = RoundedCornerShape(20.dp),
     species: AvatarSpecies = AvatarSpecies.SPROUT,
 ) {
@@ -127,13 +130,18 @@ fun MeadowScene(
     val tired = mood == PlantMood.TIRED
     val shown = decorationsInOrder.filter { it.id in decorations }
 
-    Canvas(modifier = modifier.aspectRatio(MEADOW_ASPECT_RATIO / height).clip(shape)) {
+    val below = groundBelow.coerceAtLeast(0f)
+
+    Canvas(modifier = modifier.aspectRatio(MEADOW_ASPECT_RATIO / (height + below)).clip(shape)) {
         // everything below is drawn in a 2 x height rectangle, the meadow in its lower 2 x 1
         scale(scale = size.width / MEADOW_ASPECT_RATIO, pivot = Offset.Zero) {
             val painter = DecorationPainter(tired = tired, time = time, moving = animate && !tired)
             with(painter) { drawSky(weather, height = height, skyTop = skyTop) }
             translate(top = height - 1f) {
-                with(painter) { drawGround() }
+                with(painter) {
+                    drawGround()
+                    if (below > 0f) drawGroundBelow(below)
+                }
                 shown.filter { !it.inFront }.forEach { it.draw(this, painter) }
                 // the plant grows from its foot on the hill
                 scale(scale = plantScale, pivot = Offset(1f, PLANT_FOOT_Y)) {
@@ -153,7 +161,7 @@ fun MeadowScene(
                 shown.filter { it.inFront }.forEach { it.draw(this, painter) }
             }
             // the grain covers 2 x 2, so a high scene gets it once more below
-            for (tile in 0 until ceil(height / 2f).toInt()) {
+            for (tile in 0 until ceil((height + below) / 2f).toInt()) {
                 translate(top = tile * 2f) { drawPaperGrain() }
             }
         }
@@ -408,17 +416,38 @@ private class DecorationPainter(val tired: Boolean, val time: Float, val moving:
                     Offset(1.95f, 0.97f),
                     Offset(0.9f, 0.985f),
                 )
-                .forEach { tuft ->
-                    for (side in -1..1) {
-                        drawLine(
-                            grassDark.mood(),
-                            tuft,
-                            Offset(tuft.x + side * 0.008f, tuft.y - 0.02f + (side * side) * 0.006f),
-                            0.005f,
-                            StrokeCap.Round,
-                        )
-                    }
-                }
+                .forEach { tuft(it) }
+        }
+    }
+
+    /** [depth] meadow heights of plain meadow below the front edge, with a few tufts. */
+    fun DrawScope.drawGroundBelow(depth: Float) {
+        drawRect(
+            meadowGreen.mood(),
+            topLeft = Offset(0f, 1f),
+            size = Size(MEADOW_ASPECT_RATIO, depth),
+        )
+        // tufts spread over the extra meadow, the same pattern every 0.3 meadow heights
+        val pattern = listOf(0.22f to 0.12f, 1.12f to 0.18f, 1.7f to 0.08f, 0.6f to 0.26f)
+        var top = 0f
+        while (top < depth) {
+            pattern.forEach { (x, y) ->
+                val ty = 1f + top + y
+                if (ty < 1f + depth - 0.01f) tuft(Offset(x, ty))
+            }
+            top += 0.3f
+        }
+    }
+
+    private fun DrawScope.tuft(at: Offset) {
+        for (side in -1..1) {
+            drawLine(
+                grassDark.mood(),
+                at,
+                Offset(at.x + side * 0.008f, at.y - 0.02f + (side * side) * 0.006f),
+                0.005f,
+                StrokeCap.Round,
+            )
         }
     }
 }

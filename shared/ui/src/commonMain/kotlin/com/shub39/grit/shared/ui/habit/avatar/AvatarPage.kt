@@ -88,6 +88,13 @@ private val TOP_BAR_SPACE = 76.dp
 // the plant is drawn bigger on the full page, but never bigger than half the scene's height
 private const val MAX_PLANT_SCALE = 1.6f
 
+// meadow below the front edge, so the decorations there keep clear of the navigation bar (#152)
+private const val MIN_GROUND_BELOW = 0.12f
+
+// sky and meadow together never get higher than this (in meadow heights); on taller pages the rest
+// becomes meadow in front, so the plant stands higher instead of under a mostly empty sky (#152)
+private const val MAX_SKY_AND_MEADOW = 2.9f
+
 /**
  * Own tab for the plant: the meadow fills the whole page. On top sit the water balance, the plant's
  * name with its progress (tap to rename) and the button to the shop, which has its own page.
@@ -115,7 +122,9 @@ fun AvatarPage(
             val width = minOf(maxWidth, MAX_SCENE_WIDTH)
             // one meadow height, the unit MeadowScene draws in
             val unit = width / MEADOW_ASPECT_RATIO
-            val sceneHeight = maxHeight / unit
+            val pageHeight = maxHeight / unit
+            val groundBelow = maxOf(MIN_GROUND_BELOW, pageHeight - MAX_SKY_AND_MEADOW)
+            val sceneHeight = pageHeight - groundBelow
             val plantScale = (sceneHeight / 2f).coerceIn(1f, MAX_PLANT_SCALE)
 
             MeadowScene(
@@ -129,6 +138,7 @@ fun AvatarPage(
                 plantScale = plantScale,
                 sceneHeight = sceneHeight,
                 skyTop = (statusBar + TOP_BAR_SPACE) / unit,
+                groundBelow = groundBelow,
                 shape = RectangleShape,
                 modifier = Modifier.width(width),
             )
