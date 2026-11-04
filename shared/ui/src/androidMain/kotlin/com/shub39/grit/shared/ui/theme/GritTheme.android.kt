@@ -59,6 +59,8 @@ actual fun GritTheme(theme: Theme, content: @Composable (() -> Unit)) {
             else -> paperColorScheme(dynamicColorScheme, isDark)
         }
 
+    SyncSystemBarIcons(isDark)
+
     MaterialExpressiveTheme(
         colorScheme = colorScheme,
         motionScheme = MotionScheme.expressive(),
